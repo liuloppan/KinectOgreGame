@@ -1,0 +1,169 @@
+vertex_program KinectColorVert glsl
+{
+	source KinectColor.vert
+}
+
+fragment_program KinectColorFrag glsl
+{
+	source KinectColor.frag
+}
+
+vertex_program KinectDepthVert glsl
+{
+	source KinectDepth.vert
+}
+
+fragment_program KinectDepthFrag glsl
+{
+	source KinectDepth.frag
+}
+
+material Kinect/Color
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture ColorTexture
+			}
+			
+			vertex_program_ref KinectColorVert
+			{
+				param_named_auto mWorldViewProjMatrix worldviewproj_matrix
+			}
+
+			fragment_program_ref KinectColorFrag
+			{
+				param_named sColorTex int 0
+			}
+		}
+	}
+}
+
+material Kinect/Depth
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture DepthTexture
+			}
+
+			vertex_program_ref KinectDepthVert
+			{
+				param_named_auto mWorldViewProjMatrix worldviewproj_matrix
+			}
+
+			fragment_program_ref KinectDepthFrag
+			{
+				param_named sDepthTex int 0
+			}
+		}
+	}
+}
+
+material Overlay/Color
+{
+	technique
+	{
+		pass
+		{
+			scene_blend add
+
+			texture_unit
+			{
+				texture ColorTarget
+			}
+		}
+	}
+}
+
+material Overlay/Depth
+{
+	technique
+	{
+		pass
+		{
+			scene_blend add
+			
+			texture_unit
+			{
+				texture DepthTarget
+			}
+		}
+	}
+}
+
+material Bone/Tracked
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			depth_check off
+			depth_write off
+			
+			ambient 0 0 0 1
+			diffuse 0 0 0 1
+			emissive 0 0.5 0 1
+		}
+	}
+}
+
+material Bone/Inferred
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			depth_check off
+			depth_write off
+			
+			ambient 0 0 0 1
+			diffuse 0 0 0 1
+			emissive 0.5 0.5 0.5 1
+		}
+	}
+}
+
+material Joint/Tracked
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			depth_check off
+			depth_write off
+			point_size 5.0
+			
+			ambient 0 0 0 1
+			diffuse 0 0 0 1
+			emissive 1 1 0 1
+		}
+	}
+}
+
+material Joint/Inferred
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			depth_check off
+			depth_write off
+			point_size 5.0
+			
+			ambient 0 0 0 1
+			diffuse 0 0 0 1
+			emissive 0.25 0.75 0.25 1
+		}
+	}
+}
