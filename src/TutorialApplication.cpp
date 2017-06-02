@@ -16,6 +16,8 @@ This source file is part of the
 */
 #include "TutorialApplication.h"
 
+bool usingKinect = true;
+
 //-------------------------------------------------------------------------------------
 TutorialApplication::TutorialApplication(void)
 {
@@ -354,7 +356,7 @@ bool TutorialApplication::setup(void)
     }
 
     // Setup Kinect device
-    //setupKinect();
+    setupKinect();
     return true;
 }
 
@@ -368,7 +370,6 @@ void TutorialApplication::createScene(void)
     // Create SceneNode and attach the Entity
     mSinbadNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("SinbadNode", Ogre::Vector3(0, 0, 65));
     mSinbadNode->attachObject(sinbad);
-    mSinbadNode->scale(Ogre::Vector3(100, 100, 100));
 
     // Set animation state properties
     mSinbadState = sinbad->getAnimationState("Dance");
@@ -386,92 +387,88 @@ void TutorialApplication::createScene(void)
 //-------------------------------------------------------------------------------------
 bool TutorialApplication::frameStarted(const Ogre::FrameEvent &evt)
 {
-    // Connect to a Kinect device
-    HRESULT hr = createKinect();
-    if (FAILED(hr)) {
-        return false;
-    }
-
-    // Get color image from Kinect
-    if (WaitForSingleObject(mColorEvent, 0) == WAIT_OBJECT_0) {
-        const NUI_IMAGE_FRAME *colorImage;
-        HRESULT hr = NuiImageStreamGetNextFrame(mColorStream, 0, &colorImage);
-
-        if (SUCCEEDED(hr)) {
-            NUI_LOCKED_RECT LockedRect;
-            hr = colorImage->pFrameTexture->LockRect(0, &LockedRect, NULL, 0);
+    if (usingKinect) {
+        // Get color image from Kinect
+        if (WaitForSingleObject(mColorEvent, 0) == WAIT_OBJECT_0) {
+            const NUI_IMAGE_FRAME *colorImage;
+            HRESULT hr = NuiImageStreamGetNextFrame(mColorStream, 0, &colorImage);
 
             if (SUCCEEDED(hr)) {
-                memcpy(mColorImage, LockedRect.pBits, LockedRect.size);
-                colorImage->pFrameTexture->UnlockRect(0);
-            }
+                NUI_LOCKED_RECT LockedRect;
+                hr = colorImage->pFrameTexture->LockRect(0, &LockedRect, NULL, 0);
 
-            NuiImageStreamReleaseFrame(mColorStream, colorImage);
-        }
-    }
-
-    // Get depth image from Kinect
-    if (WaitForSingleObject(mDepthEvent, 0) == WAIT_OBJECT_0) {
-        const NUI_IMAGE_FRAME *depthImage;
-        HRESULT hr = NuiImageStreamGetNextFrame(mDepthStream, 0, &depthImage);
-
-        if (SUCCEEDED(hr)) {
-            NUI_LOCKED_RECT LockedRect;
-            hr = depthImage->pFrameTexture->LockRect(0, &LockedRect, NULL, 0);
-
-            if (SUCCEEDED(hr)) {
-                for (size_t i = 0; i < mDepthTex->getHeight(); ++i) {
-                    Ogre::uint16 *pData = reinterpret_cast<Ogre::uint16 *>(&(LockedRect.pBits[i * LockedRect.Pitch]));
-                    Ogre::uint16 *pImage = &mDepthImage[i * mDepthTex->getWidth()];
-                    for (size_t j = 0; j < mDepthTex->getWidth(); ++j) {
-                        pImage[j] = NuiDepthPixelToDepth(pData[j]);
-                    }
+                if (SUCCEEDED(hr)) {
+                    memcpy(mColorImage, LockedRect.pBits, LockedRect.size);
+                    colorImage->pFrameTexture->UnlockRect(0);
                 }
-                depthImage->pFrameTexture->UnlockRect(0);
+
+                NuiImageStreamReleaseFrame(mColorStream, colorImage);
             }
-
-            NuiImageStreamReleaseFrame(mDepthStream, depthImage);
         }
-    }
 
-    // Get skeleton data from Kinect
-    if (WaitForSingleObject(mSkeletonEvent, 0) == WAIT_OBJECT_0) {
-        HRESULT hr = NuiSkeletonGetNextFrame(0, &mSkeletonData);
+        // Get depth image from Kinect
+        if (WaitForSingleObject(mDepthEvent, 0) == WAIT_OBJECT_0) {
+            const NUI_IMAGE_FRAME *depthImage;
+            HRESULT hr = NuiImageStreamGetNextFrame(mDepthStream, 0, &depthImage);
 
-        // Smooth out the skeleton data
-        if (SUCCEEDED(hr)) {
-            NuiTransformSmooth(&mSkeletonData, NULL);
+            if (SUCCEEDED(hr)) {
+                NUI_LOCKED_RECT LockedRect;
+                hr = depthImage->pFrameTexture->LockRect(0, &LockedRect, NULL, 0);
+
+                if (SUCCEEDED(hr)) {
+                    for (size_t i = 0; i < mDepthTex->getHeight(); ++i) {
+                        Ogre::uint16 *pData = reinterpret_cast<Ogre::uint16 *>(&(LockedRect.pBits[i * LockedRect.Pitch]));
+                        Ogre::uint16 *pImage = &mDepthImage[i * mDepthTex->getWidth()];
+                        for (size_t j = 0; j < mDepthTex->getWidth(); ++j) {
+                            pImage[j] = NuiDepthPixelToDepth(pData[j]);
+                        }
+                    }
+                    depthImage->pFrameTexture->UnlockRect(0);
+                }
+
+                NuiImageStreamReleaseFrame(mDepthStream, depthImage);
+            }
         }
+
+        // Get skeleton data from Kinect
+        if (WaitForSingleObject(mSkeletonEvent, 0) == WAIT_OBJECT_0) {
+            HRESULT hr = NuiSkeletonGetNextFrame(0, &mSkeletonData);
+
+            // Smooth out the skeleton data
+            if (SUCCEEDED(hr)) {
+                NuiTransformSmooth(&mSkeletonData, NULL);
+            }
+        }
+
+
+        // Overlay color image
+        Ogre::HardwarePixelBufferSharedPtr colorBuffer = mColorTex->getBuffer();
+        colorBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+        const Ogre::PixelBox &colorBox = colorBuffer->getCurrentLock();
+
+        // Copy color image data
+        Ogre::uint8 *colorDataPtr = static_cast<Ogre::uint8 *>(colorBox.data);
+        for (size_t i = 0; i < mColorTex->getHeight(); ++i) {
+            memcpy(colorDataPtr, &mColorImage[i * mColorTex->getWidth() * mBytesPerPixel], mColorTex->getWidth() * mBytesPerPixel);
+            colorDataPtr += colorBox.rowPitch * mBytesPerPixel;
+        }
+
+        colorBuffer->unlock();
+
+        // Overlay depth image
+        Ogre::HardwarePixelBufferSharedPtr depthBuffer = mDepthTex->getBuffer();
+        depthBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+        const Ogre::PixelBox &depthBox = depthBuffer->getCurrentLock();
+
+        // Copy color image data
+        Ogre::uint16 *depthDataPtr = static_cast<Ogre::uint16 *>(depthBox.data);
+        for (size_t i = 0; i < mDepthTex->getHeight(); ++i) {
+            memcpy(depthDataPtr, &mDepthImage[i * mDepthTex->getWidth()], mDepthTex->getWidth() * sizeof(Ogre::uint16));
+            depthDataPtr += depthBox.rowPitch;
+        }
+
+        depthBuffer->unlock();
     }
-
-
-    // Overlay color image
-    Ogre::HardwarePixelBufferSharedPtr colorBuffer = mColorTex->getBuffer();
-    colorBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-    const Ogre::PixelBox &colorBox = colorBuffer->getCurrentLock();
-
-    // Copy color image data
-    Ogre::uint8 *colorDataPtr = static_cast<Ogre::uint8 *>(colorBox.data);
-    for (size_t i = 0; i < mColorTex->getHeight(); ++i) {
-        memcpy(colorDataPtr, &mColorImage[i * mColorTex->getWidth() * mBytesPerPixel], mColorTex->getWidth() * mBytesPerPixel);
-        colorDataPtr += colorBox.rowPitch * mBytesPerPixel;
-    }
-
-    colorBuffer->unlock();
-
-    // Overlay depth image
-    Ogre::HardwarePixelBufferSharedPtr depthBuffer = mDepthTex->getBuffer();
-    depthBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-    const Ogre::PixelBox &depthBox = depthBuffer->getCurrentLock();
-
-    // Copy color image data
-    Ogre::uint16 *depthDataPtr = static_cast<Ogre::uint16 *>(depthBox.data);
-    for (size_t i = 0; i < mDepthTex->getHeight(); ++i) {
-        memcpy(depthDataPtr, &mDepthImage[i * mDepthTex->getWidth()], mDepthTex->getWidth() * sizeof(Ogre::uint16));
-        depthDataPtr += depthBox.rowPitch;
-    }
-
-    depthBuffer->unlock();
 
     // Advance the animation
     mSinbadState->addTime(evt.timeSinceLastFrame);
@@ -578,17 +575,12 @@ void TutorialApplication::drawSkeleton(const NUI_SKELETON_DATA &skeletonData, co
 //-------------------------------------------------------------------------------------
 void TutorialApplication::manualRender(void)
 {
-
-
     // Manually call pre-rendering callbacks
     mRoot->_fireFrameStarted();
     mRoot->_fireFrameRenderingQueued();
-
-
-    // Update scene graph for processing color image from Kinect
-    Ogre::SceneNode *rootNode = mSceneMgr->getRootSceneNode();
-    HRESULT hr = createKinect();
-    if (SUCCEEDED(hr)) {
+    if (usingKinect) {
+        // Update scene graph for processing color image from Kinect
+        Ogre::SceneNode *rootNode = mSceneMgr->getRootSceneNode();
         rootNode->removeAllChildren();
         rootNode->addChild(mColorRectNode);
         mColorTarget->getBuffer()->getRenderTarget()->update();
@@ -597,14 +589,12 @@ void TutorialApplication::manualRender(void)
         rootNode->removeAllChildren();
         rootNode->addChild(mDepthRectNode);
         mDepthTarget->getBuffer()->getRenderTarget()->update();
-    }
 
-    // Update scene graph for rendering the scene
-    rootNode->removeAllChildren();
-    rootNode->addChild(mSinbadNode);
 
-    // Connect to a Kinect device
-    if (SUCCEEDED(hr)) {
+        // Update scene graph for rendering the scene
+        rootNode->removeAllChildren();
+        rootNode->addChild(mSinbadNode);
+
         // Render skeleton data
         for (int i = 0; i < NUI_SKELETON_COUNT; ++i) {
             NUI_SKELETON_TRACKING_STATE trackState = mSkeletonData.SkeletonData[i].eTrackingState;

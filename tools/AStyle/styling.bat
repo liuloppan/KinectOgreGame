@@ -13,6 +13,7 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 AStyle.exe --style=kr^
  --indent=spaces=4 --indent-switches --indent-namespaces --indent-col1-comments^
+ --suffix=none^
  --add-brackets^
  --pad-header --pad-oper --unpad-paren^
  --align-pointer=name^
