@@ -66,10 +66,9 @@ private:
     void setMenuVisible(const Ogre::String &name, bool visible = true);
     void setupParticles();
 
-    DWORD mColorWidth, mColorHeight, mDepthWidth, mDepthHeight;
-    HANDLE mColorEvent, mColorStream, mDepthEvent, mDepthStream, mSkeletonEvent;
+    DWORD  mDepthWidth, mDepthHeight;
+    HANDLE  mDepthEvent, mDepthStream, mSkeletonEvent;
 
-    Ogre::uint8 *mColorImage;
     Ogre::uint16 *mDepthImage;
     NUI_SKELETON_FRAME mSkeletonData;
 
@@ -79,21 +78,16 @@ private:
     Ogre::ManualObject *mSkeletonJoint[NUI_SKELETON_COUNT][NUI_SKELETON_POSITION_COUNT];
     Ogre::SceneNode *mJointNode[NUI_SKELETON_COUNT][NUI_SKELETON_POSITION_COUNT];
 
-    Ogre::Rectangle2D *mColorRect;
     Ogre::Rectangle2D *mDepthRect;
 
-    Ogre::SceneNode *mColorRectNode;
     Ogre::SceneNode *mDepthRectNode;
 
-    Ogre::TexturePtr mColorTarget;
     Ogre::TexturePtr mDepthTarget;
 
     Ogre::Overlay *mOverlay;
-    Ogre::TexturePtr mColorTex;
     Ogre::TexturePtr mDepthTex;
 
     static const int mBytesPerPixel = 4;
-    static const NUI_IMAGE_RESOLUTION mColorResolution = NUI_IMAGE_RESOLUTION_640x480;
     static const NUI_IMAGE_RESOLUTION mDepthResolution = NUI_IMAGE_RESOLUTION_640x480;
 
     bool mMenuName;

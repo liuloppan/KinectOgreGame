@@ -217,6 +217,42 @@ private:
         mVerticalVelocity = 0;
     }
 
+    void setupBone(const Ogre::String &name, const Ogre::Radian &angle, const Ogre::Vector3 axis)
+    {
+
+        Ogre::Quaternion q;
+        q.FromAngleAxis(angle, axis);
+        setupBone(name, q);
+
+    }
+    void setupBone(const Ogre::String &name, const Ogre::Degree &yaw, const Ogre::Degree &pitch, const Ogre::Degree &roll)
+    {
+        Ogre::Bone *bone = mBodyEnt->getSkeleton()->getBone(name);
+        bone->setManuallyControlled(true);
+        bone->setInheritOrientation(false);
+
+        bone->resetOrientation();
+
+        bone->yaw(yaw);
+        bone->pitch(pitch);
+        bone->roll(roll);
+
+        //Matrix3 mat = bone->getLocalAxes();
+        bone->setInitialState();
+
+    }
+    void setupBone(const Ogre::String &name, const Ogre::Quaternion &q)
+    {
+        Ogre::Bone *bone = mBodyEnt->getSkeleton()->getBone(name);
+        bone->setManuallyControlled(true);
+        bone->setInheritOrientation(false);
+
+        bone->resetOrientation();
+        bone->setOrientation(q);
+
+        bone->setInitialState();
+    }
+
     void setupAnimations()
     {
         // this is very important due to the nature of the exported animations
@@ -227,12 +263,63 @@ private:
             "SliceVertical", "SliceHorizontal", "Dance", "JumpStart", "JumpLoop", "JumpEnd"
         };
 
+        Ogre::Quaternion q = Ogre::Quaternion::IDENTITY;
+        Ogre::Quaternion q2, q3;
+        Ogre::Vector3 xAxis, yAxis, zAxis;
+        q.FromAngleAxis(Ogre::Degree(90), Ogre::Vector3(0, 0, -1));
+        q.ToAxes(xAxis, yAxis, zAxis);
+        q2.FromAngleAxis(Ogre::Degree(90), xAxis);
+        setupBone("Humerus.L", q * q2);
+        q.FromAngleAxis(Ogre::Degree(90), Ogre::Vector3(0, 0, 1));
+        q.ToAxes(xAxis, yAxis, zAxis);
+        q2.FromAngleAxis(Ogre::Degree(90), xAxis);
+        setupBone("Humerus.R", q * q2);
+
+        q.FromAngleAxis(Ogre::Degree(90), Ogre::Vector3(0, 0, -1));
+        q2.FromAngleAxis(Ogre::Degree(45), Ogre::Vector3(0, -1, 0));
+
+        setupBone("Ulna.L", q * q2);
+
+        q.FromAngleAxis(Ogre::Degree(90), Ogre::Vector3(0, 0, 1));
+        setupBone("Ulna.R", q * q2.Inverse());
+
+        q.FromAngleAxis(Ogre::Degree(180), Ogre::Vector3(0, 1, 0));
+        setupBone("Chest", q);
+        setupBone("Stomach", q);
+        q.FromAngleAxis(Ogre::Degree(180), Ogre::Vector3(1, 0, 0));
+        q2.FromAngleAxis(Ogre::Degree(180), Ogre::Vector3(0, 1, 0));
+        setupBone("Thigh.L", q * q2);
+        setupBone("Thigh.R", q * q2);
+        setupBone("Calf.L", q * q2);
+        setupBone("Calf.R", q * q2);
+        setupBone("Root", Ogre::Degree(0), Ogre::Degree(0), Ogre::Degree(0));
+
+        Ogre::Skeleton *skel = mBodyEnt->getSkeleton();
+
+        Ogre::Skeleton::BoneIterator bi = skel->getBoneIterator();
+
         // populate our animation list
         for (int i = 0; i < NUM_ANIMS; i++) {
             mAnims[i] = mBodyEnt->getAnimationState(animNames[i]);
             mAnims[i]->setLoop(true);
             mFadingIn[i] = false;
             mFadingOut[i] = false;
+
+            // disable animation updates
+            Ogre::Animation *anim = mBodyEnt->getSkeleton()->getAnimation(animNames[i]);
+
+            anim->destroyNodeTrack(mBodyEnt->getSkeleton()->getBone("Ulna.L")->getHandle());
+            anim->destroyNodeTrack(mBodyEnt->getSkeleton()->getBone("Ulna.R")->getHandle());
+            anim->destroyNodeTrack(mBodyEnt->getSkeleton()->getBone("Humerus.L")->getHandle());
+            anim->destroyNodeTrack(mBodyEnt->getSkeleton()->getBone("Humerus.R")->getHandle());
+            anim->destroyNodeTrack(mBodyEnt->getSkeleton()->getBone("Stomach")->getHandle());
+            anim->destroyNodeTrack(mBodyEnt->getSkeleton()->getBone("Chest")->getHandle());
+            anim->destroyNodeTrack(mBodyEnt->getSkeleton()->getBone("Thigh.L")->getHandle());
+            anim->destroyNodeTrack(mBodyEnt->getSkeleton()->getBone("Thigh.R")->getHandle());
+            anim->destroyNodeTrack(mBodyEnt->getSkeleton()->getBone("Calf.L")->getHandle());
+            anim->destroyNodeTrack(mBodyEnt->getSkeleton()->getBone("Calf.R")->getHandle());
+            anim->destroyNodeTrack(mBodyEnt->getSkeleton()->getBone("Root")->getHandle());
+
         }
 
         // start off in the idle state (top and bottom together)

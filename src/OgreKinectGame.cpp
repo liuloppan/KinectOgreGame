@@ -31,14 +31,10 @@ OgreKinectGame::OgreKinectGame()
                      "Lovisa Hassler\n"
                      "Rosdyana Kusuma\n"
                      "Project available on : https://github.com/liuloppan/KinectOgreGame/";
-    mColorImage	= NULL;
     mDepthImage	= NULL;
 
-    mColorRect = NULL;
     mDepthRect = NULL;
 
-    mColorEvent		= INVALID_HANDLE_VALUE;
-    mColorStream	= INVALID_HANDLE_VALUE;
     mDepthEvent		= INVALID_HANDLE_VALUE;
     mDepthStream	= INVALID_HANDLE_VALUE;
 
@@ -49,20 +45,13 @@ OgreKinectGame::~OgreKinectGame()
 {
     NuiShutdown();
 
-    CloseHandle(mColorEvent);
     CloseHandle(mDepthEvent);
     CloseHandle(mSkeletonEvent);
 
-    if (mColorRect != NULL) {
-        delete mColorRect;
-    }
     if (mDepthRect != NULL) {
         delete mDepthRect;
     }
 
-    if (mColorImage != NULL) {
-        delete [] mColorImage;
-    }
     if (mDepthImage != NULL) {
         delete [] mDepthImage;
     }
@@ -167,19 +156,8 @@ void OgreKinectGame::setupGPUforKinect(void)
 {
     // Create render target textures for processing and drawing images from Kinect
     Ogre::TextureManager &textureManager = Ogre::TextureManager::getSingleton();
-    mColorTarget = textureManager.createManual("ColorTarget", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mColorWidth, mColorHeight,
-                   0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
     mDepthTarget = textureManager.createManual("DepthTarget", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mDepthWidth, mDepthHeight,
                    0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
-
-    // Create cameras for processing images from Kinect
-    Ogre::Camera *colorCam = mSceneMgr->createCamera("ColorCam");
-    colorCam->setAspectRatio(static_cast<Ogre::Real>(mColorWidth) / static_cast<Ogre::Real>(mColorHeight));
-
-    Ogre::Viewport *colorViewport = mColorTarget->getBuffer()->getRenderTarget()->addViewport(colorCam);
-    colorViewport->setClearEveryFrame(true);
-    colorViewport->setBackgroundColour(Ogre::ColourValue::Black);
-    colorViewport->setOverlaysEnabled(false);
 
     Ogre::Camera *depthCam = mSceneMgr->createCamera("DepthCam");
     depthCam->setAspectRatio(static_cast<Ogre::Real>(mDepthWidth) / static_cast<Ogre::Real>(mDepthHeight));
@@ -192,13 +170,6 @@ void OgreKinectGame::setupGPUforKinect(void)
 
     // Create materials for processing images from Kinect
     Ogre::MaterialManager &materialManager = Ogre::MaterialManager::getSingleton();
-    if (!materialManager.resourceExists("Kinect/Color")) {
-        Ogre::MaterialPtr material = materialManager.create("Kinect/Color", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-        Ogre::Pass *pass = material->getTechnique(0)->getPass(0);
-        pass->setSceneBlending(Ogre::SBT_REPLACE);
-        pass->createTextureUnitState("ColorTexture");
-    }
-
     if (!materialManager.resourceExists("Kinect/Depth")) {
         Ogre::MaterialPtr material = materialManager.create("Kinect/Depth", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
         Ogre::Pass *pass = material->getTechnique(0)->getPass(0);
@@ -208,14 +179,6 @@ void OgreKinectGame::setupGPUforKinect(void)
 
 
     // Create 2D planes for processing images from Kinect
-    Ogre::Rectangle2D *mColorRect = new Ogre::Rectangle2D(true);
-    mColorRect->setCorners(-1.0f, 1.0f, 1.0f, -1.0f);
-    mColorRect->setBoundingBox(Ogre::AxisAlignedBox(Ogre::AxisAlignedBox::Extent::EXTENT_INFINITE));
-    mColorRect->setMaterial("Kinect/Color");
-
-    mColorRectNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("ColorRectNode");
-    mColorRectNode->attachObject(mColorRect);
-
     Ogre::Rectangle2D *mDepthRect = new Ogre::Rectangle2D(true);
     mDepthRect->setCorners(-1.0f, 1.0f, 1.0f, -1.0f);
     mDepthRect->setBoundingBox(Ogre::AxisAlignedBox(Ogre::AxisAlignedBox::Extent::EXTENT_INFINITE));
@@ -236,18 +199,14 @@ void OgreKinectGame::setupKinect(void)
 
 
     // Get image resolutions
-    NuiImageResolutionToSize(mColorResolution, mColorWidth, mColorHeight);
     NuiImageResolutionToSize(mDepthResolution, mDepthWidth, mDepthHeight);
 
     // Create image data arrays
-    mColorImage = new Ogre::uint8[mColorWidth * mColorHeight * mBytesPerPixel];
     mDepthImage = new Ogre::uint16[mDepthWidth * mDepthHeight];
 
 
     // Create textures for storing images from Kinect
     Ogre::TextureManager &textureManager = Ogre::TextureManager::getSingleton();
-    mColorTex = textureManager.createManual("ColorTexture", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mColorWidth, mColorHeight,
-                                            0, Ogre::PF_X8R8G8B8, Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
     mDepthTex = textureManager.createManual("DepthTexture", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::TEX_TYPE_2D, mDepthWidth, mDepthHeight,
                                             0, Ogre::PF_L16, Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
 
@@ -258,13 +217,6 @@ void OgreKinectGame::setupKinect(void)
 
     // Create materials for drawing images from Kinect
     Ogre::MaterialManager &materialManager = Ogre::MaterialManager::getSingleton();
-    if (!materialManager.resourceExists("Overlay/Color")) {
-        Ogre::MaterialPtr material = materialManager.create("Overlay/Color", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-        Ogre::Pass *pass = material->getTechnique(0)->getPass(0);
-        pass->setSceneBlending(Ogre::SBT_ADD);
-        pass->createTextureUnitState("ColorTarget");
-    }
-
     if (!materialManager.resourceExists("Overlay/Depth")) {
         Ogre::MaterialPtr material = materialManager.create("Overlay/Depth", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
         Ogre::Pass *pass = material->getTechnique(0)->getPass(0);
@@ -278,18 +230,12 @@ void OgreKinectGame::setupKinect(void)
     mOverlay = overlayManager.create("KinectOverlay");
 
     // Create a panels for color and depth images
-    Ogre::OverlayContainer *colorPanel = static_cast<Ogre::OverlayContainer *>(overlayManager.createOverlayElement("Panel", "ColorPanel"));
-    colorPanel->setPosition(0.0, 0.0);
-    colorPanel->setDimensions(0.5, 0.5);
-    colorPanel->setMaterialName("Overlay/Color");
-
     Ogre::OverlayContainer *depthPanel = static_cast<Ogre::OverlayContainer *>(overlayManager.createOverlayElement("Panel", "DepthPanel"));
-    depthPanel->setPosition(0.5, 0.0);
-    depthPanel->setDimensions(0.5, 0.5);
+    depthPanel->setPosition(0.75, 0.75);
+    depthPanel->setDimensions(0.25, 0.25);
     depthPanel->setMaterialName("Overlay/Depth");
 
     // Add panels to the overlay
-    mOverlay->add2D(colorPanel);
     mOverlay->add2D(depthPanel);
 
     // Show the overlay
@@ -396,19 +342,11 @@ void OgreKinectGame::setupKinect(void)
 HRESULT OgreKinectGame::createKinect(void)
 {
     // Initialize Kinect with color, depth, and skeleton data
-    HRESULT hr = NuiInitialize(NUI_INITIALIZE_FLAG_USES_COLOR | NUI_INITIALIZE_FLAG_USES_DEPTH | NUI_INITIALIZE_FLAG_USES_SKELETON);
+    HRESULT hr = NuiInitialize(NUI_INITIALIZE_FLAG_USES_DEPTH | NUI_INITIALIZE_FLAG_USES_SKELETON);
     if (FAILED(hr)) {
         return hr;
     }
 
-    // Create event for color image
-    mColorEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-
-    // Open a stream for color image
-    hr = NuiImageStreamOpen(NUI_IMAGE_TYPE_COLOR, mColorResolution, 0, 2, mColorEvent, &mColorStream);
-    if (FAILED(hr)) {
-        return hr;
-    }
 
     // Create event for depth image
     mDepthEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -430,24 +368,6 @@ HRESULT OgreKinectGame::createKinect(void)
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::frameStarted(const Ogre::FrameEvent &evt)
 {
-    // Get color image from Kinect
-    if (WaitForSingleObject(mColorEvent, 0) == WAIT_OBJECT_0) {
-        const NUI_IMAGE_FRAME *colorImage;
-        HRESULT hr = NuiImageStreamGetNextFrame(mColorStream, 0, &colorImage);
-
-        if (SUCCEEDED(hr)) {
-            NUI_LOCKED_RECT LockedRect;
-            hr = colorImage->pFrameTexture->LockRect(0, &LockedRect, NULL, 0);
-
-            if (SUCCEEDED(hr)) {
-                memcpy(mColorImage, LockedRect.pBits, LockedRect.size);
-                colorImage->pFrameTexture->UnlockRect(0);
-            }
-
-            NuiImageStreamReleaseFrame(mColorStream, colorImage);
-        }
-    }
-
     // Get depth image from Kinect
     if (WaitForSingleObject(mDepthEvent, 0) == WAIT_OBJECT_0) {
         const NUI_IMAGE_FRAME *depthImage;
@@ -481,21 +401,6 @@ bool OgreKinectGame::frameStarted(const Ogre::FrameEvent &evt)
             NuiTransformSmooth(&mSkeletonData, NULL);
         }
     }
-
-
-    // Overlay color image
-    Ogre::HardwarePixelBufferSharedPtr colorBuffer = mColorTex->getBuffer();
-    colorBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-    const Ogre::PixelBox &colorBox = colorBuffer->getCurrentLock();
-
-    // Copy color image data
-    Ogre::uint8 *colorDataPtr = static_cast<Ogre::uint8 *>(colorBox.data);
-    for (size_t i = 0; i < mColorTex->getHeight(); ++i) {
-        memcpy(colorDataPtr, &mColorImage[i * mColorTex->getWidth() * mBytesPerPixel], mColorTex->getWidth() * mBytesPerPixel);
-        colorDataPtr += colorBox.rowPitch * mBytesPerPixel;
-    }
-
-    colorBuffer->unlock();
 
     // Overlay depth image
     Ogre::HardwarePixelBufferSharedPtr depthBuffer = mDepthTex->getBuffer();
@@ -623,8 +528,6 @@ void OgreKinectGame::manualRender(void)
     // Update scene graph for processing color image from Kinect
     Ogre::SceneNode *rootNode = mSceneMgr->getRootSceneNode();
     rootNode->removeAllChildren();
-    rootNode->addChild(mColorRectNode);
-    mColorTarget->getBuffer()->getRenderTarget()->update();
 
     // Update scene graph for processing depth image from Kinect
     rootNode->removeAllChildren();
