@@ -18,6 +18,7 @@ This source file is part of the
 #define __TutorialApplication_h_
 
 #include "BaseApplication.h"
+#include "SinbadCharacterController.h"
 
 #include <ole2.h>
 #include <NuiApi.h>
@@ -44,9 +45,6 @@ protected:
     virtual void drawBone(const NUI_SKELETON_DATA &skeletonData, const int &skeletonIndex, Ogre::Vector2 *jointPoints, NUI_SKELETON_POSITION_INDEX joint0, NUI_SKELETON_POSITION_INDEX joint1, const int &boneIndex);
     virtual void drawSkeleton(const NUI_SKELETON_DATA &skeletonData, const int &skeletonIndex);
     virtual void manualRender(void);
-
-    Ogre::SceneNode *mSinbadNode;
-    Ogre::AnimationState *mSinbadState;
 
     DWORD mColorWidth, mColorHeight, mDepthWidth, mDepthHeight;
     HANDLE mColorEvent, mColorStream, mDepthEvent, mDepthStream, mSkeletonEvent;
@@ -77,6 +75,8 @@ protected:
     static const int mBytesPerPixel = 4;
     static const NUI_IMAGE_RESOLUTION mColorResolution = NUI_IMAGE_RESOLUTION_640x480;
     static const NUI_IMAGE_RESOLUTION mDepthResolution = NUI_IMAGE_RESOLUTION_640x480;
+
+	SinbadCharacterController *mCharSinbad;
 };
 
 #endif // #ifndef __TutorialApplication_h_

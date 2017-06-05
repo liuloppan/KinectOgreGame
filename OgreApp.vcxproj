@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseApplication.h" />
+    <ClInclude Include="src\SinbadCharacterController.h" />
     <ClInclude Include="src\TutorialApplication.h" />
   </ItemGroup>
   <ItemGroup>

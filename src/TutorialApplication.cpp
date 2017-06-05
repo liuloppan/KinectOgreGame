@@ -57,6 +57,10 @@ TutorialApplication::~TutorialApplication(void)
     if (mDepthImage != NULL) {
         delete [] mDepthImage;
     }
+	    if (mCharSinbad) {
+        delete mCharSinbad;
+        mCharSinbad = 0;
+    }
 }
 
 //-------------------------------------------------------------------------------------
@@ -363,18 +367,7 @@ bool TutorialApplication::setup(void)
 //-------------------------------------------------------------------------------------
 void TutorialApplication::createScene(void)
 {
-    // create your scene here :)
-    // Create Entity
-    Ogre::Entity *sinbad = mSceneMgr->createEntity("Sinbad", "Sinbad.mesh");
-
-    // Create SceneNode and attach the Entity
-    mSinbadNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("SinbadNode", Ogre::Vector3(0, 0, 65));
-    mSinbadNode->attachObject(sinbad);
-
-    // Set animation state properties
-    mSinbadState = sinbad->getAnimationState("Dance");
-    mSinbadState->setLoop(true);
-    mSinbadState->setEnabled(true);
+	mCharSinbad = new SinbadCharacterController(mCamera);
 
     // Set the scene's ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
@@ -471,7 +464,7 @@ bool TutorialApplication::frameStarted(const Ogre::FrameEvent &evt)
     }
 
     // Advance the animation
-    mSinbadState->addTime(evt.timeSinceLastFrame);
+    mCharSinbad->addTime(evt.timeSinceLastFrame);
     return true;
 }
 
@@ -593,7 +586,6 @@ void TutorialApplication::manualRender(void)
 
         // Update scene graph for rendering the scene
         rootNode->removeAllChildren();
-        rootNode->addChild(mSinbadNode);
 
         // Render skeleton data
         for (int i = 0; i < NUI_SKELETON_COUNT; ++i) {
