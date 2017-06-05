@@ -12,10 +12,10 @@
     <ClInclude Include="src\BaseApplication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SinbadCharacterController.h">
+    <ClInclude Include="src\OgreKinectGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\OgreKinectGame.h">
+    <ClInclude Include="src\SinbadCharacterController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
