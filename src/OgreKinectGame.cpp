@@ -117,11 +117,9 @@ bool OgreKinectGame::keyPressed(const OIS::KeyEvent &evt)
             if (!isUIvisible) {
                 mTrayMgr->showAll();
                 setMenuVisible("MainMenu");
-                setMenuVisible("Option", false);
                 mTrayMgr->showCursor();
                 isUIvisible = true;
             } else {
-                setMenuVisible("Option", false);
                 setMenuVisible("MainMenu", false);
                 mTrayMgr->hideCursor();
                 isUIvisible = false;
@@ -147,9 +145,7 @@ void OgreKinectGame::buttonHit(OgreBites::Button *b)
 {
     if (b->getName() == "mQuitButton") {
         mRoot->queueEndRendering();
-    } else if (b->getName() == "mOptionButton") {
-        setMenuVisible("Option");
-        setMenuVisible("MainMenu", false);
+        destroyScene();
     } else if (b->getName() == "mCreditButton") {
         mTrayMgr->showOkDialog("About", mInfo["About"]);
     }
@@ -349,7 +345,7 @@ void OgreKinectGame::setupKinect(void)
 
 
     // Create manual objects and scene nodes for drawing bones and joints
-    Ogre::SceneNode *mRoot = mSceneMgr->getRootSceneNode();
+    Ogre::SceneNode *mRootKinect = mSceneMgr->getRootSceneNode();
     for (int i = 0; i < NUI_SKELETON_COUNT; ++i) {
         for (int j = 0; j < SKELETON_BONE_COUNT; ++j) {
             Ogre::String indexName = Ogre::StringConverter::toString(i) + "_" + Ogre::StringConverter::toString(j);
@@ -369,7 +365,7 @@ void OgreKinectGame::setupKinect(void)
             // Render just after overlays
             mSkeletonBone[i][j]->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY + 1);
 
-            mBoneNode[i][j] = mRoot->createChildSceneNode("BoneNode" + indexName);
+            mBoneNode[i][j] = mRootKinect->createChildSceneNode("BoneNode" + indexName);
             mBoneNode[i][j]->attachObject(mSkeletonBone[i][j]);
         }
 
@@ -390,7 +386,7 @@ void OgreKinectGame::setupKinect(void)
             // Render just after overlays
             mSkeletonJoint[i][j]->setRenderQueueGroup(Ogre::RENDER_QUEUE_OVERLAY + 1);
 
-            mJointNode[i][j] = mRoot->createChildSceneNode("JointNode" + indexName);
+            mJointNode[i][j] = mRootKinect->createChildSceneNode("JointNode" + indexName);
             mJointNode[i][j]->attachObject(mSkeletonJoint[i][j]);
         }
     }
@@ -697,20 +693,16 @@ void OgreKinectGame::setMenuVisible(const Ogre::String &name, bool visible)
     if (name == "MainMenu") {
         if (visible) {
             mTrayMgr->moveWidgetToTray("mMainMenuLabel", OgreBites::TL_CENTER);
-            mTrayMgr->moveWidgetToTray("mOptionButton", OgreBites::TL_CENTER);
             mTrayMgr->moveWidgetToTray("mCreditButton", OgreBites::TL_CENTER);
             mTrayMgr->moveWidgetToTray("mQuitButton", OgreBites::TL_CENTER);
             mTrayMgr->getWidget("mMainMenuLabel")->show();
-            mTrayMgr->getWidget("mOptionButton")->show();
             mTrayMgr->getWidget("mCreditButton")->show();
             mTrayMgr->getWidget("mQuitButton")->show();
         } else {
             mTrayMgr->removeWidgetFromTray("mMainMenuLabel");
-            mTrayMgr->removeWidgetFromTray("mOptionButton");
             mTrayMgr->removeWidgetFromTray("mCreditButton");
             mTrayMgr->removeWidgetFromTray("mQuitButton");
             mTrayMgr->getWidget("mMainMenuLabel")->hide();
-            mTrayMgr->getWidget("mOptionButton")->hide();
             mTrayMgr->getWidget("mCreditButton")->hide();
             mTrayMgr->getWidget("mQuitButton")->hide();
         }
@@ -751,7 +743,6 @@ void OgreKinectGame::setupWidgets()
 
     // main menu
     mTrayMgr->createLabel(OgreBites::TL_NONE, "mMainMenuLabel", "Main Menu", WIDTH_UI);
-    mTrayMgr->createButton(OgreBites::TL_NONE, "mOptionButton", "Option");
     mTrayMgr->createButton(OgreBites::TL_NONE, "mCreditButton", "About");
     mTrayMgr->createButton(OgreBites::TL_NONE, "mQuitButton", "Quit");
 
