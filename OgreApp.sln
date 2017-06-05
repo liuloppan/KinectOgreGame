@@ -2,6 +2,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreApp", "OgreApp.vcxproj", "{89A2A7C2-45FB-3DA1-B6BF-19D2F479C39D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NuiManager", "Lib\NuiManager\NuiManager.vcxproj", "{A656B611-AA94-4A47-8CE1-7704E45FD7E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -18,6 +20,14 @@ Global
 		{89A2A7C2-45FB-3DA1-B6BF-19D2F479C39D}.Release|Win32.Build.0 = Release|Win32
 		{89A2A7C2-45FB-3DA1-B6BF-19D2F479C39D}.RelWithDebInfo|Win32.ActiveCfg = RelWithDebInfo|Win32
 		{89A2A7C2-45FB-3DA1-B6BF-19D2F479C39D}.RelWithDebInfo|Win32.Build.0 = RelWithDebInfo|Win32
+		{A656B611-AA94-4A47-8CE1-7704E45FD7E3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A656B611-AA94-4A47-8CE1-7704E45FD7E3}.Debug|Win32.Build.0 = Debug|Win32
+		{A656B611-AA94-4A47-8CE1-7704E45FD7E3}.MinSizeRel|Win32.ActiveCfg = Release|Win32
+		{A656B611-AA94-4A47-8CE1-7704E45FD7E3}.MinSizeRel|Win32.Build.0 = Release|Win32
+		{A656B611-AA94-4A47-8CE1-7704E45FD7E3}.Release|Win32.ActiveCfg = Release|Win32
+		{A656B611-AA94-4A47-8CE1-7704E45FD7E3}.Release|Win32.Build.0 = Release|Win32
+		{A656B611-AA94-4A47-8CE1-7704E45FD7E3}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
+		{A656B611-AA94-4A47-8CE1-7704E45FD7E3}.RelWithDebInfo|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

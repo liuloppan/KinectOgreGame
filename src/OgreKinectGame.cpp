@@ -19,6 +19,7 @@ ________                           ____  __.__                      __
       https://github.com/liuloppan/KinectOgreGame/
 -----------------------------------------------------------------------------
 */
+#include "Stdafx.h"
 #include "OgreKinectGame.h"
 bool isUIvisible = false;
 
@@ -82,19 +83,11 @@ void OgreKinectGame::go(void)
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::mouseMoved(const OIS::MouseEvent &evt)
 {
-    // relay input events to character controller
-    if (!isUIvisible) {
-        mChara->injectMouseMove(evt);
-    }
-    return BaseApplication::mouseMoved(evt);
+	return BaseApplication::mouseMoved(evt);
 }
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
 {
-    // relay input events to character controller
-    if (!isUIvisible) {
-        mChara->injectMouseDown(evt, id);
-    }
     return BaseApplication::mousePressed(evt, id);
 }
 //-------------------------------------------------------------------------------------
@@ -114,19 +107,12 @@ bool OgreKinectGame::keyPressed(const OIS::KeyEvent &evt)
                 isUIvisible = false;
             }
         }
-        if (!isUIvisible) {
-            mChara->injectKeyDown(evt);
-        }
     }
     return true;
 }
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::keyReleased(const OIS::KeyEvent &evt)
 {
-    // relay input events to character controller
-    if (!isUIvisible) {
-        mChara->injectKeyUp(evt);
-    }
     return BaseApplication::keyReleased(evt);
 }
 //-------------------------------------------------------------------------------------
@@ -537,7 +523,7 @@ void OgreKinectGame::manualRender(void)
 
     // Update scene graph for rendering the scene
     rootNode->removeAllChildren();
-    rootNode->addChild(mChara->mBodyNode);
+    rootNode->addChild(mChara->getEntityNode());
 
     // Render skeleton data
     for (int i = 0; i < NUI_SKELETON_COUNT; ++i) {
@@ -576,7 +562,7 @@ void OgreKinectGame::createScene()
     mLight->setPosition(20, 20, 50);
     // disable default camera control so the character can do its own
     mCameraMan->setStyle(OgreBites::CS_MANUAL);
-    mChara = new SinbadCharacterController(mCamera);
+    mChara = new SinbadCharacterController();
 
     // create a floor mesh resource
     Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -629,7 +615,6 @@ void OgreKinectGame::destroyScene()
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 {
-    mChara->addTime(fe.timeSinceLastFrame);
     mTrayMgr->frameRenderingQueued(fe);
     //Need to capture/update each device
     mKeyboard->capture();
