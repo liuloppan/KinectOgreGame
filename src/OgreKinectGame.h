@@ -36,7 +36,7 @@ class OgreKinectGame : public BaseApplication
 public:
     OgreKinectGame();
     virtual ~OgreKinectGame();
-	virtual void go(void);
+    virtual void go(void);
     virtual bool frameStarted(const Ogre::FrameEvent &evt);
 
 protected:

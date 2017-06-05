@@ -163,7 +163,7 @@ bool OgreKinectGame::setup(void)
     }
     // Load fonts for tray captions
     Ogre::FontManager::getSingleton().getByName("SdkTrays/Caption")->load();
-	setupKinect();
+    setupKinect();
     setupWidgets();
 }
 //-------------------------------------------------------------------------------------
@@ -638,7 +638,7 @@ void OgreKinectGame::manualRender(void)
 
     // Update scene graph for rendering the scene
     rootNode->removeAllChildren();
-	rootNode->addChild(mChara->mBodyNode);
+    rootNode->addChild(mChara->mBodyNode);
 
     // Render skeleton data
     for (int i = 0; i < NUI_SKELETON_COUNT; ++i) {
@@ -681,7 +681,7 @@ void OgreKinectGame::createScene()
 
     // create a floor mesh resource
     Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                            Ogre::Plane(Ogre::Vector3::UNIT_Y, -18), 10000, 10000, 20, 20, true, 1, 128, 128, Ogre::Vector3::UNIT_Z);
+            Ogre::Plane(Ogre::Vector3::UNIT_Y, -18), 10000, 10000, 20, 20, true, 1, 128, 128, Ogre::Vector3::UNIT_Z);
 
 
     // create a floor entity, give it a material, and place it at the origin
