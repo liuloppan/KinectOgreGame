@@ -21,11 +21,11 @@
   <ItemGroup>
     <ClInclude Include="src\BaseApplication.h" />
     <ClInclude Include="src\SinbadCharacterController.h" />
-    <ClInclude Include="src\TutorialApplication.h" />
+    <ClInclude Include="src\OgreKinectGame.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BaseApplication.cpp" />
-    <ClCompile Include="src\TutorialApplication.cpp" />
+    <ClCompile Include="src\OgreKinectGame.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGUID>{89A2A7C2-45FB-3DA1-B6BF-19D2F479C39D}</ProjectGUID>

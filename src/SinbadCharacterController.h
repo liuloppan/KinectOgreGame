@@ -71,8 +71,6 @@ public:
         setupAnimations();
 
         mSceneManager = cam->getSceneManager();
-        mCurrentElement = "Fire"; //select fire as default element
-        mElementSpeed = 300.0f;
 
     }
 
@@ -81,7 +79,6 @@ public:
         updateBody(deltaTime);
         updateAnimations(deltaTime);
         updateCamera(deltaTime);
-        updateElement(deltaTime);
     }
 
     void injectKeyDown(const OIS::KeyEvent &evt)
@@ -167,7 +164,6 @@ public:
             // if swords are out, and character's not doing something weird, then SLICE!
             if (id == OIS::MB_Left) {
                 setTopAnimation(ANIM_SLICE_VERTICAL, true);
-                generateElementAttack();
             } else if (id == OIS::MB_Right) {
                 setTopAnimation(ANIM_SLICE_HORIZONTAL, true);
             }
@@ -181,45 +177,6 @@ public:
 
     }
 
-    void generateElementAttack()
-    {
-
-        //Copy orientation and position from character to our element node
-        copyNodePositionTo(mSceneManager->getSceneNode("elementNode"));
-        Quaternion elementDirection = mBodyNode->_getDerivedOrientation();
-        mSceneManager->getSceneNode("elementNode")->setOrientation(elementDirection);
-
-        //create vector of elements
-        const char *vecInit[] = {"Fire", "Water", "Air", "Earth"};
-        StringVector vecElements(vecInit, vecInit + 4);
-
-        //first check if it's earth that is chosen
-        if (mCurrentElement == "Earth") {
-            mSceneManager->getSceneNode("earthNode")->setVisible(true);
-        } else {
-            mSceneManager->getSceneNode("earthNode")->setVisible(false);
-        }
-        //then handle the elements that are made with particles
-        for (int i = 0 ; i < 3; i++) {
-            mSceneManager->getParticleSystem(vecElements[i])->setVisible(vecElements[i] == mCurrentElement);
-        }
-    }
-
-    Ogre::String getCurrentElement()
-    {
-
-        Ogre::String currElement = mCurrentElement;
-
-        return currElement;
-
-    }
-
-    void setCurrentElement(Ogre::String anElement)
-    {
-
-        mCurrentElement = anElement;
-
-    }
 
 private:
 
@@ -554,16 +511,8 @@ private:
         }
     }
 
-    void updateElement(Real deltaTime)
-    {
 
-        Vector3 elementDir = mSceneManager->getSceneNode("elementNode")->getOrientation() * Vector3::UNIT_Z;
-        mSceneManager->getSceneNode("elementNode")->translate(elementDir * deltaTime * mElementSpeed);
-    }
-
-    float mElementSpeed;
     SceneManager *mSceneManager;
-    Ogre::String mCurrentElement;
     Camera *mCamera;
     SceneNode *mBodyNode;
     SceneNode *mCameraPivot;

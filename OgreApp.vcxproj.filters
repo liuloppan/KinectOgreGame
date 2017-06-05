@@ -12,10 +12,10 @@
     <ClInclude Include="src\BaseApplication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\TutorialApplication.h">
+    <ClInclude Include="src\SinbadCharacterController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SinbadCharacterController.h">
+    <ClInclude Include="src\OgreKinectGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -23,7 +23,7 @@
     <ClCompile Include="src\BaseApplication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TutorialApplication.cpp">
+    <ClCompile Include="src\OgreKinectGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
