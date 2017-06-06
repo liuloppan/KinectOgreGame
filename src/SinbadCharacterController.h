@@ -61,6 +61,8 @@ protected:
 
     Ogre::SceneManager *mSceneManager;
     Ogre::Entity *bodyEntity;
+	Ogre::Entity* mSword1;
+	Ogre::Entity* mSword2;
     Ogre::SceneNode *bodyNode;
     Ogre::Skeleton *skeleton;
 };

@@ -51,6 +51,12 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
     this->bodyNode->scale(Ogre::Vector3(5));
     this->bodyNode->setPosition(bodyOffset);
 
+	// create swords and attach to sheath
+	mSword1 = mSceneManager->createEntity("SinbadSword1", "Sword.mesh");
+	mSword2 = mSceneManager->createEntity("SinbadSword2", "Sword.mesh");
+	bodyEntity->attachObjectToBone("Sheath.L", mSword1);
+	bodyEntity->attachObjectToBone("Sheath.R", mSword2);
+
     skeleton = this->bodyEntity->getSkeleton();
     skeleton->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
 
