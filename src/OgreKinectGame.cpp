@@ -42,6 +42,10 @@ OgreKinectGame::OgreKinectGame()
 //-------------------------------------------------------------------------------------
 OgreKinectGame::~OgreKinectGame()
 {
+}
+//-------------------------------------------------------------------------------------
+void OgreKinectGame::destroyScene()
+{
     if (kinectController) {
         kinectController->unInitController();
         delete kinectController;
@@ -51,12 +55,24 @@ OgreKinectGame::~OgreKinectGame()
         delete character;
     }
 
+    if (dynamicsWorld) {
+        delete dynamicsWorld;
+    }
+
+    if (ogreDisplay) {
+        delete ogreDisplay;
+    }
+
     Ogre::MeshManager::getSingleton().remove("floor");
 
     mSceneMgr->clearScene(); // removes all nodes, billboards, lights etc.
     mSceneMgr->destroyAllCameras();
 }
-
+//-------------------------------------------------------------------------------------
+bool OgreKinectGame::keyReleased(const OIS::KeyEvent &evt)
+{
+    return BaseApplication::keyReleased(evt);
+}
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::mouseMoved(const OIS::MouseEvent &evt)
 {
@@ -85,18 +101,16 @@ void OgreKinectGame::createScene()
     character->setupCharacter(this->mSceneMgr, this->kinectController);
 
     // setup shadow properties
-    mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+    mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
     mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
-    mSceneMgr->setShadowTextureSize(2048);
-    mSceneMgr->setShadowTextureCount(1);
 
     // setup some basic lighting for our scene
-    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
+    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.8, 0.8, 0.8));
 
     // add a bright light above the scene
     mLight = mSceneMgr->createLight();
     mLight->setType(Ogre::Light::LT_POINT);
-    mLight->setPosition(-100, 400, 200);
+    mLight->setPosition(-100, 800, 400);
     mLight->setSpecularColour(Ogre::ColourValue::White);
 
     // Bullet Physics
@@ -157,3 +171,44 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
     return true;
 }
 //-------------------------------------------------------------------------------------
+
+
+#include "Stdafx.h"
+#include "OgreKinectGame.h"
+
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#define WIN32_LEAN_AND_MEAN
+#include "windows.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
+#else
+int main(int argc, char *argv[])
+#endif
+{
+    // Create application object
+    OgreKinectGame app;
+
+    try {
+        app.go();
+    } catch (Ogre::Exception &e) {
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+        MessageBoxA(NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+#else
+        std::cerr << "An exception has occured: " <<
+                  e.getFullDescription().c_str() << std::endl;
+#endif
+    }
+
+    return 0;
+}
+
+#ifdef __cplusplus
+}
+#endif

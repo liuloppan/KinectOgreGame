@@ -38,7 +38,6 @@
     <ClCompile Include="src\DynamicRenderable.cpp" />
     <ClCompile Include="src\JointOrientationCalculator.cpp" />
     <ClCompile Include="src\KinectController.cpp" />
-    <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\OgreDisplay.cpp" />
     <ClCompile Include="src\OgreKinectGame.cpp" />
     <ClCompile Include="src\SinbadCharacterController.cpp" />

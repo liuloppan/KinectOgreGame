@@ -39,9 +39,11 @@ public:
 
 protected:
     virtual void createScene();
+    virtual void destroyScene();
     virtual bool frameRenderingQueued(const Ogre::FrameEvent &fe);
     virtual bool mouseMoved(const OIS::MouseEvent &evt);
     virtual bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
+    virtual bool keyReleased(const OIS::KeyEvent &evt);
     virtual void setupKinect(void);
 
 protected:
