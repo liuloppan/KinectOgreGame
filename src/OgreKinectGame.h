@@ -50,17 +50,17 @@ protected:
     Ogre::Light	*mLight;
     SinbadCharacterController	*character;
     Ogre::NameValuePairList	mInfo;
-	KinectController*	kinectController;
-	Ogre::TexturePtr	texRenderTarget;
-	OgreDisplay*							ogreDisplay;
-	btBroadphaseInterface*					broadphase;
-	btCollisionDispatcher*					dispatcher;
-	btSequentialImpulseConstraintSolver*	solver;
-	btDefaultCollisionConfiguration*		collisionConfiguration;
-	btDynamicsWorld*						dynamicsWorld;
-	SkeletonToRagdoll*						ragdoll;
-		double									accumulator;
-	const double							dt;
+    KinectController	*kinectController;
+    Ogre::TexturePtr	texRenderTarget;
+    OgreDisplay							*ogreDisplay;
+    btBroadphaseInterface					*broadphase;
+    btCollisionDispatcher					*dispatcher;
+    btSequentialImpulseConstraintSolver	*solver;
+    btDefaultCollisionConfiguration		*collisionConfiguration;
+    btDynamicsWorld						*dynamicsWorld;
+    SkeletonToRagdoll						*ragdoll;
+    double									accumulator;
+    const double							dt;
 };
 
 #endif // #ifndef __OgreKinectGame_h_

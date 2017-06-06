@@ -25,12 +25,12 @@ bool isUIvisible = false;
 
 //-------------------------------------------------------------------------------------
 OgreKinectGame::OgreKinectGame()
-	:kinectController(0),
-	character(0),
-		accumulator(0),
-	dt(0.01),
-	ogreDisplay(0),
-	dynamicsWorld(0)
+    : kinectController(0),
+      character(0),
+      accumulator(0),
+      dt(0.01),
+      ogreDisplay(0),
+      dynamicsWorld(0)
 {
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
@@ -42,15 +42,16 @@ OgreKinectGame::OgreKinectGame()
 //-------------------------------------------------------------------------------------
 OgreKinectGame::~OgreKinectGame()
 {
-	if(kinectController)
-	{
-		kinectController->unInitController();
-		delete kinectController;
-	}
+    if (kinectController) {
+        kinectController->unInitController();
+        delete kinectController;
+    }
 
-	if(character) delete character;
+    if (character) {
+        delete character;
+    }
 
-	Ogre::MeshManager::getSingleton().remove("floor");
+    Ogre::MeshManager::getSingleton().remove("floor");
 
     mSceneMgr->clearScene(); // removes all nodes, billboards, lights etc.
     mSceneMgr->destroyAllCameras();
@@ -59,7 +60,7 @@ OgreKinectGame::~OgreKinectGame()
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::mouseMoved(const OIS::MouseEvent &evt)
 {
-	return BaseApplication::mouseMoved(evt);
+    return BaseApplication::mouseMoved(evt);
 }
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
@@ -79,124 +80,87 @@ bool OgreKinectGame::setup(void)
 
 void OgreKinectGame::setupKinect(void)
 {
-	kinectController = new KinectController();
-	kinectController->initController();
+    kinectController = new KinectController();
+    kinectController->initController();
 }
 
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::createScene()
 {
-	// setup character
-	character = new SinbadCharacterController();
-	character->setupCharacter(this->mSceneMgr, this->kinectController);
+    // setup character
+    character = new SinbadCharacterController();
+    character->setupCharacter(this->mSceneMgr, this->kinectController);
 
-	// setup shadow properties
-	mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
-	mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
-	mSceneMgr->setShadowTextureSize(2048);
-	mSceneMgr->setShadowTextureCount(1);
+    // setup shadow properties
+    mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+    mSceneMgr->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
+    mSceneMgr->setShadowTextureSize(2048);
+    mSceneMgr->setShadowTextureCount(1);
 
     // setup some basic lighting for our scene
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.3, 0.3, 0.3));
 
-	// add a bright light above the scene
+    // add a bright light above the scene
     mLight = mSceneMgr->createLight();
     mLight->setType(Ogre::Light::LT_POINT);
-	mLight->setPosition(-100, 400, 200);
-	mLight->setSpecularColour(Ogre::ColourValue::White);
+    mLight->setPosition(-100, 400, 200);
+    mLight->setSpecularColour(Ogre::ColourValue::White);
 
-	// Bullet Physics
-	
-	broadphase = new btDbvtBroadphase();
-	collisionConfiguration = new btDefaultCollisionConfiguration();
-	dispatcher = new btCollisionDispatcher(collisionConfiguration);
-	solver = new btSequentialImpulseConstraintSolver;
-	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver,collisionConfiguration);
-	dynamicsWorld->setGravity(btVector3(0, -10, 0));
-	
-	
-	//create the character physical skeleton
-	ogreDisplay = new OgreDisplay(dynamicsWorld);
-	ragdoll = new SkeletonToRagdoll(mSceneMgr);
-	ragdoll->createRagdoll(dynamicsWorld, character->getEntityNode());
-	ragdoll->setDebugBones(false);
+    // Bullet Physics
 
-	// Floor
-	Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::Plane(Ogre::Vector3::UNIT_Y, 0), 1000, 1000, 10, 10, true, 1, 10, 10, Ogre::Vector3::UNIT_Z);
+    broadphase = new btDbvtBroadphase();
+    collisionConfiguration = new btDefaultCollisionConfiguration();
+    dispatcher = new btCollisionDispatcher(collisionConfiguration);
+    solver = new btSequentialImpulseConstraintSolver;
+    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+    dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
 
-	Ogre::Entity* floor = mSceneMgr->createEntity("Floor", "floor");
-	floor->setMaterialName("Examples/BeachStones");
-	floor->setCastShadows(false);
-	mSceneMgr->getRootSceneNode()->attachObject(floor);
+    //create the character physical skeleton
+    ogreDisplay = new OgreDisplay(dynamicsWorld);
+    ragdoll = new SkeletonToRagdoll(mSceneMgr);
+    ragdoll->createRagdoll(dynamicsWorld, character->getEntityNode());
+    ragdoll->setDebugBones(false);
+
+    // Floor
+    Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            Ogre::Plane(Ogre::Vector3::UNIT_Y, 0), 1000, 1000, 10, 10, true, 1, 10, 10, Ogre::Vector3::UNIT_Z);
+
+
+    Ogre::Entity *floor = mSceneMgr->createEntity("Floor", "floor");
+    floor->setMaterialName("Examples/BeachStones");
+    floor->setCastShadows(false);
+    mSceneMgr->getRootSceneNode()->attachObject(floor);
     mSceneMgr->setSkyDome(true, "Examples/CloudySky", 10, 8);
 }
 
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 {
-	if(!BaseApplication::frameRenderingQueued(fe)) return false;
-
-	kinectController->updatePerFrame(fe.timeSinceLastFrame);
-	character->updatePerFrame(fe.timeSinceLastFrame);
-
-	// Update Color Data
-	this->kinectController->showColorData(this->texRenderTarget);
-	if (dynamicsWorld)
-	{
-	accumulator += fe.timeSinceLastFrame;
-	if(accumulator >= dt)
-	{
-		dynamicsWorld->stepSimulation(dt);
-		accumulator -=dt;
-		//get all colliding objects and check for specific collisions 
-		dynamicsWorld->performDiscreteCollisionDetection();
-		ogreDisplay->update();
-
-		ragdoll->update();
-		//std::string name = ragdoll->update();
-		//if(name != "") name = name;
-	}
-	}
-	
-	return true;
-}
-//-------------------------------------------------------------------------------------
-
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
-#else
-int main(int argc, char *argv[])
-#endif
-{
-    // Create application object
-    OgreKinectGame app;
-
-    try {
-        app.go();
-    } catch (Ogre::Exception &e) {
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        MessageBox(NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
-#else
-        std::cerr << "An exception has occured: " <<
-                  e.getFullDescription().c_str() << std::endl;
-#endif
+    if (!BaseApplication::frameRenderingQueued(fe)) {
+        return false;
     }
 
-    return 0;
-}
+    kinectController->updatePerFrame(fe.timeSinceLastFrame);
+    character->updatePerFrame(fe.timeSinceLastFrame);
 
-#ifdef __cplusplus
+    // Update Color Data
+    this->kinectController->showColorData(this->texRenderTarget);
+    if (dynamicsWorld) {
+        accumulator += fe.timeSinceLastFrame;
+        if (accumulator >= dt) {
+            dynamicsWorld->stepSimulation(dt);
+            accumulator -= dt;
+            //get all colliding objects and check for specific collisions
+            dynamicsWorld->performDiscreteCollisionDetection();
+            ogreDisplay->update();
+
+            ragdoll->update();
+            //std::string name = ragdoll->update();
+            //if(name != "") name = name;
+        }
+    }
+
+    return true;
 }
-#endif
+//-------------------------------------------------------------------------------------

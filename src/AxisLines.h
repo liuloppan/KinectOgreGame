@@ -14,31 +14,31 @@
 class AxisLines
 {
 public:
-	AxisLines(void);
-	virtual ~AxisLines(void);
+    AxisLines(void);
+    virtual ~AxisLines(void);
 
-	Ogre::Vector3 xAxis;
-	Ogre::Vector3 yAxis;
-	Ogre::Vector3 zAxis;
+    Ogre::Vector3 xAxis;
+    Ogre::Vector3 yAxis;
+    Ogre::Vector3 zAxis;
 
-	Ogre::String color1;
-	Ogre::String color2;
-	Ogre::String color3;
+    Ogre::String color1;
+    Ogre::String color2;
+    Ogre::String color3;
 
-	Ogre::Real length;
+    Ogre::Real length;
 
-	void initAxis(Ogre::String boneName, Ogre::Entity* entity, Ogre::SceneManager* mSceneManager);
-	void updateLines(Ogre::Vector3 xAxis, Ogre::Vector3 yAxis, Ogre::Vector3 zAxis);
-	void setVisible(bool isXVisible, bool isYVisible, bool isZVisible);
+    void initAxis(Ogre::String boneName, Ogre::Entity *entity, Ogre::SceneManager *mSceneManager);
+    void updateLines(Ogre::Vector3 xAxis, Ogre::Vector3 yAxis, Ogre::Vector3 zAxis);
+    void setVisible(bool isXVisible, bool isYVisible, bool isZVisible);
 
 protected:
-	DynamicLines* xLine;
-	DynamicLines* yLine;
-	DynamicLines* zLine;
+    DynamicLines *xLine;
+    DynamicLines *yLine;
+    DynamicLines *zLine;
 
-	bool isXVisible;
-	bool isYVisible;
-	bool isZVisible;
+    bool isXVisible;
+    bool isYVisible;
+    bool isZVisible;
 };
 
 #endif

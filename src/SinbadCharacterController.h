@@ -37,32 +37,32 @@ public:
     virtual void setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller);
     virtual void updatePerFrame(Ogre::Real elapsedTime);
     Ogre::SceneNode *getEntityNode();
-	
-	Ogre::String entityName;
+
+    Ogre::String entityName;
 
 protected:
-	void transformBone(Ogre::String boneName, NuiManager::NuiJointIndex jointIdx);
+    void transformBone(Ogre::String boneName, NuiManager::NuiJointIndex jointIdx);
 
-	void setupBone(const Ogre::String& name, NuiManager::NuiJointIndex idx);
-	void setupBone(const Ogre::String& name,const Ogre::Radian& angle, const Ogre::Vector3 axis);
-	void setupBone(const Ogre::String& name,const Ogre::Degree& yaw,const Ogre::Degree& pitch,const Ogre::Degree& roll);
-	void setupBone(const Ogre::String& name,const Ogre::Quaternion& q);
+    void setupBone(const Ogre::String &name, NuiManager::NuiJointIndex idx);
+    void setupBone(const Ogre::String &name, const Ogre::Radian &angle, const Ogre::Vector3 axis);
+    void setupBone(const Ogre::String &name, const Ogre::Degree &yaw, const Ogre::Degree &pitch, const Ogre::Degree &roll);
+    void setupBone(const Ogre::String &name, const Ogre::Quaternion &q);
 
-	KinectController*  controller;
-	JointOrientationCalculator* jointCalc;
+    KinectController  *controller;
+    JointOrientationCalculator *jointCalc;
 
-	std::vector<AxisLines*> axisLines;
+    std::vector<AxisLines *> axisLines;
 
-	bool showBoneOrientationAxes;
-	bool showJointYAxes;
+    bool showBoneOrientationAxes;
+    bool showJointYAxes;
 
-	Ogre::Real skelCenter;
-	Ogre::Vector3 bodyOffset;
+    Ogre::Real skelCenter;
+    Ogre::Vector3 bodyOffset;
 
-	Ogre::SceneManager *mSceneManager;	
-	Ogre::Entity* bodyEntity;
-	Ogre::SceneNode* bodyNode;
-	Ogre::Skeleton* skeleton;
+    Ogre::SceneManager *mSceneManager;
+    Ogre::Entity *bodyEntity;
+    Ogre::SceneNode *bodyNode;
+    Ogre::Skeleton *skeleton;
 };
 
 #endif
