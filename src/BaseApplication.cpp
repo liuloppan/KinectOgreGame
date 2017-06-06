@@ -61,7 +61,7 @@ bool BaseApplication::configure(void)
     if (mRoot->showConfigDialog()) {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise(true, "TutorialApplication Render Window");
+        mWindow = mRoot->initialise(true, "Ogre Kinect Game");
 
         return true;
     } else {
@@ -72,7 +72,7 @@ bool BaseApplication::configure(void)
 void BaseApplication::chooseSceneManager(void)
 {
     // Get the SceneManager, in this case a generic one
-    mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC | Ogre::ST_INTERIOR | Ogre::ST_EXTERIOR_CLOSE);
+    mSceneMgr = mRoot->createSceneManager(Ogre::ST_EXTERIOR_CLOSE);
 }
 //-------------------------------------------------------------------------------------
 void BaseApplication::createCamera(void)
@@ -81,10 +81,10 @@ void BaseApplication::createCamera(void)
     mCamera = mSceneMgr->createCamera("PlayerCam");
 
     // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0, 0, 100));
+    mCamera->setPosition(Ogre::Vector3(0, 100, 125));
     // Look back along -Z
-    mCamera->lookAt(Ogre::Vector3(0, 0, -300));
-    mCamera->setNearClipDistance(5);
+    mCamera->lookAt(Ogre::Vector3(0, 40, 0));
+    mCamera->setNearClipDistance(0.5);
 
     mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
 }

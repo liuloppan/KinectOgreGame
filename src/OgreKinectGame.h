@@ -42,7 +42,6 @@ protected:
     virtual bool frameRenderingQueued(const Ogre::FrameEvent &fe);
     virtual bool mouseMoved(const OIS::MouseEvent &evt);
     virtual bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
-    virtual bool setup();
     virtual void setupKinect(void);
 
 protected:

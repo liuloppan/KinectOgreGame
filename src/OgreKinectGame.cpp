@@ -29,8 +29,8 @@ OgreKinectGame::OgreKinectGame()
       character(0),
       accumulator(0),
       dt(0.01),
-      ogreDisplay(0),
-      dynamicsWorld(0)
+      dynamicsWorld(0),
+      ogreDisplay(0)
 {
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
@@ -68,15 +68,6 @@ bool OgreKinectGame::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID
     return BaseApplication::mousePressed(evt, id);
 }
 //-------------------------------------------------------------------------------------
-bool OgreKinectGame::setup(void)
-{
-
-    if (!BaseApplication::setup()) {
-        return false;
-    }
-    setupKinect();
-}
-//-------------------------------------------------------------------------------------
 
 void OgreKinectGame::setupKinect(void)
 {
@@ -87,6 +78,8 @@ void OgreKinectGame::setupKinect(void)
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::createScene()
 {
+    this->setupKinect();
+
     // setup character
     character = new SinbadCharacterController();
     character->setupCharacter(this->mSceneMgr, this->kinectController);
