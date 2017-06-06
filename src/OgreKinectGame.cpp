@@ -99,6 +99,7 @@ void OgreKinectGame::createScene()
     // setup character
     character = new SinbadCharacterController();
     character->setupCharacter(this->mSceneMgr, this->kinectController);
+    //character->getEntityNode()->rotate(Ogre::Vector3(0,1,0), Ogre::Degree(180));
 
     // setup shadow properties
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
@@ -127,7 +128,7 @@ void OgreKinectGame::createScene()
     ogreDisplay = new OgreDisplay(dynamicsWorld);
     ragdoll = new SkeletonToRagdoll(mSceneMgr);
     ragdoll->createRagdoll(dynamicsWorld, character->getEntityNode());
-    ragdoll->setDebugBones(false);
+    ragdoll->setDebugBones(true);
 
     // Floor
     Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -139,6 +140,31 @@ void OgreKinectGame::createScene()
     floor->setCastShadows(false);
     mSceneMgr->getRootSceneNode()->attachObject(floor);
     mSceneMgr->setSkyDome(true, "Examples/CloudySky", 10, 8);
+
+    // create the Bullet ground plane
+
+    //btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0), 1);
+    btCollisionShape *groundShape = new btBoxShape(btVector3(350, 1, 350));
+    btTransform groundTransform;
+    groundTransform.setIdentity();
+    groundTransform.setOrigin(btVector3(0, 0, 0));
+    btDefaultMotionState *myMotionState = new btDefaultMotionState(groundTransform);
+    btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, myMotionState, groundShape, btVector3(0, 0, 0));
+    btRigidBody *groundRigidBody = new btRigidBody(groundRigidBodyCI);
+    groundRigidBody->setFriction(50.0f);
+    dynamicsWorld->addRigidBody(groundRigidBody);
+    ragdoll->addIgnoreEventObject(groundRigidBody);
+
+    // Color Data
+    texRenderTarget = Ogre::TextureManager::getSingleton().createManual("texRenderTarget", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                      Ogre::TEX_TYPE_2D, 320, 240, 0, Ogre::PF_B8G8R8A8, Ogre::TU_DEFAULT);
+
+    Ogre::Rectangle2D *mMiniScreen = new Ogre::Rectangle2D(true);
+    mMiniScreen->setCorners(0.5f, -0.5f, 1.0f, -1.0f);
+    mMiniScreen->setBoundingBox(Ogre::AxisAlignedBox(-100000.0f * Ogre::Vector3::UNIT_SCALE, 100000.0f * Ogre::Vector3::UNIT_SCALE));
+
+    Ogre::SceneNode *miniScreenNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("MiniScreenNode");
+    miniScreenNode->attachObject(mMiniScreen);
 }
 
 //-------------------------------------------------------------------------------------

@@ -32,7 +32,8 @@ namespace NuiManager
 		HIP_RIGHT,
 		KNEE_RIGHT,
 		ANKLE_RIGHT,
-		FOOT_RIGHT
+		FOOT_RIGHT,
+		SPINE_SHOULDER
 	} NuiJointIndex;
 	
 	//-------------------------------------------------------------------------------------

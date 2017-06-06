@@ -197,15 +197,13 @@ void SkeletonToRagdoll::setBone(Ogre::Bone *_bone, btRigidBody *parentBone)
         size = 1;
     }
 
-    if (_bone->getName() == "HEAD") {
+    if (_bone->getName() == "Head") {
         capsuleRadius = 18.0f;
         size *= 0.9f;
-    } else if (_bone->getName() == "HAND_LEFT" || _bone->getName() == "HAND_RIGHT") {
+    } else if (_bone->getName() == "Hand.L" || _bone->getName() == "Hand.R") {
         capsuleRadius = 5.0f;
-    } else if (_bone->getName() == "FOOT_LEFT" || _bone->getName() == "FOOT_RIGHT") {
+    } else if (_bone->getName() == "Foot.L" || _bone->getName() == "Foot.R") {
         capsuleRadius = 5.0f;
-    } else if (_bone->getName() == "HAIR_3") {
-        capsuleRadius = 4.0f;
     }
 
     Ogre::Entity *boneEnt = mSceneMgr->createEntity(_bone->getName(), "sphere.mesh");
