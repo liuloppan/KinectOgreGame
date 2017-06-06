@@ -32,7 +32,7 @@ class SinbadCharacterController
 
 public:
     SinbadCharacterController();
-    ~SinbadCharacterController();
+    virtual ~SinbadCharacterController();
 
     virtual void setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller);
     virtual void updatePerFrame(Ogre::Real elapsedTime);

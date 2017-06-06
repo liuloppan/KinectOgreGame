@@ -1,27 +1,3 @@
-vertex_program cookTorrenVert glsl
-{
-	source CookTorrance.vert 
-}
-
-fragment_program cookTorrenFrag glsl
-{
-	source CookTorrance.frag 
-	default_params
-	{	
-		param_named sFacialTex int 0
-	}
-}
-
-vertex_program orenNayarVert glsl
-{
-	source OrenNayar.vert 
-}
-
-fragment_program orenNayarFrag glsl
-{
-	source OrenNayar.frag 
-}
-
 material Examples/LightRibbonTrail
 {
 	technique
@@ -43,33 +19,6 @@ material Examples/LightRibbonTrail
 	}
 }
 
-material Examples/BeachStones/OrenNayar
-{
-	technique
-	{
-		pass
-		{
-			ambient 0.8 0.8 0.8
-			diffuse 0.9 0.9 0.9
-			specular 0.7 0.7 0.7 64
-
-			texture_unit
-			{
-				texture BeachStones.jpg
-			}
-			
-			vertex_program_ref orenNayarVert
-			{
-				param_named_auto mWorldViewProjMatrix worldviewproj_matrix
-			}
-			
-			fragment_program_ref orenNayarFrag
-			{
-
-			}
-		}
-	}
-}
 
 material Examples/BeachStones
 {
@@ -88,31 +37,7 @@ material Examples/BeachStones
 	}
 }
 
-material Examples/CloudySky/CookTorrance
-{
-	technique
-	{
-		pass
-		{
-			
-			texture_unit
-			{
-				texture clouds.jpg
-				scroll_anim 0.15 0
-			}
-			
-			vertex_program_ref cookTorrenVert
-			{
-				param_named_auto mWorldViewProjMatrix worldviewproj_matrix
-			}
-			
-			fragment_program_ref cookTorrenFrag
-			{	
-				param_named_auto eyePosition camera_position_object_space
-			}
-		}
-	}
-}
+
 
 material Examples/CloudySky
 {

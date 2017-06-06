@@ -51,11 +51,11 @@ btRigidBody* SkeletonToRagdoll::localCreateRigidBody (btScalar mass, const btTra
 std::string SkeletonToRagdoll::update()
 {
 	resetAfterOffset();
-	
+	btTransform tr;
+	Ogre::Vector3 bonePos;
 	for(int i = 0; i < skeleton->getNumBones(); i++)
 	{
 		
-
 		if(i > 0)
 		{
 			
@@ -83,8 +83,8 @@ std::string SkeletonToRagdoll::update()
 	for (int i = 0; i < numManifolds; i++)
 	{
 		btPersistentManifold* contactManifold =  dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-		btRigidBody* AB = static_cast<btRigidBody*>(contactManifold->getBody0());
-		btRigidBody* BB = static_cast<btRigidBody*>(contactManifold->getBody1());
+		const btRigidBody* AB = btRigidBody::upcast(contactManifold->getBody0());
+		const btRigidBody* BB = btRigidBody::upcast(contactManifold->getBody1());
 
 		int numContacts = contactManifold->getNumContacts();
 		for (int j = 0; j<numContacts; j++)

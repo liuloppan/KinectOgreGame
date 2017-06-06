@@ -25,6 +25,7 @@
     <ClInclude Include="src\DynamicRenderable.h" />
     <ClInclude Include="src\JointOrientationCalculator.h" />
     <ClInclude Include="src\KinectController.h" />
+    <ClInclude Include="src\OgreDisplay.h" />
     <ClInclude Include="src\OgreKinectGame.h" />
     <ClInclude Include="src\SinbadCharacterController.h" />
     <ClInclude Include="src\SkeletonToRagdoll.h" />
@@ -37,6 +38,7 @@
     <ClCompile Include="src\DynamicRenderable.cpp" />
     <ClCompile Include="src\JointOrientationCalculator.cpp" />
     <ClCompile Include="src\KinectController.cpp" />
+    <ClCompile Include="src\OgreDisplay.cpp" />
     <ClCompile Include="src\OgreKinectGame.cpp" />
     <ClCompile Include="src\SinbadCharacterController.cpp" />
     <ClCompile Include="src\SkeletonToRagdoll.cpp" />
@@ -108,7 +110,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(BOOST_ROOT);$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\include;$(KINECTSDK10_DIR)inc\;Lib\NuiManager\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_ROOT);$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\include;$(KINECTSDK10_DIR)inc\;Lib\NuiManager\include;Lib\OgreBullet\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -164,8 +166,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
       <AdditionalOptions>%(AdditionalOptions)  /machine:X86</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;NuiManager.lib;$(OGRE_HOME)\lib\debug\OgreMain_d.lib;$(OGRE_HOME)\lib\debug\OIS_d.lib;$(KINECTSDK10_DIR)lib\x86\Kinect10.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;NuiManager.lib;$(OGRE_HOME)\lib\debug\OgreMain_d.lib;$(OGRE_HOME)\lib\debug\OIS_d.lib;$(KINECTSDK10_DIR)lib\x86\Kinect10.lib;BulletCollision_vs2010_debug.lib;BulletDynamics_vs2010_debug.lib;BulletSoftBody_vs2010_debug.lib;ConvexDecomposition_vs2010_debug.lib;LinearMath_vs2010_debug.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Lib\OgreBullet\libs;Lib\NuiManager\bin\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>$(OutDir)OgreApp_d.lib</ImportLibrary>

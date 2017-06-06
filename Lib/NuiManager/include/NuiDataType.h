@@ -10,11 +10,12 @@ namespace NuiManager
 	*/
 
 	//-------------------------------------------------------------------------------------
+	// https://msdn.microsoft.com/en-us/library/microsoft.kinect.jointtype.aspx
 	typedef enum NuiJointIndex
 	{
-		HIP_CENTER,
-		SPINE,
-		SHOULDER_CENTER,
+		SPINE_BASE,
+		SPINE_MID,
+		NECK,
 		HEAD,
 		SHOULDER_LEFT,
 		ELBOW_LEFT,
