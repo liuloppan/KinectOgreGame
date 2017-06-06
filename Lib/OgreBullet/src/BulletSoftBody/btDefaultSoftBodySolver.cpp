@@ -130,9 +130,9 @@ void btDefaultSoftBodySolver::processCollision( btSoftBody* softBody, btSoftBody
 }
 
 // For the default solver just leave the soft body to do its collision processing
-void btDefaultSoftBodySolver::processCollision( btSoftBody *softBody, const btCollisionObjectWrapper* collisionObjectWrap )
+void btDefaultSoftBodySolver::processCollision( btSoftBody *softBody, btCollisionObject* collisionObject )
 {
-	softBody->defaultCollisionHandler( collisionObjectWrap );
+	softBody->defaultCollisionHandler( collisionObject );
 } // btDefaultSoftBodySolver::processCollision
 
 

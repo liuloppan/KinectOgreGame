@@ -268,7 +268,7 @@ This brings support for limit parameters and motors. </li>
 </ul>
 
 */
-ATTRIBUTE_ALIGNED16(class) btGeneric6DofConstraint : public btTypedConstraint
+class btGeneric6DofConstraint : public btTypedConstraint
 {
 protected:
 
@@ -346,8 +346,6 @@ protected:
 
 public:
 
-	BT_DECLARE_ALIGNED_ALLOCATOR();
-	
 	///for backwards compatibility during the transition to 'getInfo/getInfo2'
 	bool		m_useSolveConstraintObsolete;
 

@@ -19,11 +19,10 @@ subject to the following restrictions:
 #include "BulletCollision/CollisionDispatch/btCollisionObject.h"
 #include "BulletSoftBody/btSoftBodySolvers.h"
 #include "btSoftBody.h"
-#include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
 
 #define USE_PERSISTENT_CONTACTS 1
 
-btSoftSoftCollisionAlgorithm::btSoftSoftCollisionAlgorithm(btPersistentManifold* /*mf*/,const btCollisionAlgorithmConstructionInfo& ci,const btCollisionObjectWrapper* /*obj0*/,const btCollisionObjectWrapper* /*obj1*/)
+btSoftSoftCollisionAlgorithm::btSoftSoftCollisionAlgorithm(btPersistentManifold* /*mf*/,const btCollisionAlgorithmConstructionInfo& ci,btCollisionObject* /*obj0*/,btCollisionObject* /*obj1*/)
 : btCollisionAlgorithm(ci)
 //m_ownManifold(false),
 //m_manifoldPtr(mf)
@@ -34,10 +33,10 @@ btSoftSoftCollisionAlgorithm::~btSoftSoftCollisionAlgorithm()
 {
 }
 
-void btSoftSoftCollisionAlgorithm::processCollision (const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,const btDispatcherInfo& /*dispatchInfo*/,btManifoldResult* /*resultOut*/)
+void btSoftSoftCollisionAlgorithm::processCollision (btCollisionObject* body0,btCollisionObject* body1,const btDispatcherInfo& /*dispatchInfo*/,btManifoldResult* /*resultOut*/)
 {
-	btSoftBody* soft0 =	(btSoftBody*)body0Wrap->getCollisionObject();
-	btSoftBody* soft1 =	(btSoftBody*)body1Wrap->getCollisionObject();
+	btSoftBody* soft0 =	(btSoftBody*)body0;
+	btSoftBody* soft1 =	(btSoftBody*)body1;
 	soft0->getSoftBodySolver()->processCollision(soft0, soft1);
 }
 

@@ -251,7 +251,7 @@ void btOpenCLSoftBodySolverSIMDAware::optimize( btAlignedObjectArray< btSoftBody
 				desc.setInverseMass(vertexInverseMass);
 				getVertexData().setVertexAt( desc, firstVertex + vertex );
 
-				m_anchorIndex.push_back(-1);
+				m_anchorIndex.push_back(-1.0);
 			}
 			for( int vertex = numVertices; vertex < maxVertices; ++vertex )
 			{

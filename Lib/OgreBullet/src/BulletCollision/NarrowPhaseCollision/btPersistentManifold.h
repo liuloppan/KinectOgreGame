@@ -20,7 +20,6 @@ subject to the following restrictions:
 #include "LinearMath/btVector3.h"
 #include "LinearMath/btTransform.h"
 #include "btManifoldPoint.h"
-class btCollisionObject;
 #include "LinearMath/btAlignedAllocator.h"
 
 struct btCollisionResult;
@@ -58,8 +57,9 @@ ATTRIBUTE_ALIGNED128( class) btPersistentManifold : public btTypedObject
 	btManifoldPoint m_pointCache[MANIFOLD_CACHE_SIZE];
 
 	/// this two body pointers can point to the physics rigidbody class.
-	const btCollisionObject* m_body0;
-	const btCollisionObject* m_body1;
+	/// void* will allow any rigidbody class
+	void* m_body0;
+	void* m_body1;
 
 	int	m_cachedPoints;
 
@@ -83,7 +83,7 @@ public:
 
 	btPersistentManifold();
 
-	btPersistentManifold(const btCollisionObject* body0,const btCollisionObject* body1,int , btScalar contactBreakingThreshold,btScalar contactProcessingThreshold)
+	btPersistentManifold(void* body0,void* body1,int , btScalar contactBreakingThreshold,btScalar contactProcessingThreshold)
 		: btTypedObject(BT_PERSISTENT_MANIFOLD_TYPE),
 	m_body0(body0),m_body1(body1),m_cachedPoints(0),
 		m_contactBreakingThreshold(contactBreakingThreshold),
@@ -91,10 +91,13 @@ public:
 	{
 	}
 
-	SIMD_FORCE_INLINE const btCollisionObject* getBody0() const { return m_body0;}
-	SIMD_FORCE_INLINE const btCollisionObject* getBody1() const { return m_body1;}
+	SIMD_FORCE_INLINE void* getBody0() { return m_body0;}
+	SIMD_FORCE_INLINE void* getBody1() { return m_body1;}
 
-	void	setBodies(const btCollisionObject* body0,const btCollisionObject* body1)
+	SIMD_FORCE_INLINE const void* getBody0() const { return m_body0;}
+	SIMD_FORCE_INLINE const void* getBody1() const { return m_body1;}
+
+	void	setBodies(void* body0,void* body1)
 	{
 		m_body0 = body0;
 		m_body1 = body1;
@@ -107,12 +110,6 @@ public:
 #endif //
 	
 	SIMD_FORCE_INLINE int	getNumContacts() const { return m_cachedPoints;}
-	/// the setNumContacts API is usually not used, except when you gather/fill all contacts manually
-	void setNumContacts(int cachedPoints)
-	{
-		m_cachedPoints = cachedPoints;
-	}
-
 
 	SIMD_FORCE_INLINE const btManifoldPoint& getContactPoint(int index) const
 	{
@@ -134,22 +131,9 @@ public:
 		return m_contactProcessingThreshold;
 	}
 	
-	void setContactBreakingThreshold(btScalar contactBreakingThreshold)
-	{
-		m_contactBreakingThreshold = contactBreakingThreshold;
-	}
-
-	void setContactProcessingThreshold(btScalar	contactProcessingThreshold)
-	{
-		m_contactProcessingThreshold = contactProcessingThreshold;
-	}
-	
-	
-
-
 	int getCacheEntry(const btManifoldPoint& newPoint) const;
 
-	int addManifoldPoint( const btManifoldPoint& newPoint, bool isPredictive=false);
+	int addManifoldPoint( const btManifoldPoint& newPoint);
 
 	void removeContactPoint (int index)
 	{
@@ -162,6 +146,10 @@ public:
 			m_pointCache[index] = m_pointCache[lastUsedIndex]; 
 			//get rid of duplicated userPersistentData pointer
 			m_pointCache[lastUsedIndex].m_userPersistentData = 0;
+			m_pointCache[lastUsedIndex].mConstraintRow[0].m_accumImpulse = 0.f;
+			m_pointCache[lastUsedIndex].mConstraintRow[1].m_accumImpulse = 0.f;
+			m_pointCache[lastUsedIndex].mConstraintRow[2].m_accumImpulse = 0.f;
+
 			m_pointCache[lastUsedIndex].m_appliedImpulse = 0.f;
 			m_pointCache[lastUsedIndex].m_lateralFrictionInitialized = false;
 			m_pointCache[lastUsedIndex].m_appliedImpulseLateral1 = 0.f;
@@ -179,9 +167,9 @@ public:
 #define MAINTAIN_PERSISTENCY 1
 #ifdef MAINTAIN_PERSISTENCY
 		int	lifeTime = m_pointCache[insertIndex].getLifeTime();
-		btScalar	appliedImpulse = m_pointCache[insertIndex].m_appliedImpulse;
-		btScalar	appliedLateralImpulse1 = m_pointCache[insertIndex].m_appliedImpulseLateral1;
-		btScalar	appliedLateralImpulse2 = m_pointCache[insertIndex].m_appliedImpulseLateral2;
+		btScalar	appliedImpulse = m_pointCache[insertIndex].mConstraintRow[0].m_accumImpulse;
+		btScalar	appliedLateralImpulse1 = m_pointCache[insertIndex].mConstraintRow[1].m_accumImpulse;
+		btScalar	appliedLateralImpulse2 = m_pointCache[insertIndex].mConstraintRow[2].m_accumImpulse;
 //		bool isLateralFrictionInitialized = m_pointCache[insertIndex].m_lateralFrictionInitialized;
 		
 		
@@ -196,9 +184,9 @@ public:
 		m_pointCache[insertIndex].m_appliedImpulseLateral1 = appliedLateralImpulse1;
 		m_pointCache[insertIndex].m_appliedImpulseLateral2 = appliedLateralImpulse2;
 		
-		m_pointCache[insertIndex].m_appliedImpulse =  appliedImpulse;
-		m_pointCache[insertIndex].m_appliedImpulseLateral1 = appliedLateralImpulse1;
-		m_pointCache[insertIndex].m_appliedImpulseLateral2 = appliedLateralImpulse2;
+		m_pointCache[insertIndex].mConstraintRow[0].m_accumImpulse =  appliedImpulse;
+		m_pointCache[insertIndex].mConstraintRow[1].m_accumImpulse = appliedLateralImpulse1;
+		m_pointCache[insertIndex].mConstraintRow[2].m_accumImpulse = appliedLateralImpulse2;
 
 
 		m_pointCache[insertIndex].m_lifeTime = lifeTime;

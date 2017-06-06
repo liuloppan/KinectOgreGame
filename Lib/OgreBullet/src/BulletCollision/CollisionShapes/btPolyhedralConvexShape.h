@@ -22,7 +22,7 @@ class btConvexPolyhedron;
 
 
 ///The btPolyhedralConvexShape is an internal interface class for polyhedral convex shapes.
-ATTRIBUTE_ALIGNED16(class) btPolyhedralConvexShape : public btConvexInternalShape
+class btPolyhedralConvexShape : public btConvexInternalShape
 {
 	
 
@@ -31,17 +31,13 @@ protected:
 	btConvexPolyhedron* m_polyhedron;
 
 public:
-	
-	BT_DECLARE_ALIGNED_ALLOCATOR();
-	
 
 	btPolyhedralConvexShape();
 
 	virtual ~btPolyhedralConvexShape();
 
 	///optional method mainly used to generate multiple contact points by clipping polyhedral features (faces/edges)
-	///experimental/work-in-progress
-	virtual bool	initializePolyhedralFeatures(int shiftVerticesByMargin=0);
+	virtual bool	initializePolyhedralFeatures();
 
 	const btConvexPolyhedron*	getConvexPolyhedron() const
 	{

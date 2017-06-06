@@ -44,9 +44,9 @@ class btManifoldPoint
 		public:
 			btManifoldPoint()
 				:m_userPersistentData(0),
+				m_appliedImpulse(0.f),
 				m_lateralFrictionInitialized(false),
-                m_appliedImpulse(0.f),
-                m_appliedImpulseLateral1(0.f),
+				m_appliedImpulseLateral1(0.f),
 				m_appliedImpulseLateral2(0.f),
 				m_contactMotion1(0.f),
 				m_contactMotion2(0.f),
@@ -64,12 +64,11 @@ class btManifoldPoint
 					m_normalWorldOnB( normal ), 
 					m_distance1( distance ),
 					m_combinedFriction(btScalar(0.)),
-					m_combinedRollingFriction(btScalar(0.)),
 					m_combinedRestitution(btScalar(0.)),
 					m_userPersistentData(0),
+					m_appliedImpulse(0.f),
 					m_lateralFrictionInitialized(false),
-                    m_appliedImpulse(0.f),
-                    m_appliedImpulseLateral1(0.f),
+					m_appliedImpulseLateral1(0.f),
 					m_appliedImpulseLateral2(0.f),
 					m_contactMotion1(0.f),
 					m_contactMotion2(0.f),
@@ -77,7 +76,9 @@ class btManifoldPoint
 					m_contactCFM2(0.f),
 					m_lifeTime(0)
 			{
-				
+				mConstraintRow[0].m_accumImpulse = 0.f;
+				mConstraintRow[1].m_accumImpulse = 0.f;
+				mConstraintRow[2].m_accumImpulse = 0.f;
 			}
 
 			
@@ -91,19 +92,18 @@ class btManifoldPoint
 		
 			btScalar	m_distance1;
 			btScalar	m_combinedFriction;
-			btScalar	m_combinedRollingFriction;
 			btScalar	m_combinedRestitution;
 
-			//BP mod, store contact triangles.
-			int			m_partId0;
-			int			m_partId1;
-			int			m_index0;
-			int			m_index1;
+         //BP mod, store contact triangles.
+         int	   m_partId0;
+         int      m_partId1;
+         int      m_index0;
+         int      m_index1;
 				
 			mutable void*	m_userPersistentData;
-			bool			m_lateralFrictionInitialized;
-
 			btScalar		m_appliedImpulse;
+
+			bool			m_lateralFrictionInitialized;
 			btScalar		m_appliedImpulseLateral1;
 			btScalar		m_appliedImpulseLateral2;
 			btScalar		m_contactMotion1;
@@ -117,6 +117,8 @@ class btManifoldPoint
 			btVector3		m_lateralFrictionDir2;
 
 
+
+			btConstraintRow mConstraintRow[3];
 
 
 			btScalar getDistance() const

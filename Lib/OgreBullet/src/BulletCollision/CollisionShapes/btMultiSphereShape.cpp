@@ -39,11 +39,10 @@ btMultiSphereShape::btMultiSphereShape (const btVector3* positions,const btScala
 
 }
 
-#ifndef MIN
-    #define MIN( _a, _b)    ((_a) < (_b) ? (_a) : (_b))
-#endif
+ 
  btVector3	btMultiSphereShape::localGetSupportingVertexWithoutMargin(const btVector3& vec0)const
 {
+	int i;
 	btVector3 supVec(0,0,0);
 
 	btScalar maxDot(btScalar(-BT_LARGE_FLOAT));
@@ -67,23 +66,18 @@ btMultiSphereShape::btMultiSphereShape (const btVector3* positions,const btScala
 	const btScalar* rad = &m_radiArray[0];
 	int numSpheres = m_localPositionArray.size();
 
-    for( int k = 0; k < numSpheres; k+= 128 )
-    {
-        btVector3 temp[128];
-        int inner_count = MIN( numSpheres - k, 128 );
-        for( long i = 0; i < inner_count; i++ )
-        {
-            temp[i] = (*pos) +vec*m_localScaling*(*rad) - vec * getMargin();
-            pos++;
-            rad++;
-        }
-        long i = vec.maxDot( temp, inner_count, newDot);
-        if( newDot > maxDot )
+	for (i=0;i<numSpheres;i++)
+	{
+		vtx = (*pos) +vec*m_localScaling*(*rad) - vec * getMargin();
+		pos++;
+		rad++;
+		newDot = vec.dot(vtx);
+		if (newDot > maxDot)
 		{
 			maxDot = newDot;
-			supVec = temp[i];
+			supVec = vtx;
 		}
-    }
+	}
 
 	return supVec;
 
@@ -104,25 +98,18 @@ btMultiSphereShape::btMultiSphereShape (const btVector3* positions,const btScala
 		const btVector3* pos = &m_localPositionArray[0];
 		const btScalar* rad = &m_radiArray[0];
 		int numSpheres = m_localPositionArray.size();
-
-        for( int k = 0; k < numSpheres; k+= 128 )
-        {
-            btVector3 temp[128];
-            int inner_count = MIN( numSpheres - k, 128 );
-            for( long i = 0; i < inner_count; i++ )
-            {
-                temp[i] = (*pos) +vec*m_localScaling*(*rad) - vec * getMargin();
-                pos++;
-                rad++;
-            }
-            long i = vec.maxDot( temp, inner_count, newDot);
-            if( newDot > maxDot )
-            {
-                maxDot = newDot;
-                supportVerticesOut[j] = temp[i];
-            }
-        }
-        
+		for (int i=0;i<numSpheres;i++)
+		{
+			vtx = (*pos) +vec*m_localScaling*(*rad) - vec * getMargin();
+			pos++;
+			rad++;
+			newDot = vec.dot(vtx);
+			if (newDot > maxDot)
+			{
+				maxDot = newDot;
+				supportVerticesOut[j] = vtx;
+			}
+		}
 	}
 }
 

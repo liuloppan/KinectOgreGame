@@ -285,16 +285,18 @@ public:
 	    m_data[index] = obj;
 	}
 
-	inline void resize(GUINT size, bool call_constructor = true, const T& fillData=T())
+	inline void resize(GUINT size, bool call_constructor = true)
 	{
+
 	    if(size>m_size)
 	    {
             reserve(size);
             if(call_constructor)
             {
+            	T obj;
                 while(m_size<size)
                 {
-                    m_data[m_size] = fillData;
+                    m_data[m_size] = obj;
                     m_size++;
                 }
             }

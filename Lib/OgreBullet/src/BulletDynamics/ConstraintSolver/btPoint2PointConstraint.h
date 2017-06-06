@@ -67,8 +67,6 @@ public:
 	
 public:
 
-	BT_DECLARE_ALIGNED_ALLOCATOR();
-
 	///for backwards compatibility during the transition to 'getInfo/getInfo2'
 	bool		m_useSolveConstraintObsolete;
 

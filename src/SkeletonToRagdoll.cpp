@@ -55,8 +55,7 @@ std::string SkeletonToRagdoll::update()
 	Ogre::Vector3 bonePos;
 	for(int i = 0; i < skeleton->getNumBones(); i++)
 	{
-		
-		if(i > 0)
+	if(i > 0)
 		{
 			
 			Ogre::Vector3 parentBonePos = skeletonNode->_getDerivedOrientation() * btBones[i].second->getParent()->_getDerivedPosition() * scale+skeletonNode->_getDerivedPosition();
@@ -83,8 +82,8 @@ std::string SkeletonToRagdoll::update()
 	for (int i = 0; i < numManifolds; i++)
 	{
 		btPersistentManifold* contactManifold =  dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-		const btRigidBody* AB = btRigidBody::upcast(contactManifold->getBody0());
-		const btRigidBody* BB = btRigidBody::upcast(contactManifold->getBody1());
+		btRigidBody* AB = static_cast<btRigidBody*>(contactManifold->getBody0());
+		btRigidBody* BB = static_cast<btRigidBody*>(contactManifold->getBody1());
 
 		int numContacts = contactManifold->getNumContacts();
 		for (int j = 0; j<numContacts; j++)

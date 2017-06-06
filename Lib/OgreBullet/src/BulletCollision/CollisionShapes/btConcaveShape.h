@@ -33,14 +33,12 @@ typedef enum PHY_ScalarType {
 
 ///The btConcaveShape class provides an interface for non-moving (static) concave shapes.
 ///It has been implemented by the btStaticPlaneShape, btBvhTriangleMeshShape and btHeightfieldTerrainShape.
-ATTRIBUTE_ALIGNED16(class) btConcaveShape : public btCollisionShape
+class btConcaveShape : public btCollisionShape
 {
 protected:
 	btScalar m_collisionMargin;
 
 public:
-	BT_DECLARE_ALIGNED_ALLOCATOR();
-	
 	btConcaveShape();
 
 	virtual ~btConcaveShape();

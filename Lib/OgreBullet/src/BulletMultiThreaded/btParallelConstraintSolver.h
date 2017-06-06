@@ -188,7 +188,6 @@ class btPersistentManifold;
 enum {
 	PFX_CONSTRAINT_SOLVER_CMD_SETUP_SOLVER_BODIES,
 	PFX_CONSTRAINT_SOLVER_CMD_SETUP_CONTACT_CONSTRAINTS,
-	PFX_CONSTRAINT_SOLVER_CMD_WRITEBACK_APPLIED_IMPULSES_CONTACT_CONSTRAINTS,
 	PFX_CONSTRAINT_SOLVER_CMD_SETUP_JOINT_CONSTRAINTS,
 	PFX_CONSTRAINT_SOLVER_CMD_SOLVE_CONSTRAINTS,
 	PFX_CONSTRAINT_SOLVER_CMD_POST_SOLVER
@@ -199,7 +198,6 @@ struct PfxSetupContactConstraintsIO {
 	PfxConstraintPair *offsetContactPairs;
 	uint32_t numContactPairs1;
 	btPersistentManifold*	offsetContactManifolds;
-	btConstraintRow* offsetContactConstraintRows;
 	class TrbState *offsetRigStates;
 	struct PfxSolverBody *offsetSolverBodies;
 	uint32_t numRigidBodies;
@@ -216,7 +214,6 @@ struct PfxSolveConstraintsIO {
 	PfxConstraintPair *contactPairs;
 	uint32_t numContactPairs;
 	btPersistentManifold *offsetContactManifolds;
-	btConstraintRow*	offsetContactConstraintRows;
 	PfxParallelGroup *jointParallelGroup;
 	PfxParallelBatch *jointParallelBatches;
 	PfxConstraintPair *jointPairs;

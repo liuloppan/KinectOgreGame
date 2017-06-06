@@ -45,9 +45,7 @@ struct btTriIndex
 	int	getTriangleIndex() const
 	{
 		// Get only the lower bits where the triangle index is stored
-		unsigned int x = 0;
-		unsigned int y = (~(x&0))<<(31-MAX_NUM_PARTS_IN_BITS);
-		return (m_PartIdTriangleIndex&~(y));
+		return (m_PartIdTriangleIndex&~((~0)<<(31-MAX_NUM_PARTS_IN_BITS)));
 	}
 	int	getPartId() const
 	{
@@ -65,7 +63,7 @@ struct btTriIndex
 class btSoftBodyTriangleCallback : public btTriangleCallback
 {
 	btSoftBody* m_softBody;
-	const btCollisionObject* m_triBody;
+	btCollisionObject* m_triBody;
 
 	btVector3	m_aabbMin;
 	btVector3	m_aabbMax ;
@@ -83,9 +81,9 @@ public:
 
 	//	btPersistentManifold*	m_manifoldPtr;
 
-	btSoftBodyTriangleCallback(btDispatcher* dispatcher,const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,bool isSwapped);
+	btSoftBodyTriangleCallback(btDispatcher* dispatcher,btCollisionObject* body0,btCollisionObject* body1,bool isSwapped);
 
-	void	setTimeStepAndCounters(btScalar collisionMarginTriangle,const btCollisionObjectWrapper* triObjWrap,const btDispatcherInfo& dispatchInfo,btManifoldResult* resultOut);
+	void	setTimeStepAndCounters(btScalar collisionMarginTriangle,const btDispatcherInfo& dispatchInfo,btManifoldResult* resultOut);
 
 	virtual ~btSoftBodyTriangleCallback();
 
@@ -117,11 +115,11 @@ class btSoftBodyConcaveCollisionAlgorithm  : public btCollisionAlgorithm
 
 public:
 
-	btSoftBodyConcaveCollisionAlgorithm( const btCollisionAlgorithmConstructionInfo& ci,const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,bool isSwapped);
+	btSoftBodyConcaveCollisionAlgorithm( const btCollisionAlgorithmConstructionInfo& ci,btCollisionObject* body0,btCollisionObject* body1,bool isSwapped);
 
 	virtual ~btSoftBodyConcaveCollisionAlgorithm();
 
-	virtual void processCollision (const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,const btDispatcherInfo& dispatchInfo,btManifoldResult* resultOut);
+	virtual void processCollision (btCollisionObject* body0,btCollisionObject* body1,const btDispatcherInfo& dispatchInfo,btManifoldResult* resultOut);
 
 	btScalar	calculateTimeOfImpact(btCollisionObject* body0,btCollisionObject* body1,const btDispatcherInfo& dispatchInfo,btManifoldResult* resultOut);
 
@@ -134,19 +132,19 @@ public:
 
 	struct CreateFunc :public 	btCollisionAlgorithmCreateFunc
 	{
-		virtual	btCollisionAlgorithm* CreateCollisionAlgorithm(btCollisionAlgorithmConstructionInfo& ci, const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap)
+		virtual	btCollisionAlgorithm* CreateCollisionAlgorithm(btCollisionAlgorithmConstructionInfo& ci, btCollisionObject* body0,btCollisionObject* body1)
 		{
 			void* mem = ci.m_dispatcher1->allocateCollisionAlgorithm(sizeof(btSoftBodyConcaveCollisionAlgorithm));
-			return new(mem) btSoftBodyConcaveCollisionAlgorithm(ci,body0Wrap,body1Wrap,false);
+			return new(mem) btSoftBodyConcaveCollisionAlgorithm(ci,body0,body1,false);
 		}
 	};
 
 	struct SwappedCreateFunc :public 	btCollisionAlgorithmCreateFunc
 	{
-		virtual	btCollisionAlgorithm* CreateCollisionAlgorithm(btCollisionAlgorithmConstructionInfo& ci, const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap)
+		virtual	btCollisionAlgorithm* CreateCollisionAlgorithm(btCollisionAlgorithmConstructionInfo& ci, btCollisionObject* body0,btCollisionObject* body1)
 		{
 			void* mem = ci.m_dispatcher1->allocateCollisionAlgorithm(sizeof(btSoftBodyConcaveCollisionAlgorithm));
-			return new(mem) btSoftBodyConcaveCollisionAlgorithm(ci,body0Wrap,body1Wrap,true);
+			return new(mem) btSoftBodyConcaveCollisionAlgorithm(ci,body0,body1,true);
 		}
 	};
 

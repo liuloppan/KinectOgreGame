@@ -4,14 +4,12 @@
 #include "btMotionState.h"
 
 ///The btDefaultMotionState provides a common implementation to synchronize world transforms with offsets.
-ATTRIBUTE_ALIGNED16(struct)	btDefaultMotionState : public btMotionState
+struct	btDefaultMotionState : public btMotionState
 {
 	btTransform m_graphicsWorldTrans;
 	btTransform	m_centerOfMassOffset;
 	btTransform m_startWorldTrans;
 	void*		m_userPointer;
-
-	BT_DECLARE_ALIGNED_ALLOCATOR();
 
 	btDefaultMotionState(const btTransform& startTrans = btTransform::getIdentity(),const btTransform& centerOfMassOffset = btTransform::getIdentity())
 		: m_graphicsWorldTrans(startTrans),

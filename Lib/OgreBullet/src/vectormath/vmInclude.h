@@ -7,14 +7,10 @@
 #if defined (USE_SYSTEM_VECTORMATH) || defined (__CELLOS_LV2__)
 	#include <vectormath_aos.h>
 #else //(USE_SYSTEM_VECTORMATH)
-	#if defined (BT_USE_SSE) 
+	#if defined (BT_USE_SSE) && defined (_WIN32)
 		#include "sse/vectormath_aos.h"
 	#else //all other platforms
-        #if defined (BT_USE_NEON)
-            #include "neon/vectormath_aos.h"
-        #else
-            #include "scalar/vectormath_aos.h"
-        #endif
+		#include "scalar/vectormath_aos.h"
 	#endif //(BT_USE_SSE) && defined (_WIN32)
 #endif //(USE_SYSTEM_VECTORMATH)
 

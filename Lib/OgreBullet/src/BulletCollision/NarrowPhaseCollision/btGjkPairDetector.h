@@ -63,12 +63,12 @@ public:
 	void	getClosestPointsNonVirtual(const ClosestPointInput& input,Result& output,class btIDebugDraw* debugDraw);
 	
 
-	void setMinkowskiA(const btConvexShape* minkA)
+	void setMinkowskiA(btConvexShape* minkA)
 	{
 		m_minkowskiA = minkA;
 	}
 
-	void setMinkowskiB(const btConvexShape* minkB)
+	void setMinkowskiB(btConvexShape* minkB)
 	{
 		m_minkowskiB = minkB;
 	}
