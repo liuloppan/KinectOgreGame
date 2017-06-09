@@ -13,9 +13,9 @@ namespace NuiManager
 	// https://msdn.microsoft.com/en-us/library/microsoft.kinect.jointtype.aspx
 	typedef enum NuiJointIndex
 	{
-		SPINE_BASE,
-		SPINE_MID,
-		NECK,
+		CENTER_HIP,
+		SPINE,
+		CENTER_SHOULDER,
 		HEAD,
 		SHOULDER_LEFT,
 		ELBOW_LEFT,
@@ -32,8 +32,7 @@ namespace NuiManager
 		HIP_RIGHT,
 		KNEE_RIGHT,
 		ANKLE_RIGHT,
-		FOOT_RIGHT,
-		SPINE_SHOULDER
+		FOOT_RIGHT
 	} NuiJointIndex;
 	
 	//-------------------------------------------------------------------------------------

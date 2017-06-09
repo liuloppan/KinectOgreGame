@@ -128,7 +128,7 @@ void OgreKinectGame::createScene()
     ogreDisplay = new OgreDisplay(dynamicsWorld);
     ragdoll = new SkeletonToRagdoll(mSceneMgr);
     ragdoll->createRagdoll(dynamicsWorld, character->getEntityNode());
-    ragdoll->setDebugBones(true);
+    ragdoll->setDebugBones(false);
 
     // Floor
     Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -156,15 +156,15 @@ void OgreKinectGame::createScene()
     ragdoll->addIgnoreEventObject(groundRigidBody);
 
     // Color Data
-    texRenderTarget = Ogre::TextureManager::getSingleton().createManual("texRenderTarget", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                      Ogre::TEX_TYPE_2D, 320, 240, 0, Ogre::PF_B8G8R8A8, Ogre::TU_DEFAULT);
+    //texRenderTarget = Ogre::TextureManager::getSingleton().createManual("texRenderTarget", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    //                  Ogre::TEX_TYPE_2D, 320, 240, 0, Ogre::PF_B8G8R8A8, Ogre::TU_DEFAULT);
 
-    Ogre::Rectangle2D *mMiniScreen = new Ogre::Rectangle2D(true);
-    mMiniScreen->setCorners(0.5f, -0.5f, 1.0f, -1.0f);
-    mMiniScreen->setBoundingBox(Ogre::AxisAlignedBox(-100000.0f * Ogre::Vector3::UNIT_SCALE, 100000.0f * Ogre::Vector3::UNIT_SCALE));
+    //Ogre::Rectangle2D *mMiniScreen = new Ogre::Rectangle2D(true);
+    //mMiniScreen->setCorners(0.5f, -0.5f, 1.0f, -1.0f);
+    //mMiniScreen->setBoundingBox(Ogre::AxisAlignedBox(-100000.0f * Ogre::Vector3::UNIT_SCALE, 100000.0f * Ogre::Vector3::UNIT_SCALE));
 
-    Ogre::SceneNode *miniScreenNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("MiniScreenNode");
-    miniScreenNode->attachObject(mMiniScreen);
+    //Ogre::SceneNode *miniScreenNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("MiniScreenNode");
+    //miniScreenNode->attachObject(mMiniScreen);
 }
 
 //-------------------------------------------------------------------------------------
