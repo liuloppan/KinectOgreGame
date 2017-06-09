@@ -73,24 +73,26 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
         setupBone("Calf.R",					NuiJointIndex::KNEE_RIGHT);
         setupBone("Calf.L",					NuiJointIndex::KNEE_LEFT);
         setupBone("Root",					NuiJointIndex::CENTER_HIP);
-        setupBone("Neck",					NuiJointIndex::CENTER_SHOULDER);
-		setupBone("Head",					NuiJointIndex::HEAD);
-		setupBone("Humerus.R",				NuiJointIndex::SHOULDER_RIGHT);
-		setupBone("Humerus.L",				NuiJointIndex::SHOULDER_LEFT);
-		//setupBone("Ulna.R",					NuiJointIndex::ELBOW_RIGHT);
-		//setupBone("Ulna.L",					NuiJointIndex::ELBOW_LEFT);
+        setupBone("Neck",					NuiJointIndex::HEAD);
+        //setupBone("Clavicle.L",				NuiJointIndex::CENTER_SHOULDER);
+        //setupBone("Clavicle.R",				NuiJointIndex::CENTER_SHOULDER);
+        setupBone("Humerus.R",				NuiJointIndex::SHOULDER_RIGHT);
+        setupBone("Humerus.L",				NuiJointIndex::SHOULDER_LEFT);
+        setupBone("Ulna.R",					NuiJointIndex::ELBOW_RIGHT);
+        setupBone("Ulna.L",					NuiJointIndex::ELBOW_LEFT);
     } else {
         setupBone("Thigh.R",				NuiJointIndex::HIP_RIGHT);
         setupBone("Thigh.L",				NuiJointIndex::HIP_LEFT);
         setupBone("Calf.R",					NuiJointIndex::KNEE_LEFT);
         setupBone("Calf.L",					NuiJointIndex::KNEE_RIGHT);
         setupBone("Root",					NuiJointIndex::CENTER_HIP);
-        setupBone("Neck",					NuiJointIndex::CENTER_SHOULDER);
-		setupBone("Head",					NuiJointIndex::HEAD);
-		setupBone("Humerus.R",				NuiJointIndex::SHOULDER_LEFT);
-		setupBone("Humerus.L",				NuiJointIndex::SHOULDER_RIGHT);
-		//setupBone("Ulna.R",					NuiJointIndex::ELBOW_LEFT);
-		//setupBone("Ulna.L",					NuiJointIndex::ELBOW_RIGHT);
+        setupBone("Neck",					NuiJointIndex::HEAD);
+        //setupBone("Clavicle.L",				NuiJointIndex::CENTER_SHOULDER);
+        //setupBone("Clavicle.R",				NuiJointIndex::CENTER_SHOULDER);
+        setupBone("Humerus.R",				NuiJointIndex::SHOULDER_LEFT);
+        setupBone("Humerus.L",				NuiJointIndex::SHOULDER_RIGHT);
+        setupBone("Ulna.R",					NuiJointIndex::ELBOW_LEFT);
+        setupBone("Ulna.L",					NuiJointIndex::ELBOW_RIGHT);
     }
 }
 //-------------------------------------------------------------------------------------
@@ -138,24 +140,26 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
         transformBone("Calf.R",					NuiJointIndex::KNEE_RIGHT);
         transformBone("Calf.L",					NuiJointIndex::KNEE_LEFT);
         transformBone("Root",					NuiJointIndex::CENTER_HIP);
-        transformBone("Neck",					NuiJointIndex::CENTER_SHOULDER);
-		transformBone("Head",					NuiJointIndex::HEAD);
-		transformBone("Humerus.R",				NuiJointIndex::SHOULDER_RIGHT);
-		transformBone("Humerus.L",				NuiJointIndex::SHOULDER_LEFT);
-		//transformBone("Ulna.R",					NuiJointIndex::ELBOW_RIGHT);
-		//transformBone("Ulna.L",					NuiJointIndex::ELBOW_LEFT);
+        transformBone("Neck",					NuiJointIndex::HEAD);
+        //transformBone("Clavicle.L",				NuiJointIndex::CENTER_SHOULDER);
+        //transformBone("Clavicle.R",				NuiJointIndex::CENTER_SHOULDER);
+        transformBone("Humerus.R",				NuiJointIndex::SHOULDER_RIGHT);
+        transformBone("Humerus.L",				NuiJointIndex::SHOULDER_LEFT);
+        transformBone("Ulna.R",					NuiJointIndex::ELBOW_RIGHT);
+        transformBone("Ulna.L",					NuiJointIndex::ELBOW_LEFT);
     } else {
         transformBone("Thigh.L",				NuiJointIndex::HIP_RIGHT);
         transformBone("Thigh.R",				NuiJointIndex::HIP_LEFT);
         transformBone("Calf.L",					NuiJointIndex::KNEE_RIGHT);
         transformBone("Calf.R",					NuiJointIndex::KNEE_LEFT);
         transformBone("Root",					NuiJointIndex::CENTER_HIP);
-        transformBone("Neck",					NuiJointIndex::CENTER_SHOULDER);
-		transformBone("Head",					NuiJointIndex::HEAD);
-		transformBone("Humerus.R",				NuiJointIndex::SHOULDER_LEFT);
-		transformBone("Humerus.L",				NuiJointIndex::SHOULDER_RIGHT);
-		//transformBone("Ulna.R",					NuiJointIndex::ELBOW_LEFT);
-		//transformBone("Ulna.L",					NuiJointIndex::ELBOW_RIGHT);
+        transformBone("Neck",					NuiJointIndex::HEAD);
+        //transformBone("Clavicle.L",				NuiJointIndex::CENTER_SHOULDER);
+        //transformBone("Clavicle.R",				NuiJointIndex::CENTER_SHOULDER);
+        transformBone("Humerus.R",				NuiJointIndex::SHOULDER_LEFT);
+        transformBone("Humerus.L",				NuiJointIndex::SHOULDER_RIGHT);
+        transformBone("Ulna.R",					NuiJointIndex::ELBOW_LEFT);
+        transformBone("Ulna.L",					NuiJointIndex::ELBOW_RIGHT);
     }
 }
 //-------------------------------------------------------------------------------------
@@ -186,7 +190,7 @@ void SinbadCharacterController::setupBone(const Ogre::String &name, NuiJointInde
     bone->setManuallyControlled(true);
 
     if (name != "Humerus.R" && name != "Humerus.L") {
-        bone->setInheritOrientation(false);
+        bone->setInheritOrientation(true);
     }
 
     bone->resetOrientation();
