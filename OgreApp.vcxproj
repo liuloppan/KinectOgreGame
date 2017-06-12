@@ -112,7 +112,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(BOOST_ROOT);$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\include;$(KINECTSDK10_DIR)inc\;Lib\NuiManager\include;Lib\OgreBullet\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_ROOT);$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\include;$(KINECTSDK10_DIR)inc\;Lib\NuiManager\include;Lib\OgreBullet\src;Lib\OgreBullet\Collisions\include\;Lib\OgreBullet\Dynamics\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>Default</CompileAs>
@@ -173,7 +173,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <Link>
       <AdditionalOptions>%(AdditionalOptions)  /machine:X86</AdditionalOptions>
       <AdditionalDependencies>NuiManager.lib;OgreMain_d.lib;OIS_d.lib;Kinect10.lib;BulletCollision_vs2010_debug.lib;BulletDynamics_vs2010_debug.lib;BulletSoftBody_vs2010_debug.lib;ConvexDecomposition_vs2010_debug.lib;LinearMath_vs2010_debug.lib;OgreBulletCollisions_d.lib;OgreBulletDynamics_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>Lib\OgreBullet\libs\Debug\;Lib\NuiManager\bin\Debug\;$(OGRE_HOME)\lib\debug\;$(KINECTSDK10_DIR)lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Lib\OgreBullet\libs\Debug\;Lib\NuiManager\bin\Debug\;$(OGRE_HOME)\lib\debug\;$(KINECTSDK10_DIR)lib\x86\;$(BOOST_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>$(OutDir)OgreApp_d.lib</ImportLibrary>

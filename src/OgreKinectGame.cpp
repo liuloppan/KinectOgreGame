@@ -71,6 +71,8 @@ void OgreKinectGame::destroyScene()
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::keyReleased(const OIS::KeyEvent &evt)
 {
+	BaseApplication::throwDynamicObject(evt.key);
+	BaseApplication::dropDynamicObject(evt.key);
     return BaseApplication::keyReleased(evt);
 }
 //-------------------------------------------------------------------------------------
@@ -142,6 +144,9 @@ void OgreKinectGame::createScene()
     mSceneMgr->setSkyDome(true, "Examples/CloudySky", 10, 8);
 
     // create the Bullet ground plane
+	initWorld();
+	addStaticPlane(0.3, 0.8);
+
 
     btCollisionShape *groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
     //btCollisionShape *groundShape = new btBoxShape(btVector3(350, 1, 350));
