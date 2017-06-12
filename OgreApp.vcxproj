@@ -30,6 +30,7 @@
     <ClInclude Include="src\SinbadCharacterController.h" />
     <ClInclude Include="src\SkeletonToRagdoll.h" />
     <ClInclude Include="src\Stdafx.h" />
+    <ClInclude Include="src\UIManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AxisLines.cpp" />
@@ -42,6 +43,7 @@
     <ClCompile Include="src\OgreKinectGame.cpp" />
     <ClCompile Include="src\SinbadCharacterController.cpp" />
     <ClCompile Include="src\SkeletonToRagdoll.cpp" />
+    <ClCompile Include="src\UIManager.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGUID>{89A2A7C2-45FB-3DA1-B6BF-19D2F479C39D}</ProjectGUID>

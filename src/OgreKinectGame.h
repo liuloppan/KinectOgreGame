@@ -29,7 +29,11 @@ ________                           ____  __.__                      __
 #include "BulletCollision/Gimpact/btGImpactShape.h"
 #include "SkeletonToRagdoll.h"
 #include "OgreDisplay.h"
+#include "UIManager.h"
 
+#include "sdkTrays.h"
+using namespace Ogre;
+using namespace OgreBites;
 
 class OgreKinectGame : public BaseApplication
 {
@@ -45,6 +49,8 @@ protected:
     virtual bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
     virtual bool keyReleased(const OIS::KeyEvent &evt);
     virtual void setupKinect(void);
+
+	void setupWidgets();
 
 protected:
     Ogre::Entity	*mFloor;
@@ -62,6 +68,7 @@ protected:
     SkeletonToRagdoll						*ragdoll;
     double									accumulator;
     const double							dt;
+	UIManager *uiManager;
 };
 
 #endif // #ifndef __OgreKinectGame_h_
