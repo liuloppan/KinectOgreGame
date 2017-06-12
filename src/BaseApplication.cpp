@@ -81,7 +81,7 @@ void BaseApplication::createCamera(void)
     mCamera = mSceneMgr->createCamera("PlayerCam");
 
     // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0, 100, 125));
+    mCamera->setPosition(Ogre::Vector3(0, 80, 300));
     // Look back along -Z
     mCamera->lookAt(Ogre::Vector3(0, 40, 0));
     mCamera->setNearClipDistance(0.5);
@@ -361,7 +361,7 @@ bool BaseApplication::mouseMoved(const OIS::MouseEvent &arg)
     if (mTrayMgr->injectMouseMove(arg)) {
         return true;
     }
-    mCameraMan->injectMouseMove(arg);
+    //mCameraMan->injectMouseMove(arg);
     return true;
 }
 
