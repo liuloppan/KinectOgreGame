@@ -96,18 +96,10 @@
     <ClInclude Include="include\KinectManager.h" />
     <ClInclude Include="include\NuiDataType.h" />
     <ClInclude Include="include\Stdafx.h" />
-    <ClInclude Include="res\resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="src\KinectManager.cpp" />
     <ClCompile Include="src\Stdafx.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\app.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="res\app.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

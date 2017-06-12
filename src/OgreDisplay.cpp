@@ -5,24 +5,20 @@
 //-------------------------------------------------------------------------------------
 void OgreDisplay::update()
 {
-    /*
-    for(int i = 0; i < dynamicObjects.size(); i++)
-    {
-    	try
-    	{
-    		btTransform tr;
-    		dynamicObjects[i].second->getMotionState()->getWorldTransform(tr);
-    		btVector3 pos = tr.getOrigin();
-    		btQuaternion qut = tr.getRotation();
-    		dynamicObjects[i].first->getParentSceneNode()->setOrientation(Ogre::Quaternion(qut.getW(), qut.getX(), qut.getY(), qut.getZ()));
-    		Ogre::Vector3 localPos = dynamicObjects[i].first->getParentSceneNode()->getParentSceneNode()->convertWorldToLocalPosition(Ogre::Vector3(pos.x(), pos.y(), pos.z()));
-    		dynamicObjects[i].first->getParentSceneNode()->setPosition(localPos);
-    	}
-    	catch(Ogre::Exception e)
-    	{
-    	}
+
+    for (int i = 0; i < dynamicObjects.size(); i++) {
+        try {
+            btTransform tr;
+            dynamicObjects[i].second->getMotionState()->getWorldTransform(tr);
+            btVector3 pos = tr.getOrigin();
+            btQuaternion qut = tr.getRotation();
+            dynamicObjects[i].first->getParentSceneNode()->setOrientation(Ogre::Quaternion(qut.getW(), qut.getX(), qut.getY(), qut.getZ()));
+            Ogre::Vector3 localPos = dynamicObjects[i].first->getParentSceneNode()->getParentSceneNode()->convertWorldToLocalPosition(Ogre::Vector3(pos.x(), pos.y(), pos.z()));
+            dynamicObjects[i].first->getParentSceneNode()->setPosition(localPos);
+        } catch (Ogre::Exception e) {
+        }
     }
-    */
+
 }
 
 //-------------------------------------------------------------------------------------

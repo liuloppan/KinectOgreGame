@@ -243,7 +243,7 @@ bool NuiManager::KinectManager::trackDepthImage(void)
 	if(lockedRect.Pitch != 0)
 	{
 		BYTE* pBits = (BYTE*) lockedRect.pBits;
-		/*int offset = 0;
+		int offset = 0;
 
 		for(size_t i = 0; i < 320; i++)
 		{
@@ -256,7 +256,7 @@ bool NuiManager::KinectManager::trackDepthImage(void)
 
 				pBits += 4;
 			}
-		}*/
+		}
 	}
 
 	texture->UnlockRect(0);

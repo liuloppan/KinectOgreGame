@@ -74,8 +74,6 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
         setupBone("Calf.L",					NuiJointIndex::KNEE_LEFT);
         setupBone("Root",					NuiJointIndex::CENTER_HIP);
         setupBone("Neck",					NuiJointIndex::HEAD);
-        //setupBone("Clavicle.L",				NuiJointIndex::CENTER_SHOULDER);
-        //setupBone("Clavicle.R",				NuiJointIndex::CENTER_SHOULDER);
         setupBone("Humerus.R",				NuiJointIndex::SHOULDER_RIGHT);
         setupBone("Humerus.L",				NuiJointIndex::SHOULDER_LEFT);
         setupBone("Ulna.R",					NuiJointIndex::ELBOW_RIGHT);
@@ -87,8 +85,6 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
         setupBone("Calf.L",					NuiJointIndex::KNEE_RIGHT);
         setupBone("Root",					NuiJointIndex::CENTER_HIP);
         setupBone("Neck",					NuiJointIndex::HEAD);
-        //setupBone("Clavicle.L",				NuiJointIndex::CENTER_SHOULDER);
-        //setupBone("Clavicle.R",				NuiJointIndex::CENTER_SHOULDER);
         setupBone("Humerus.R",				NuiJointIndex::SHOULDER_LEFT);
         setupBone("Humerus.L",				NuiJointIndex::SHOULDER_RIGHT);
         setupBone("Ulna.R",					NuiJointIndex::ELBOW_LEFT);
@@ -110,17 +106,35 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
     //Ogre::Real shoulderPos = (lShoulderPos <= rShoulderPos) ? lShoulderPos : rShoulderPos;
     //Ogre::Real curSkelHeight = shoulderPos;
     //Ogre::Real curSkelHeight = controller->getJointPosition(SHOULDER_CENTER).y + shoulderPos / 2.0f;
+    Ogre::Real xLeftShoulder = controller->getJointPosition(SHOULDER_LEFT).x;
+    Ogre::Real xRightShoulder = controller->getJointPosition(SHOULDER_RIGHT).x;
+    Ogre::Real xCurSkelCenter = (xLeftShoulder < xRightShoulder) ? xLeftShoulder : xRightShoulder;
 
-    Ogre::Real dif = yCurSkelCenter - skelCenter;
+    Ogre::Real zLeftShoulder = controller->getJointPosition(SHOULDER_LEFT).z;
+    Ogre::Real zRightShoulder = controller->getJointPosition(SHOULDER_RIGHT).z;
+    Ogre::Real zCurSkelCenter = (zLeftShoulder < zRightShoulder) ? zLeftShoulder : zRightShoulder;
+
+    Ogre::Real yDif = yCurSkelCenter - skelCenter;
+    Ogre::Real xDif = xCurSkelCenter - skelCenter;
+    Ogre::Real zDif = zCurSkelCenter - skelCenter;
     Ogre::Vector3 bodyPos = bodyNode->getPosition();
 
-    if (dif <= -25 || dif > 25) {
-    } else if (dif >= 0.02f || dif <= -0.02f) {
-        Ogre::Real yTranslation = dif * 10000 * elapsedTime;
+    if (yDif <= -25 || yDif > 25) {
+
+    } else if (yDif >= 0.02f || yDif <= -0.02f || xDif >= 0.02f || xDif <= -0.02f) {
+        Ogre::Real yTranslation = yDif * 1000 * elapsedTime;
         if ((yTranslation + bodyOffset.y) < bodyOffset.y) {
             yTranslation = 0;
         }
-        bodyNode->translate(Ogre::Vector3(0, yTranslation, 0));
+        Ogre::Real xTranslation = xDif * 1000 * elapsedTime;
+        if ((xTranslation + bodyOffset.x) < bodyOffset.x) {
+            xTranslation = 0;
+        }
+        Ogre::Real zTranslation = zDif * 1000 * elapsedTime;
+        if ((zTranslation + bodyOffset.z) < bodyOffset.z) {
+            zTranslation = 0;
+        }
+        bodyNode->translate(xTranslation, yTranslation, zTranslation, Ogre::Node::TS_LOCAL);
     } else {
         if (bodyPos.y <= (bodyOffset.y + 0.1f) && bodyPos.y >= (bodyOffset.y - 0.1f)) {
             bodyNode->setPosition(bodyOffset);
@@ -141,12 +155,11 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
         transformBone("Calf.L",					NuiJointIndex::KNEE_LEFT);
         transformBone("Root",					NuiJointIndex::CENTER_HIP);
         transformBone("Neck",					NuiJointIndex::HEAD);
-        //transformBone("Clavicle.L",				NuiJointIndex::CENTER_SHOULDER);
-        //transformBone("Clavicle.R",				NuiJointIndex::CENTER_SHOULDER);
         transformBone("Humerus.R",				NuiJointIndex::SHOULDER_RIGHT);
         transformBone("Humerus.L",				NuiJointIndex::SHOULDER_LEFT);
         transformBone("Ulna.R",					NuiJointIndex::ELBOW_RIGHT);
         transformBone("Ulna.L",					NuiJointIndex::ELBOW_LEFT);
+
     } else {
         transformBone("Thigh.L",				NuiJointIndex::HIP_RIGHT);
         transformBone("Thigh.R",				NuiJointIndex::HIP_LEFT);
@@ -154,12 +167,11 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
         transformBone("Calf.R",					NuiJointIndex::KNEE_LEFT);
         transformBone("Root",					NuiJointIndex::CENTER_HIP);
         transformBone("Neck",					NuiJointIndex::HEAD);
-        //transformBone("Clavicle.L",				NuiJointIndex::CENTER_SHOULDER);
-        //transformBone("Clavicle.R",				NuiJointIndex::CENTER_SHOULDER);
         transformBone("Humerus.R",				NuiJointIndex::SHOULDER_LEFT);
         transformBone("Humerus.L",				NuiJointIndex::SHOULDER_RIGHT);
         transformBone("Ulna.R",					NuiJointIndex::ELBOW_LEFT);
         transformBone("Ulna.L",					NuiJointIndex::ELBOW_RIGHT);
+
     }
 }
 //-------------------------------------------------------------------------------------

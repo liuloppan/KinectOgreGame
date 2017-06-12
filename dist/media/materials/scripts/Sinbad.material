@@ -1,3 +1,22 @@
+vertex_program CookTorranceVert glsl
+{
+	source CookTorrance.vert
+}
+
+fragment_program CookTorranceFrag glsl
+{
+	source CookTorrance.frag
+}
+
+vertex_program OrenNayarVert glsl
+{
+	source OrenNayar.vert
+}
+
+fragment_program OrenNayarFrag glsl
+{
+	source OrenNayar.frag
+}
 
 material Sinbad/Body
 {
@@ -14,6 +33,15 @@ material Sinbad/Body
 				texture sinbad_body.tga
 			}
 			
+			vertex_program_ref CookTorranceVert
+			{
+				param_named_auto mWorldViewProjMatrix worldviewproj_matrix
+			}
+
+			fragment_program_ref CookTorranceFrag
+			{
+				param_named sColorTex int 0
+			}
 		}
 	}
 }

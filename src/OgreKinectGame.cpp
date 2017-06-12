@@ -143,13 +143,14 @@ void OgreKinectGame::createScene()
 
     // create the Bullet ground plane
 
-    //btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0,1,0), 1);
-    btCollisionShape *groundShape = new btBoxShape(btVector3(350, 1, 350));
+    btCollisionShape *groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+    //btCollisionShape *groundShape = new btBoxShape(btVector3(350, 1, 350));
     btTransform groundTransform;
     groundTransform.setIdentity();
     groundTransform.setOrigin(btVector3(0, 0, 0));
     btDefaultMotionState *myMotionState = new btDefaultMotionState(groundTransform);
     btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, myMotionState, groundShape, btVector3(0, 0, 0));
+    groundRigidBodyCI.m_additionalDamping = true;
     btRigidBody *groundRigidBody = new btRigidBody(groundRigidBodyCI);
     groundRigidBody->setFriction(50.0f);
     dynamicsWorld->addRigidBody(groundRigidBody);
@@ -157,7 +158,7 @@ void OgreKinectGame::createScene()
 
     // Color Data
     //texRenderTarget = Ogre::TextureManager::getSingleton().createManual("texRenderTarget", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-    //                  Ogre::TEX_TYPE_2D, 320, 240, 0, Ogre::PF_B8G8R8A8, Ogre::TU_DEFAULT);
+    //                  Ogre::TEX_TYPE_2D, 320, 240, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
 
     //Ogre::Rectangle2D *mMiniScreen = new Ogre::Rectangle2D(true);
     //mMiniScreen->setCorners(0.5f, -0.5f, 1.0f, -1.0f);
