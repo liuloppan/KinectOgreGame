@@ -80,9 +80,13 @@ std::string SkeletonToRagdoll::update()
 
     for (int i = 0; i < numManifolds; i++) {
         btPersistentManifold *contactManifold =  dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-        btRigidBody *AB = static_cast<btRigidBody *>(contactManifold->getBody0());
-        btRigidBody *BB = static_cast<btRigidBody *>(contactManifold->getBody1());
-
+	#if BT_BULLET_VERSION>=281
+	   btCollisionObject* AB = const_cast<btCollisionObject*>(contactManifold->getBody0());; // For newer Bullet versions
+	   btCollisionObject* BB = const_cast<btCollisionObject*>(contactManifold->getBody1()); // For newer Bullet versions
+	#else
+	   btCollisionObject* AB = static_cast<btCollisionObject*>(contactManifold->getBody0()); // For older Bullet versions (original code)
+	   btCollisionObject* BB = static_cast<btCollisionObject*>(contactManifold->getBody1()); // For older Bullet versions (original code)
+	#endif
         int numContacts = contactManifold->getNumContacts();
         for (int j = 0; j < numContacts; j++) {
             btManifoldPoint &pt = contactManifold->getContactPoint(j);
@@ -119,7 +123,7 @@ std::string SkeletonToRagdoll::update()
                                 btBones[j].second->setManuallyControlled(true);
                                 std::pair<Ogre::Bone *, Ogre::Vector3> tmp;
                                 tmp.first = btBones[j].second;
-                                btBones[j].second->translate(-0.1 * Ogre::Vector3(BB->getDeltaAngularVelocity().getX(), BB->getDeltaAngularVelocity().getY(), BB->getDeltaAngularVelocity().getZ()));
+								btBones[j].second->translate(-0.1 * Ogre::Vector3(BB->getWorldTransform().getRotation().getX(), BB->getWorldTransform().getRotation().getY(), BB->getWorldTransform().getRotation().getZ()));
                                 tmp.second = btBones[j].second->getPosition();
                                 btBones[j].second->setManuallyControlled(false);
                                 bonesToReset.push_back(tmp);
@@ -150,7 +154,7 @@ std::string SkeletonToRagdoll::update()
                             btBones[j].second->setManuallyControlled(true);
                             std::pair<Ogre::Bone *, Ogre::Vector3> tmp;
                             tmp.first = btBones[j].second;
-                            btBones[j].second->translate(-0.1 * Ogre::Vector3(AB->getDeltaAngularVelocity().getX(), AB->getDeltaAngularVelocity().getY(), AB->getDeltaAngularVelocity().getZ()));
+                            btBones[j].second->translate(-0.1 * Ogre::Vector3(AB->getWorldTransform().getRotation().getX(), AB->getWorldTransform().getRotation().getY(), AB->getWorldTransform().getRotation().getZ()));
                             btBones[j].second->setManuallyControlled(false);
                             tmp.second = btBones[j].second->getPosition();
                             bonesToReset.push_back(tmp);
