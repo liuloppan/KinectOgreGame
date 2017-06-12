@@ -87,8 +87,9 @@ bool OgreKinectGame::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID
 
 void OgreKinectGame::setupKinect(void)
 {
-    kinectController = new KinectController();
+    kinectController = new KinectController(mSceneMgr);
     kinectController->initController();
+	kinectController->showSkeletonViewPort();
 }
 
 //-------------------------------------------------------------------------------------
@@ -196,7 +197,10 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 
     return true;
 }
+
+
 //-------------------------------------------------------------------------------------
+
 
 
 #include "Stdafx.h"
