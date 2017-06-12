@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>OgreBulletCollisions</ProjectName>
+    <ProjectGuid>{791F594F-FF44-49D1-A882-FF4DB0DCD92A}</ProjectGuid>
+    <RootNamespace>OgreBulletCollisions</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\lib\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\lib\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>-Zm1000 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\include;$(BULLET_ROOT)\src;$(BULLET_ROOT)\Extras\ConvexDecomposition;$(OGRE_HOME_OLD);$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_PRECOMP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SmallerTypeCheck>true</SmallerTypeCheck>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>OgreBulletCollisions.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName)_d.lib</OutputFile>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+    </Lib>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>-Zm1000 %(AdditionalOptions)</AdditionalOptions>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..\..\include;$(BULLET_ROOT)\src;$(BULLET_ROOT)\Extras\ConvexDecomposition;$(OGRE_HOME)\OgreMain\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>OgreBulletCollisions.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\OgreBulletCollisionsObject.cpp" />
+    <ClCompile Include="..\..\src\OgreBulletCollisionsObjectState.cpp" />
+    <ClCompile Include="..\..\src\OgreBulletCollisionsPrecompiled.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">OgreBulletCollisions.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">OgreBulletCollisions.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OgreBulletCollisionsRay.cpp" />
+    <ClCompile Include="..\..\src\OgreBulletCollisionsShape.cpp" />
+    <ClCompile Include="..\..\src\OgreBulletCollisionsWorld.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsBoxShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsCapsuleShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsCompoundShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsConeShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsConvexHullShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsCylinderShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsGImpactShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsMinkowskiSumShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsMultiSphereShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsSphereShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsStaticPlaneShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsTriangleShape.cpp" />
+    <ClCompile Include="..\..\src\Shapes\OgreBulletCollisionsTrimeshShape.cpp" />
+    <ClCompile Include="..\..\src\Utils\OgreBulletCollisionsMeshToShapeConverter.cpp" />
+    <ClCompile Include="..\..\src\Debug\OgreBulletCollisionsDebugContact.cpp" />
+    <ClCompile Include="..\..\src\Debug\OgreBulletCollisionsDebugDrawer.cpp" />
+    <ClCompile Include="..\..\src\Debug\OgreBulletCollisionsDebugLines.cpp" />
+    <ClCompile Include="..\..\src\Debug\OgreBulletCollisionsDebugShape.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\OgreBulletCollisions.h" />
+    <ClInclude Include="..\..\include\OgreBulletCollisionsObject.h" />
+    <ClInclude Include="..\..\include\OgreBulletCollisionsObjectState.h" />
+    <ClInclude Include="..\..\include\OgreBulletCollisionsPreRequisites.h" />
+    <ClInclude Include="..\..\include\OgreBulletCollisionsRay.h" />
+    <ClInclude Include="..\..\include\OgreBulletCollisionsShape.h" />
+    <ClInclude Include="..\..\include\OgreBulletCollisionsWorld.h" />
+    <ClInclude Include="..\..\include\Shapes\OgreBulletCollisionsBoxShape.h" />
+    <ClInclude Include="..\..\include\Shapes\OgreBulletCollisionsCompoundShape.h" />
+    <ClInclude Include="..\..\include\Shapes\OgreBulletCollisionsConeShape.h" />
+    <ClInclude Include="..\..\include\Shapes\OgreBulletCollisionsConvexHullShape.h" />
+    <ClInclude Include="..\..\include\Shapes\OgreBulletCollisionsCylinderShape.h" />
+    <ClInclude Include="..\..\include\Shapes\OgreBulletCollisionsMinkowskiSumShape.h" />
+    <ClInclude Include="..\..\include\Shapes\OgreBulletCollisionsMultiSphereShape.h" />
+    <ClInclude Include="..\..\include\Shapes\OgreBulletCollisionsSphereShape.h" />
+    <ClInclude Include="..\..\include\Shapes\OgreBulletCollisionsStaticPlaneShape.h" />
+    <ClInclude Include="..\..\include\Shapes\OgreBulletCollisionsTriangleShape.h" />
+    <ClInclude Include="..\..\include\Shapes\OgreBulletCollisionsTrimeshShape.h" />
+    <ClInclude Include="..\..\include\Utils\OgreBulletCollisionsMeshToShapeConverter.h" />
+    <ClInclude Include="..\..\include\Utils\OgreBulletConverter.h" />
+    <ClInclude Include="..\..\include\Debug\OgreBulletCollisionsDebugContact.h" />
+    <ClInclude Include="..\..\include\Debug\OgreBulletCollisionsDebugDrawer.h" />
+    <ClInclude Include="..\..\include\Debug\OgreBulletCollisionsDebugLines.h" />
+    <ClInclude Include="..\..\include\Debug\OgreBulletCollisionsDebugShape.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
