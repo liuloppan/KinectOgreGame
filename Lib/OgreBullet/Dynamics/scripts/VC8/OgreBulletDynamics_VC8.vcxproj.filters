@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{c1c10b9d-204e-4cdd-ac64-8a6da0380e00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Constraints">
+      <UniqueIdentifier>{6e92f33e-d051-44a1-aca8-b2f9d53cf9a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Prefab">
+      <UniqueIdentifier>{e1ae60c4-b35a-4593-9e3f-a56c7eb9450d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{c2128d50-0ea8-4c55-86f1-c8aa65e82835}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Constraints">
+      <UniqueIdentifier>{c5237b46-8a59-43e5-abb7-5937a119b24f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Prefab">
+      <UniqueIdentifier>{aa1f3131-ee9e-4665-aa55-eec75db56d19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\OgreBulletDynamicsConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OgreBulletDynamicsObjectState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OgreBulletDynamicsPrecompiled.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OgreBulletDynamicsRigidBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\OgreBulletDynamicsWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Constraints\OgreBulletDynamics6DofConstraint.cpp">
+      <Filter>Source Files\Constraints</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Constraints\OgreBulletDynamics6DofSpringConstraint.cpp">
+      <Filter>Source Files\Constraints</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Constraints\OgreBulletDynamicsHingeConstraint.cpp">
+      <Filter>Source Files\Constraints</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Constraints\OgreBulletDynamicsPoint2pointConstraint.cpp">
+      <Filter>Source Files\Constraints</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Constraints\OgreBulletDynamicsRaycastVehicle.cpp">
+      <Filter>Source Files\Constraints</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\OgreBulletDynamics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OgreBulletDynamicsConstraint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OgreBulletDynamicsObjectState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OgreBulletDynamicsPreRequisites.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OgreBulletDynamicsRigidBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\OgreBulletDynamicsWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Constraints\OgreBulletDynamics6DofConstraint.h">
+      <Filter>Header Files\Constraints</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Constraints\OgreBulletDynamics6DofSpringConstraint.h">
+      <Filter>Header Files\Constraints</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Constraints\OgreBulletDynamicsHingeConstraint.h">
+      <Filter>Header Files\Constraints</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Constraints\OgreBulletDynamicsPoint2pointConstraint.h">
+      <Filter>Header Files\Constraints</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Constraints\OgreBulletDynamicsRaycastVehicle.h">
+      <Filter>Header Files\Constraints</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

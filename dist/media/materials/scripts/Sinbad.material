@@ -1,0 +1,227 @@
+vertex_program CookTorranceVert glsl
+{
+	source CookTorrance.vert
+}
+
+fragment_program CookTorranceFrag glsl
+{
+	source CookTorrance.frag
+}
+
+vertex_program OrenNayarVert glsl
+{
+	source OrenNayar.vert
+}
+
+fragment_program OrenNayarFrag glsl
+{
+	source OrenNayar.frag
+}
+
+material Sinbad/Body
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 1 1 1 1
+			
+			texture_unit
+			{
+				texture sinbad_body.tga
+			}
+			
+			vertex_program_ref CookTorranceVert
+			{
+				param_named_auto mWorldViewProjMatrix worldviewproj_matrix
+			}
+
+			fragment_program_ref CookTorranceFrag
+			{
+				param_named sColorTex int 0
+			}
+		}
+	}
+}
+material Sinbad/Gold
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.8 0.8 0.8 1
+			specular 0.3 0.3 0.2 5.5
+			
+			texture_unit
+			{
+				texture sinbad_clothes.tga
+			}
+		}
+	}
+}
+material Sinbad/Sheaths
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 1 1 1 1
+			specular 0.2 0.1 0.1 1.0 50.0
+			
+			texture_unit
+			{
+				texture sinbad_sword.tga
+			}
+		}
+	}
+}
+material Sinbad/Clothes
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 1 1 1 1
+			specular 0.05 0.05 0.05 12.5
+			
+			texture_unit
+			{
+				texture sinbad_clothes.tga
+			}
+		}
+	}
+}
+material Sinbad/Teeth
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 1 1 1 1
+			specular 0.25 0.25 0.25 10.5
+			
+			texture_unit
+			{
+				texture sinbad_body.tga
+			}
+		}
+	}
+}
+material Sinbad/Eyes
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 1 1 1 1
+			specular 0.75 0.75 0.75 55.5
+			
+			texture_unit
+			{
+				texture sinbad_body.tga
+			}
+		}
+	}
+}
+material Sinbad/Spikes
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 1 1 1 1
+			specular 0.75 0.75 0.75 20.5
+			
+			texture_unit
+			{
+				texture sinbad_clothes.tga
+			}
+		}
+	}
+}
+material Sinbad/Blade
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 1 1 1 1
+			specular 1 1 1 10.5
+			
+			texture_unit
+			{
+				texture sinbad_sword.tga
+			}
+		}
+	}
+}
+material Sinbad/Ruby
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 1 1 1 1
+			specular 0.75 0.75 0.75 20.5
+			
+			texture_unit
+			{
+				texture sinbad_sword.tga
+			}
+		}
+	}
+}
+material Sinbad/Hilt
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 0.8 0.8 0.8 1
+			specular 0.3 0.3 0.2 5.5
+			
+			texture_unit
+			{
+				texture sinbad_sword.tga
+			}
+		}
+	}
+}
+material Sinbad/Handle
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.75 0.75 0.75
+			diffuse 1 1 1 1
+			specular 0.05 0.05 0.05 12.5
+			
+			texture_unit
+			{
+				texture sinbad_sword.tga
+			}
+		}
+	}
+}

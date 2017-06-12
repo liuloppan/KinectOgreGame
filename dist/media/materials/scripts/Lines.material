@@ -1,0 +1,51 @@
+material Line/Red
+{
+	technique
+	{
+		pass
+		{
+			ambient 1 0 0
+			diffuse 1 0 0
+			emissive 1 0 0
+		}
+	}
+}
+
+material Line/Green
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 1 0
+			diffuse 0 1 0
+			emissive 0 1 0
+		}
+	}
+}
+
+material Line/Yellow
+{
+	technique
+	{
+		pass
+		{
+			ambient 1 1 0
+			diffuse 1 1 0
+			emissive 0 0 0
+		}
+	}
+}
+
+material Line/Blue
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 1
+			diffuse 0 0 1
+			emissive 0 0 1
+		}
+	}
+}
