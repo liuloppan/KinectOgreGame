@@ -77,7 +77,7 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
         setupBone("Humerus.R",            NuiJointIndex::SHOULDER_RIGHT);
         setupBone("Humerus.L",            NuiJointIndex::SHOULDER_LEFT);
         setupBone("Ulna.R",               NuiJointIndex::ELBOW_RIGHT);
-        setupBone("Ulna.L",               NuiJointIndex::ELBOW_LEFT);	
+        setupBone("Ulna.L",               NuiJointIndex::ELBOW_LEFT);
     } else {
         setupBone("Thigh.R",           NuiJointIndex::HIP_RIGHT);
         setupBone("Thigh.L",           NuiJointIndex::HIP_LEFT);

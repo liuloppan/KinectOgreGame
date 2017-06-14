@@ -21,8 +21,7 @@ ________                           ____  __.__                      __
 */
 #include "Stdafx.h"
 #include "OgreKinectGame.h"
-bool isUIvisible = false;
-
+#include "sdkTrays.h"
 //-------------------------------------------------------------------------------------
 OgreKinectGame::OgreKinectGame()
     : kinectController(0),
@@ -34,6 +33,7 @@ OgreKinectGame::OgreKinectGame()
       numBalls(0),
       mTimeSinceLastBall(0)
 {
+    gameTime = 5000; // milliseconds
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
                      "Developer :\n"
@@ -44,6 +44,9 @@ OgreKinectGame::OgreKinectGame()
 //-------------------------------------------------------------------------------------
 OgreKinectGame::~OgreKinectGame()
 {
+    if (mTrayMgr) {
+        mTrayMgr->destroyAllWidgets();
+    }
 }
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::destroyScene()
@@ -105,6 +108,58 @@ void OgreKinectGame::setupKinect(void)
     kinectController->initController();
 }
 
+void OgreKinectGame::setupWidgets()
+{
+    int WIDTH_UI = mWindow->getWidth() / 3;
+    // main menu
+    mTrayMgr->createLabel(TL_TOPRIGHT, "mTimer", "Timer: ", WIDTH_UI);
+    timerLabel = (Label *) mTrayMgr->getWidget(TL_TOPRIGHT, "mTimer");
+
+    mTrayMgr->createLabel(TL_TOPLEFT, "mScore", "Score: ", WIDTH_UI / 3);
+    scoreLabel = (Label *) mTrayMgr->getWidget(TL_TOPLEFT, "mScore");
+
+    //game over menu
+    mTrayMgr->createLabel(TL_NONE, "mGameOver", "GAME OVER!", WIDTH_UI);
+    mTrayMgr->createLabel(TL_NONE, "mResult", "you score is; ", WIDTH_UI);
+    mTrayMgr->createButton(TL_NONE, "mQuitButton", "Quit");
+
+    mTrayMgr->getWidget("mGameOver")->hide();
+    mTrayMgr->getWidget("mResult")->hide();
+    mTrayMgr->getWidget("mQuitButton")->hide();
+
+
+
+
+    // mTrayMgr->showLogo(OgreBites::TL_TOP);
+
+}
+//-------------------------------------------------------------------------------------
+void OgreKinectGame::gameOver()
+{
+    mTrayMgr->moveWidgetToTray("mGameOver", TL_CENTER);
+    mTrayMgr->moveWidgetToTray("mResult", TL_CENTER);
+    mTrayMgr->moveWidgetToTray("mQuitButton", TL_CENTER);
+
+    mTrayMgr->getWidget("mGameOver")->show();
+    mTrayMgr->getWidget("mResult")->show();
+    mTrayMgr->getWidget("mQuitButton")->show();
+
+    mTrayMgr->showCursor();
+    mCameraMan->setStyle(CS_MANUAL);
+
+}
+//-------------------------------------------------------------------------------------
+bool OgreKinectGame::setup(void)
+{
+
+    if (!BaseApplication::setup()) {
+        return false;
+    }
+    // Load fonts for tray captions
+    Ogre::FontManager::getSingleton().getByName("SdkTrays/Caption")->load();
+    setupWidgets();
+
+}
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::createScene()
 {
@@ -170,6 +225,9 @@ void OgreKinectGame::createScene()
     dynamicsWorld->addRigidBody(groundRigidBody);
     ragdoll->addIgnoreEventObject(groundRigidBody);
 
+    //start timer
+    timer = new Ogre::Timer();
+
     // Color Data
     //texRenderTarget = Ogre::TextureManager::getSingleton().createManual("texRenderTarget", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
     //                  Ogre::TEX_TYPE_2D, 320, 240, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
@@ -188,7 +246,16 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
     if (!BaseApplication::frameRenderingQueued(fe)) {
         return false;
     }
+    mTrayMgr->frameRenderingQueued(fe);
 
+    if ((gameTime - (long)timer->getMilliseconds()) >= 0) {
+        timerString = "Timer: " + Ogre::StringConverter::toString((gameTime - timer->getMilliseconds()) / 1000);
+        timerLabel->setCaption(timerString);
+    } else {
+
+        gameOver();
+        return true;
+    }
     kinectController->updatePerFrame(fe.timeSinceLastFrame);
     character->updatePerFrame(fe.timeSinceLastFrame);
 
