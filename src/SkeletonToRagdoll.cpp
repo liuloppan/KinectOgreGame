@@ -80,13 +80,13 @@ std::string SkeletonToRagdoll::update()
 
     for (int i = 0; i < numManifolds; i++) {
         btPersistentManifold *contactManifold =  dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-	#if BT_BULLET_VERSION>=281
-	   btCollisionObject* AB = const_cast<btCollisionObject*>(contactManifold->getBody0());; // For newer Bullet versions
-	   btCollisionObject* BB = const_cast<btCollisionObject*>(contactManifold->getBody1()); // For newer Bullet versions
-	#else
-	   btCollisionObject* AB = static_cast<btCollisionObject*>(contactManifold->getBody0()); // For older Bullet versions (original code)
-	   btCollisionObject* BB = static_cast<btCollisionObject*>(contactManifold->getBody1()); // For older Bullet versions (original code)
-	#endif
+#if BT_BULLET_VERSION>=281
+        btCollisionObject *AB = const_cast<btCollisionObject *>(contactManifold->getBody0());; // For newer Bullet versions
+        btCollisionObject *BB = const_cast<btCollisionObject *>(contactManifold->getBody1()); // For newer Bullet versions
+#else
+        btCollisionObject *AB = static_cast<btCollisionObject *>(contactManifold->getBody0()); // For older Bullet versions (original code)
+        btCollisionObject *BB = static_cast<btCollisionObject *>(contactManifold->getBody1()); // For older Bullet versions (original code)
+#endif
         int numContacts = contactManifold->getNumContacts();
         for (int j = 0; j < numContacts; j++) {
             btManifoldPoint &pt = contactManifold->getContactPoint(j);
@@ -123,7 +123,7 @@ std::string SkeletonToRagdoll::update()
                                 btBones[j].second->setManuallyControlled(true);
                                 std::pair<Ogre::Bone *, Ogre::Vector3> tmp;
                                 tmp.first = btBones[j].second;
-								btBones[j].second->translate(-0.1 * Ogre::Vector3(BB->getWorldTransform().getRotation().getX(), BB->getWorldTransform().getRotation().getY(), BB->getWorldTransform().getRotation().getZ()));
+                                btBones[j].second->translate(-0.1 * Ogre::Vector3(BB->getWorldTransform().getRotation().getX(), BB->getWorldTransform().getRotation().getY(), BB->getWorldTransform().getRotation().getZ()));
                                 tmp.second = btBones[j].second->getPosition();
                                 btBones[j].second->setManuallyControlled(false);
                                 bonesToReset.push_back(tmp);
@@ -213,7 +213,8 @@ void SkeletonToRagdoll::setBone(Ogre::Bone *_bone, btRigidBody *parentBone)
     Ogre::Entity *boneEnt = mSceneMgr->createEntity(_bone->getName(), "sphere.mesh");
     Ogre::SceneNode *boneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(_bone->getName());
     boneNode->attachObject(boneEnt);
-    boneNode->setScale(capsuleRadius, capsuleRadius, size / sizeFactor);
+    //boneNode->setScale(capsuleRadius, capsuleRadius, size / sizeFactor);
+    boneNode->setScale(0.05, 0.05, 0.05);
     boneNode->setPosition(_bone->_getDerivedPosition()*scale);
 
     btCollisionShape *shape = new btCapsuleShapeZ(btScalar(capsuleRadius), size / sizeFactor);

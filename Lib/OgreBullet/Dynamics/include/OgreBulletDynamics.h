@@ -32,7 +32,7 @@ THE SOFTWARE.
 #define _OGREBULLETDYNAMICS_H
 
 #include "OgreBulletDynamicsPreRequisites.h"
-
+#define _PRECOMP 1
 #ifdef _PRECOMP
 
     #include "OgreBulletDynamicsRigidBody.h"

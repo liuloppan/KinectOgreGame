@@ -30,6 +30,8 @@ ________                           ____  __.__                      __
 #include "SkeletonToRagdoll.h"
 #include "OgreDisplay.h"
 
+#include "sdkTrays.h"
+using namespace OgreBites;
 
 class OgreKinectGame : public BaseApplication
 {
@@ -45,6 +47,12 @@ protected:
     virtual bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
     virtual bool keyReleased(const OIS::KeyEvent &evt);
     virtual void setupKinect(void);
+	virtual bool setup();
+	virtual void buttonHit(Button *b);
+
+    void setupWidgets();
+    void gameOver();
+    void createBall(Ogre::Real time);
 
 protected:
     Ogre::Entity	*mFloor;
@@ -62,6 +70,13 @@ protected:
     SkeletonToRagdoll						*ragdoll;
     double									accumulator;
     const double							dt;
+    Ogre::Timer *timer;
+    Ogre::String timerString;
+    int									 numBalls;
+    Ogre::Real							 mTimeSinceLastBall;
+    long gameTime; // how long the game lasts for in milliseconds
+    OgreBites::Label *timerLabel;
+    OgreBites::Label *scoreLabel;
 };
 
 #endif // #ifndef __OgreKinectGame_h_

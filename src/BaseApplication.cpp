@@ -361,7 +361,7 @@ bool BaseApplication::mouseMoved(const OIS::MouseEvent &arg)
     if (mTrayMgr->injectMouseMove(arg)) {
         return true;
     }
-    //mCameraMan->injectMouseMove(arg);
+    mCameraMan->injectMouseMove(arg);
     return true;
 }
 
@@ -409,3 +409,4 @@ void BaseApplication::windowClosed(Ogre::RenderWindow *rw)
         }
     }
 }
+// -------------------------------------------------------------------------

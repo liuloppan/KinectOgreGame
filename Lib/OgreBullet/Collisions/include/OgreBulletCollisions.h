@@ -33,7 +33,7 @@ THE SOFTWARE.
 
 #include "OgreBulletCollisionsPreRequisites.h"
 
-
+#define _PRECOMP 1
 #ifdef _PRECOMP
 
 
