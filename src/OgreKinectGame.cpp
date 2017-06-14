@@ -32,7 +32,7 @@ OgreKinectGame::OgreKinectGame()
       dynamicsWorld(0),
       ogreDisplay(0),
       numBalls(0),
-	  mTimeSinceLastBall(0)
+      mTimeSinceLastBall(0)
 {
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
@@ -142,7 +142,7 @@ void OgreKinectGame::createScene()
     ogreDisplay = new OgreDisplay(dynamicsWorld);
     ragdoll = new SkeletonToRagdoll(mSceneMgr);
     ragdoll->createRagdoll(dynamicsWorld, character->getEntityNode());
-    ragdoll->setDebugBones(false);
+    ragdoll->setDebugBones(true);
 
     // Floor
     Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -166,7 +166,7 @@ void OgreKinectGame::createScene()
     groundRigidBodyCI.m_additionalDamping = true;
     btRigidBody *groundRigidBody = new btRigidBody(groundRigidBodyCI);
     groundRigidBody->setFriction(10.0f);
-	groundRigidBody->setRestitution(1.0f);
+    groundRigidBody->setRestitution(1.0f);
     dynamicsWorld->addRigidBody(groundRigidBody);
     ragdoll->addIgnoreEventObject(groundRigidBody);
 
@@ -191,13 +191,13 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 
     kinectController->updatePerFrame(fe.timeSinceLastFrame);
     character->updatePerFrame(fe.timeSinceLastFrame);
-	
-	mTimeSinceLastBall += fe.timeSinceLastFrame;
-	while (mTimeSinceLastBall >= 8.1){
-		createBall(mTimeSinceLastBall);
-		mTimeSinceLastBall -= 3;
-	}
-	
+
+    mTimeSinceLastBall += fe.timeSinceLastFrame;
+    while (mTimeSinceLastBall >= 8.1) {
+        createBall(mTimeSinceLastBall);
+        mTimeSinceLastBall -= 5;
+    }
+
 
     // Update Color Data
     this->kinectController->showColorData(this->texRenderTarget);
@@ -220,16 +220,21 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 }
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::createBall(Ogre::Real time)
-{ 
+{
+    if (numBalls == 5) {
+        return;
+    }
     char name[256];
     sprintf(name, "%d", numBalls++);
-	float x = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-	float z = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float LO = 0.1;
+    float HI = 10;
+    float x = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
+    float z = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
 
     Ogre::Entity *ball = mSceneMgr->createEntity(name, "sphere.mesh");
     Ogre::SceneNode *ballNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(name);
-	ball->setMaterialName("Bullet/Ball");
-    ballNode->setPosition(x*time, 100, z*time);
+    ball->setMaterialName("Bullet/Ball");
+    ballNode->setPosition(x * time, 100, z * time);
     ballNode->attachObject(ball);
     ballNode->setScale(0.05, 0.05, 0.05);
 
@@ -240,12 +245,13 @@ void OgreKinectGame::createBall(Ogre::Real time)
     btScalar mass = 25;
     startTransform.setIdentity();
     startTransform.setOrigin(btVector3(ballNode->getPosition().x, ballNode->getPosition().y, ballNode->getPosition().z));
-    btDefaultMotionState *triMotionState = new btDefaultMotionState(startTransform);
+    btDefaultMotionState *triMotionState
+        = new btDefaultMotionState(startTransform);
     btVector3 localInertia;
     collisionShape->calculateLocalInertia(mass, localInertia);
     btRigidBody::btRigidBodyConstructionInfo rbInfo = btRigidBody::btRigidBodyConstructionInfo(mass, triMotionState, collisionShape, localInertia);
     btRigidBody *triBody = new btRigidBody(rbInfo);
-	triBody->setRestitution(1.0);
+    triBody->setRestitution(1.0);
     ogreDisplay->createDynamicObject(ball, triBody);
 }
 //-------------------------------------------------------------------------------------

@@ -77,7 +77,7 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
         setupBone("Humerus.R",            NuiJointIndex::SHOULDER_RIGHT);
         setupBone("Humerus.L",            NuiJointIndex::SHOULDER_LEFT);
         setupBone("Ulna.R",               NuiJointIndex::ELBOW_RIGHT);
-        setupBone("Ulna.L",               NuiJointIndex::ELBOW_LEFT);
+        setupBone("Ulna.L",               NuiJointIndex::ELBOW_LEFT);	
     } else {
         setupBone("Thigh.R",           NuiJointIndex::HIP_RIGHT);
         setupBone("Thigh.L",           NuiJointIndex::HIP_LEFT);
@@ -90,6 +90,99 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
         setupBone("Ulna.R",               NuiJointIndex::ELBOW_LEFT);
         setupBone("Ulna.L",               NuiJointIndex::ELBOW_RIGHT);
     }
+    setupAnimations();
+}
+//-------------------------------------------------------------------------------------
+void SinbadCharacterController::setupAnimations()
+{
+    bodyEntity->getSkeleton()->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
+    Ogre::String animNames[] = {
+        "IdleBase", "IdleTop", "RunBase", "RunTop", "HandsClosed", "HandsRelaxed", "DrawSwords",
+        "SliceVertical", "SliceHorizontal", "Dance", "JumpStart", "JumpLoop", "JumpEnd"
+    };
+
+    // populate our animation list
+    for (int i = 0; i < NUM_ANIMS; i++) {
+        mAnims[i] = bodyEntity->getAnimationState(animNames[i]);
+        mAnims[i]->setLoop(true);
+        mFadingIn[i] = false;
+        mFadingOut[i] = false;
+    }
+
+    // start off in the idle state (top and bottom together)
+    setBaseAnimation(ANIM_IDLE_BASE);
+    setTopAnimation(ANIM_IDLE_TOP);
+
+    // relax the hands since we're not holding anything
+    mAnims[ANIM_HANDS_RELAXED]->setEnabled(true);
+
+    mSwordsDrawn = false;
+}
+//-------------------------------------------------------------------------------------
+void SinbadCharacterController::setBaseAnimation(AnimID id, bool reset)
+{
+    if (mBaseAnimID >= 0 && mBaseAnimID < NUM_ANIMS) {
+        // if we have an old animation, fade it out
+        mFadingIn[mBaseAnimID] = false;
+        mFadingOut[mBaseAnimID] = true;
+    }
+
+    mBaseAnimID = id;
+
+    if (id != ANIM_NONE) {
+        // if we have a new animation, enable it and fade it in
+        mAnims[id]->setEnabled(true);
+        mAnims[id]->setWeight(0);
+        mFadingOut[id] = false;
+        mFadingIn[id] = true;
+        if (reset) {
+            mAnims[id]->setTimePosition(0);
+        }
+    }
+}
+//-------------------------------------------------------------------------------------
+void SinbadCharacterController::setTopAnimation(AnimID id, bool reset)
+{
+    if (mTopAnimID >= 0 && mTopAnimID < NUM_ANIMS) {
+        // if we have an old animation, fade it out
+        mFadingIn[mTopAnimID] = false;
+        mFadingOut[mTopAnimID] = true;
+    }
+
+    mTopAnimID = id;
+
+    if (id != ANIM_NONE) {
+        // if we have a new animation, enable it and fade it in
+        mAnims[id]->setEnabled(true);
+        mAnims[id]->setWeight(0);
+        mFadingOut[id] = false;
+        mFadingIn[id] = true;
+        if (reset) {
+            mAnims[id]->setTimePosition(0);
+        }
+    }
+}
+//-------------------------------------------------------------------------------------
+void SinbadCharacterController::fadeAnimations(Ogre::Real deltaTime)
+{
+    for (int i = 0; i < NUM_ANIMS; i++) {
+        if (mFadingIn[i]) {
+            // slowly fade this animation in until it has full weight
+            Ogre::Real newWeight = mAnims[i]->getWeight() + deltaTime * ANIM_FADE_SPEED;
+            mAnims[i]->setWeight(Ogre::Math::Clamp<Ogre::Real>(newWeight, 0, 1));
+            if (newWeight >= 1) {
+                mFadingIn[i] = false;
+            }
+        } else if (mFadingOut[i]) {
+            // slowly fade this animation out until it has no weight, and then disable it
+            Ogre::Real newWeight = mAnims[i]->getWeight() - deltaTime * ANIM_FADE_SPEED;
+            mAnims[i]->setWeight(Ogre::Math::Clamp<Ogre::Real>(newWeight, 0, 1));
+            if (newWeight <= 0) {
+                mAnims[i]->setEnabled(false);
+                mFadingOut[i] = false;
+            }
+        }
+    }
 }
 //-------------------------------------------------------------------------------------
 void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
@@ -99,39 +192,42 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
     if (controller->getSkeletonStatus() != NuiSkeletonTrackingState::SKELETON_TRACKED) {
         return;
     }
+    static bool bRightAfterSwardsPositionChanged = false;
 
-    //Ogre::Real yLeftSoulder = controller->getJointPosition(SHOULDER_LEFT).y;
-    //Ogre::Real yRightShoulder = controller->getJointPosition(SHOULDER_RIGHT).y;
-    //Ogre::Real yCurSkelCenter = (yLeftSoulder < yRightShoulder) ? yLeftSoulder : yRightShoulder;
-    ////Ogre::Real shoulderPos = (lShoulderPos <= rShoulderPos) ? lShoulderPos : rShoulderPos;
-    ////Ogre::Real curSkelHeight = shoulderPos;
-    ////Ogre::Real curSkelHeight = controller->getJointPosition(SHOULDER_CENTER).y + shoulderPos / 2.0f;
+    Ogre::Real baseAnimSpeed = 1;
+    Ogre::Real topAnimSpeed = 1;
+    mTimer += elapsedTime;
+    Ogre::Vector3 leftHand = controller->getJointPosition(HAND_LEFT);
+    Ogre::Vector3 rightHand = controller->getJointPosition(HAND_RIGHT);
+    Ogre::Vector3 Head = controller->getJointPosition(HEAD);
+    Ogre::Vector3 tempvec;
+    tempvec = leftHand - rightHand;
+    if (tempvec.squaredLength() < 50000) {
+        tempvec = leftHand - Head;
+        if (!bRightAfterSwardsPositionChanged && tempvec.squaredLength() < 100000) {
+            if (leftHand.z - 0.08f > Head.z) {
+                setTopAnimation(ANIM_DRAW_SWORDS, true);
+                mTimer = 0;
+                bRightAfterSwardsPositionChanged = true;
+            }
+        }
+    } else {
+        bRightAfterSwardsPositionChanged = false;
+    }
 
-    //Ogre::Real yDif = yCurSkelCenter - skelCenter;
 
-    //Ogre::Vector3 bodyPos = bodyNode->getPosition();
+    if (mTopAnimID == ANIM_DRAW_SWORDS) {
+        // flip the draw swords animation if we need to put it back
+        topAnimSpeed = mSwordsDrawn ? -1 : 1;
 
-    //if (yDif <= -25 || yDif > 25) {
+        bodyEntity->detachAllObjectsFromBone();
+        bodyEntity->attachObjectToBone(mSwordsDrawn ? "Sheath.L" : "Handle.L", mSword1);
+        bodyEntity->attachObjectToBone(mSwordsDrawn ? "Sheath.R" : "Handle.R", mSword2);
 
-    //} else if (yDif >= 0.02f || yDif <= -0.02f) {
-    //    Ogre::Real yTranslation = yDif * 1000 * elapsedTime;
-    //    if ((yTranslation + bodyOffset.y) < bodyOffset.y) {
-    //        yTranslation = 0;
-    //    }
-
-    //    bodyNode->translate(0, yTranslation, 0, Ogre::Node::TS_LOCAL);
-    //} else {
-    //    if (bodyPos.y <= (bodyOffset.y + 0.1f) && bodyPos.y >= (bodyOffset.y - 0.1f)) {
-    //        bodyNode->setPosition(bodyOffset);
-    //    } else if (bodyPos.y > bodyOffset.y) {
-    //        bodyNode->translate(Ogre::Vector3(0, -50 * elapsedTime, 0));
-    //    } else if (bodyPos.y < bodyOffset.y) {
-    //        bodyNode->translate(Ogre::Vector3(0, 100 * elapsedTime, 0));
-    //    }
-    //}
-
-    //skelCenter = yCurSkelCenter;
-
+        // change the hand state to grab or let go
+        mAnims[ANIM_HANDS_CLOSED]->setEnabled(!mSwordsDrawn);
+        mAnims[ANIM_HANDS_RELAXED]->setEnabled(mSwordsDrawn);
+    }
 
     if (!jointCalc->getMirror()) {
         transformBone("Thigh.R",          NuiJointIndex::HIP_RIGHT);

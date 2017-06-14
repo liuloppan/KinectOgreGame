@@ -64,7 +64,7 @@ protected:
     double									accumulator;
     const double							dt;
     int									 numBalls;
-	Ogre::Real							 mTimeSinceLastBall;
+    Ogre::Real							 mTimeSinceLastBall;
 };
 
 #endif // #ifndef __OgreKinectGame_h_

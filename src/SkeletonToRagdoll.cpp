@@ -213,7 +213,8 @@ void SkeletonToRagdoll::setBone(Ogre::Bone *_bone, btRigidBody *parentBone)
     Ogre::Entity *boneEnt = mSceneMgr->createEntity(_bone->getName(), "sphere.mesh");
     Ogre::SceneNode *boneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(_bone->getName());
     boneNode->attachObject(boneEnt);
-    boneNode->setScale(capsuleRadius, capsuleRadius, size / sizeFactor);
+    //boneNode->setScale(capsuleRadius, capsuleRadius, size / sizeFactor);
+    boneNode->setScale(0.05, 0.05, 0.05);
     boneNode->setPosition(_bone->_getDerivedPosition()*scale);
 
     btCollisionShape *shape = new btCapsuleShapeZ(btScalar(capsuleRadius), size / sizeFactor);
