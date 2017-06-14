@@ -100,42 +100,30 @@ void OgreKinectGame::setupKinect(void)
 	// UI Manager
 	//mTrayMgr = new SdkTrayManager("InterfaceName", mWindow, mMouse);
 	//uiManager = new UIManager(mTrayMgr);
-	setupWidgets();
+	//setupWidgets();
 
 }
 
 void OgreKinectGame::setupWidgets()
 {
-
-	if(!mTrayMgr)
-		mTrayMgr = new SdkTrayManager("InterfaceName", mWindow, mMouse);
-
-		//mTrayMgr->destroyAllWidgets();
-		// create check boxes to toggle the visibility of our particle systems
-		const int WIDTH_UI = 160;
-		// main menu
-		mTrayMgr->createLabel(TL_CENTER, "mMainMenuLabel", "Main Menu", WIDTH_UI);
-		mTrayMgr->createButton(TL_CENTER, "mOptionButton", "Option");
-		mTrayMgr->createButton(TL_CENTER, "mCreditButton", "About");
-		mTrayMgr->createButton(TL_CENTER, "mQuitButton", "Quit");
-
-		mTrayMgr->showAll();
-	
-
-
-	//mTrayMgr->moveWidgetToTray("mMainMenuLabel", TL_CENTER);
-    //   mTrayMgr->moveWidgetToTray("mOptionButton", TL_CENTER);
-    //   mTrayMgr->moveWidgetToTray("mCreditButton", TL_CENTER);
-    //   mTrayMgr->moveWidgetToTray("mQuitButton", TL_CENTER);
-    //   mTrayMgr->getWidget("mMainMenuLabel")->show();
-    //   mTrayMgr->getWidget("mOptionButton")->show();
-    //   mTrayMgr->getWidget("mCreditButton")->show();
-    //   mTrayMgr->getWidget("mQuitButton")->show();
-
-    //mTrayMgr->hideAll();
-
+	const int WIDTH_UI = 160;
+	// main menu
+	mTrayMgr->createLabel(TL_CENTER, "mMainMenuLabel", "Main Menu", WIDTH_UI);
+	mTrayMgr->createButton(TL_CENTER, "mOptionButton", "Option");
+	mTrayMgr->createButton(TL_CENTER, "mCreditButton", "About");
+	mTrayMgr->createButton(TL_CENTER, "mQuitButton", "Quit");
 }
+//-------------------------------------------------------------------------------------
+bool OgreKinectGame::setup(void)
+{
 
+    if (!BaseApplication::setup()) {
+        return false;
+    }
+    // Load fonts for tray captions
+    FontManager::getSingleton().getByName("SdkTrays/Caption")->load();
+    setupWidgets();
+}
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::createScene()
 {
@@ -217,9 +205,7 @@ void OgreKinectGame::createScene()
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 {
-    if (!BaseApplication::frameRenderingQueued(fe)) {
-        return false;
-    }
+
 
 	mTrayMgr->frameRenderingQueued(fe);
     kinectController->updatePerFrame(fe.timeSinceLastFrame);
