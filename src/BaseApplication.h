@@ -33,18 +33,8 @@ This source file is part of the
 
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
-
-#include "OgreBulletDynamics.h"
-#include "OgreBulletCollisions.h"
-
-enum QueryFlags
-{
-	ANY_QUERY_MASK					= 1<<0,
-	RAGDOLL_QUERY_MASK				= 1<<1,
-	GEOMETRY_QUERY_MASK				= 1<<2,
-	VEHICLE_QUERY_MASK				= 1<<3,
-	STATIC_GEOMETRY_QUERY_MASK		= 1<<4
-};
+#include "btBulletDynamicsCommon.h"
+#include "BulletCollision/Gimpact/btGImpactShape.h"
 
 class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
 {
@@ -102,58 +92,6 @@ protected:
     OIS::InputManager *mInputManager;
     OIS::Mouse    *mMouse;
     OIS::Keyboard *mKeyboard;
-
-	// bullet
-	bool checkIfEnoughPlaceToAddObject(float maxDist);
-    void throwDynamicObject(OIS::KeyCode key);
-    void dropDynamicObject(OIS::KeyCode key);
-	OgreBulletDynamics::RigidBody* getBodyUnderCursorUsingBullet(Ogre::Vector3 &intersectionPoint, Ogre::Ray &rayTo);
-    OgreBulletDynamics::RigidBody* getBodyUnderCursorUsingOgre(Ogre::Vector3 &intersectionPoint, Ogre::Ray &rayTo);
-
-	void initWorld (const Ogre::Vector3 &gravityVector = Ogre::Vector3 (0,-9.81,0), 
-                    const Ogre::AxisAlignedBox &bounds = Ogre::AxisAlignedBox (Ogre::Vector3 (-10000, -10000, -10000),
-                                                                               Ogre::Vector3 (10000,  10000,  10000)));
-
-    void addGround();
-
-    OgreBulletDynamics::RigidBody *addCube(const Ogre::String instanceName,
-        const Ogre::Vector3 &pos, const Ogre::Quaternion &q, const Ogre::Vector3 &size,
-        const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, 
-        const Ogre::Real bodyMass);
-
-    OgreBulletDynamics::RigidBody *addCylinder(const Ogre::String instanceName,
-        const Ogre::Vector3 &pos, const Ogre::Quaternion &q, const Ogre::Vector3 &size,
-        const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, 
-        const Ogre::Real bodyMass);
-
-    OgreBulletDynamics::RigidBody *addSphere(const Ogre::String instanceName,
-        const Ogre::Vector3 &pos, const Ogre::Quaternion &q, const Ogre::Real radius,
-        const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, 
-        const Ogre::Real bodyMass);
-
-
-    OgreBulletDynamics::RigidBody *addCone(const Ogre::String instanceName,
-        const Ogre::Vector3 &pos, const Ogre::Quaternion &q, const Ogre::Vector3 &size,
-        const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, 
-        const Ogre::Real bodyMass);
-
-    OgreBulletDynamics::RigidBody *addStaticTrimesh(const Ogre::String &instanceName,
-                                                        const Ogre::String &meshName,
-                                                        const Ogre::Vector3 &pos, 
-                                                        const Ogre::Quaternion &q, 
-                                                        const Ogre::Real bodyRestitution, 
-                                                        const Ogre::Real bodyFriction,
-                                                        const bool castShadow = true);
-
-    OgreBulletDynamics::RigidBody *addStaticPlane( const Ogre::Real bodyRestitution, 
-                                                   const Ogre::Real bodyFriction);
-
-	OgreBulletDynamics::DynamicsWorld *mWorld;
-	std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
-    std::deque<OgreBulletCollisions::CollisionShape *>  mShapes;
-	std::deque<Ogre::Entity *>                          mEntities;
-	static size_t mNumEntitiesInstanced;
-	float                    mShootSpeed;
 };
 
 #endif // #ifndef __BaseApplication_h_

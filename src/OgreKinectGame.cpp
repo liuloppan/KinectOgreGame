@@ -30,7 +30,9 @@ OgreKinectGame::OgreKinectGame()
       accumulator(0),
       dt(0.01),
       dynamicsWorld(0),
-      ogreDisplay(0)
+      ogreDisplay(0),
+      numBalls(0),
+	  mTimeSinceLastBall(0)
 {
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
@@ -71,8 +73,6 @@ void OgreKinectGame::destroyScene()
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::keyReleased(const OIS::KeyEvent &evt)
 {
-	BaseApplication::throwDynamicObject(evt.key);
-	BaseApplication::dropDynamicObject(evt.key);
     return BaseApplication::keyReleased(evt);
 }
 //-------------------------------------------------------------------------------------
@@ -83,7 +83,19 @@ bool OgreKinectGame::mouseMoved(const OIS::MouseEvent &evt)
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id)
 {
-    return BaseApplication::mousePressed(evt, id);
+    if (!BaseApplication::mousePressed(evt, id)) {
+        return false;
+    }
+
+    Ogre::Real offsetX = evt.state.X.abs / float(evt.state.width);
+    Ogre::Real offsetY = evt.state.Y.abs / float(evt.state.height);
+
+    if (id == OIS::MB_Left) {
+        //createBall();
+    } else if (id == OIS::MB_Right) {
+    }
+
+    return true;
 }
 //-------------------------------------------------------------------------------------
 
@@ -123,7 +135,7 @@ void OgreKinectGame::createScene()
     dispatcher = new btCollisionDispatcher(collisionConfiguration);
     solver = new btSequentialImpulseConstraintSolver;
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-    dynamicsWorld->setGravity(btVector3(0, -10, 0));
+    dynamicsWorld->setGravity(btVector3(0, -50, 0));
 
 
     //create the character physical skeleton
@@ -143,13 +155,9 @@ void OgreKinectGame::createScene()
     mSceneMgr->getRootSceneNode()->attachObject(floor);
     mSceneMgr->setSkyDome(true, "Examples/CloudySky", 10, 8);
 
-    // create the Bullet ground plane
-	initWorld();
-	addStaticPlane(0.3, 0.8);
 
-
-    btCollisionShape *groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-    //btCollisionShape *groundShape = new btBoxShape(btVector3(350, 1, 350));
+    //btCollisionShape *groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+    btCollisionShape *groundShape = new btBoxShape(btVector3(500, 1, 500));
     btTransform groundTransform;
     groundTransform.setIdentity();
     groundTransform.setOrigin(btVector3(0, 0, 0));
@@ -157,7 +165,8 @@ void OgreKinectGame::createScene()
     btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, myMotionState, groundShape, btVector3(0, 0, 0));
     groundRigidBodyCI.m_additionalDamping = true;
     btRigidBody *groundRigidBody = new btRigidBody(groundRigidBodyCI);
-    groundRigidBody->setFriction(50.0f);
+    groundRigidBody->setFriction(10.0f);
+	groundRigidBody->setRestitution(1.0f);
     dynamicsWorld->addRigidBody(groundRigidBody);
     ragdoll->addIgnoreEventObject(groundRigidBody);
 
@@ -182,6 +191,13 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 
     kinectController->updatePerFrame(fe.timeSinceLastFrame);
     character->updatePerFrame(fe.timeSinceLastFrame);
+	
+	mTimeSinceLastBall += fe.timeSinceLastFrame;
+	while (mTimeSinceLastBall >= 8.1){
+		createBall(mTimeSinceLastBall);
+		mTimeSinceLastBall -= 3;
+	}
+	
 
     // Update Color Data
     this->kinectController->showColorData(this->texRenderTarget);
@@ -201,6 +217,36 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
     }
 
     return true;
+}
+//-------------------------------------------------------------------------------------
+void OgreKinectGame::createBall(Ogre::Real time)
+{ 
+    char name[256];
+    sprintf(name, "%d", numBalls++);
+	float x = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	float z = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
+    Ogre::Entity *ball = mSceneMgr->createEntity(name, "sphere.mesh");
+    Ogre::SceneNode *ballNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(name);
+	ball->setMaterialName("Bullet/Ball");
+    ballNode->setPosition(x*time, 100, z*time);
+    ballNode->attachObject(ball);
+    ballNode->setScale(0.05, 0.05, 0.05);
+
+    float radius = 5;
+    btSphereShape *collisionShape = new btSphereShape(radius);
+    btTransform startTransform;
+    float friction = 10;
+    btScalar mass = 25;
+    startTransform.setIdentity();
+    startTransform.setOrigin(btVector3(ballNode->getPosition().x, ballNode->getPosition().y, ballNode->getPosition().z));
+    btDefaultMotionState *triMotionState = new btDefaultMotionState(startTransform);
+    btVector3 localInertia;
+    collisionShape->calculateLocalInertia(mass, localInertia);
+    btRigidBody::btRigidBodyConstructionInfo rbInfo = btRigidBody::btRigidBodyConstructionInfo(mass, triMotionState, collisionShape, localInertia);
+    btRigidBody *triBody = new btRigidBody(rbInfo);
+	triBody->setRestitution(1.0);
+    ogreDisplay->createDynamicObject(ball, triBody);
 }
 //-------------------------------------------------------------------------------------
 

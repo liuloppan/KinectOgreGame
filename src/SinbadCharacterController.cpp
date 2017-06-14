@@ -172,11 +172,11 @@ void SinbadCharacterController::transformBone(Ogre::String boneName, NuiManager:
         Ogre::Quaternion qI = bone->getInitialOrientation();
         Ogre::Quaternion newQ = jointCalc->getSkeletonJointOrientation(jointIdx);
 
-      if(boneName == "Root"){
-         //kinect skeleton position is in meter 0.8m<z<4m
-         
-         bone->setPosition(controller->getJointPosition(jointIdx)*20.0f);
-      }
+        if (boneName == "Root") {
+            //kinect skeleton position is in meter 0.8m<z<4m
+
+            bone->setPosition(controller->getJointPosition(jointIdx) * 20.0f);
+        }
 
         bone->resetOrientation();
         newQ = bone->convertWorldToLocalOrientation(newQ);

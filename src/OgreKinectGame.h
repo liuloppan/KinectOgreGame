@@ -45,6 +45,7 @@ protected:
     virtual bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
     virtual bool keyReleased(const OIS::KeyEvent &evt);
     virtual void setupKinect(void);
+    void createBall(Ogre::Real time);
 
 protected:
     Ogre::Entity	*mFloor;
@@ -62,6 +63,8 @@ protected:
     SkeletonToRagdoll						*ragdoll;
     double									accumulator;
     const double							dt;
+    int									 numBalls;
+	Ogre::Real							 mTimeSinceLastBall;
 };
 
 #endif // #ifndef __OgreKinectGame_h_
