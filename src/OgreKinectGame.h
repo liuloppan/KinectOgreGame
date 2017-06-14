@@ -52,6 +52,7 @@ protected:
 	virtual bool setup();
 
 	void setupWidgets();
+	void gameOver();
 
 protected:
     Ogre::Entity	*mFloor;
@@ -70,6 +71,12 @@ protected:
     double									accumulator;
     const double							dt;
 	UIManager *uiManager;
+	Ogre::Timer *timer;	
+	Ogre::String timerString;
+	long gameTime; // how long the game lasts for in milliseconds
+	OgreBites::Label *timerLabel;
+	OgreBites::Label *scoreLabel;
+
 };
 
 #endif // #ifndef __OgreKinectGame_h_

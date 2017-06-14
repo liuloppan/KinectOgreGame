@@ -116,7 +116,7 @@ void BaseApplication::createFrameListener(void)
 
     mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mMouse, this);
     mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
-    mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
+    mTrayMgr->showLogo(OgreBites::TL_TOP);
     mTrayMgr->hideCursor();
 
     // create a params panel for displaying sample details
@@ -361,7 +361,7 @@ bool BaseApplication::mouseMoved(const OIS::MouseEvent &arg)
     if (mTrayMgr->injectMouseMove(arg)) {
         return true;
     }
-    //mCameraMan->injectMouseMove(arg);
+    mCameraMan->injectMouseMove(arg);
     return true;
 }
 
