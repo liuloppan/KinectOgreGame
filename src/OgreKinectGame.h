@@ -50,9 +50,11 @@ protected:
     virtual bool keyReleased(const OIS::KeyEvent &evt);
     virtual void setupKinect(void);
 	virtual bool setup();
+	virtual void buttonHit(Button *b);
 
 	void setupWidgets();
 	void gameOver();
+
 
 protected:
     Ogre::Entity	*mFloor;

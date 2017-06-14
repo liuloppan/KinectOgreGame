@@ -111,11 +111,12 @@ void OgreKinectGame::setupWidgets()
 	mTrayMgr->createLabel(TL_NONE, "mGameOver", "GAME OVER!", WIDTH_UI);
 	mTrayMgr->createLabel(TL_NONE, "mResult", "you score is; ", WIDTH_UI);
 	mTrayMgr->createButton(TL_NONE, "mQuitButton", "Quit");
+	mTrayMgr->createButton(TL_NONE, "mReplayButton", "Replay");
 
 	mTrayMgr->getWidget("mGameOver")->hide();
     mTrayMgr->getWidget("mResult")->hide();
 	mTrayMgr->getWidget("mQuitButton")->hide();
-
+	mTrayMgr->getWidget("mReplayButton")->hide();
 
 
 
@@ -128,13 +129,38 @@ void OgreKinectGame::gameOver()
 	mTrayMgr->moveWidgetToTray("mGameOver", TL_CENTER);
     mTrayMgr->moveWidgetToTray("mResult", TL_CENTER);
 	mTrayMgr->moveWidgetToTray("mQuitButton", TL_CENTER);
+	mTrayMgr->moveWidgetToTray("mReplayButton", TL_CENTER);
+
 
 	mTrayMgr->getWidget("mGameOver")->show();
     mTrayMgr->getWidget("mResult")->show();
 	mTrayMgr->getWidget("mQuitButton")->show();
+	mTrayMgr->getWidget("mReplayButton")->show();
+
 
 	mTrayMgr->showCursor();
 
+}
+//-------------------------------------------------------------------------------------
+void OgreKinectGame::buttonHit(Button *b)
+{
+    if (b->getName() == "mQuitButton") {
+        mRoot->queueEndRendering();
+    } else if (b->getName() == "mReplayButton") {
+
+		mTrayMgr->removeWidgetFromTray("mGameOver");
+		mTrayMgr->removeWidgetFromTray("mResult");
+		mTrayMgr->removeWidgetFromTray("mQuitButton");
+		mTrayMgr->removeWidgetFromTray("mReplayButton");
+
+		mTrayMgr->getWidget("mGameOver")->hide();
+		mTrayMgr->getWidget("mResult")->hide();
+		mTrayMgr->getWidget("mQuitButton")->hide();
+		mTrayMgr->getWidget("mReplayButton")->hide();
+
+		timer->reset();
+
+    }
 }
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::setup(void)
