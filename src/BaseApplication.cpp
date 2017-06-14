@@ -59,6 +59,13 @@ BaseApplication::~BaseApplication(void)
         delete mCameraMan;
     }
 
+    delete mWorld->getDebugDrawer();
+    mWorld->setDebugDrawer(0);
+    delete mWorld;
+	mWorld = 0;
+    mBodies.clear();
+    mEntities.clear();
+
     //Remove ourself as a Window listener
     Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
     windowClosed(mWindow);
