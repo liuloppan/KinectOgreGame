@@ -33,7 +33,7 @@ OgreKinectGame::OgreKinectGame()
       numBalls(0),
       mTimeSinceLastBall(0)
 {
-    gameTime = 5000; // milliseconds
+    gameTime = 10000; // milliseconds
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
                      "Developer :\n"
@@ -118,16 +118,16 @@ void OgreKinectGame::setupWidgets()
     mTrayMgr->createLabel(TL_TOPLEFT, "mScore", "Score: ", WIDTH_UI / 3);
     scoreLabel = (Label *) mTrayMgr->getWidget(TL_TOPLEFT, "mScore");
 
-	//game over menu
-	mTrayMgr->createLabel(TL_NONE, "mGameOver", "GAME OVER!", WIDTH_UI);
-	mTrayMgr->createLabel(TL_NONE, "mResult", "you score is; ", WIDTH_UI);
-	mTrayMgr->createButton(TL_NONE, "mQuitButton", "Quit");
-	mTrayMgr->createButton(TL_NONE, "mReplayButton", "Replay");
+    //game over menu
+    mTrayMgr->createLabel(TL_NONE, "mGameOver", "GAME OVER!", WIDTH_UI);
+    mTrayMgr->createLabel(TL_NONE, "mResult", "you score is; ", WIDTH_UI);
+    mTrayMgr->createButton(TL_NONE, "mQuitButton", "Quit");
+    mTrayMgr->createButton(TL_NONE, "mReplayButton", "Replay");
 
     mTrayMgr->getWidget("mGameOver")->hide();
     mTrayMgr->getWidget("mResult")->hide();
-	mTrayMgr->getWidget("mQuitButton")->hide();
-	mTrayMgr->getWidget("mReplayButton")->hide();
+    mTrayMgr->getWidget("mQuitButton")->hide();
+    mTrayMgr->getWidget("mReplayButton")->hide();
 
 
 
@@ -139,16 +139,16 @@ void OgreKinectGame::gameOver()
 {
     mTrayMgr->moveWidgetToTray("mGameOver", TL_CENTER);
     mTrayMgr->moveWidgetToTray("mResult", TL_CENTER);
-	mTrayMgr->moveWidgetToTray("mQuitButton", TL_CENTER);
-	mTrayMgr->moveWidgetToTray("mReplayButton", TL_CENTER);
+    mTrayMgr->moveWidgetToTray("mQuitButton", TL_CENTER);
+    mTrayMgr->moveWidgetToTray("mReplayButton", TL_CENTER);
 
     mTrayMgr->getWidget("mGameOver")->show();
     mTrayMgr->getWidget("mResult")->show();
-	mTrayMgr->getWidget("mQuitButton")->show();
-	mTrayMgr->getWidget("mReplayButton")->show();
+    mTrayMgr->getWidget("mQuitButton")->show();
+    mTrayMgr->getWidget("mReplayButton")->show();
 
 
-	mTrayMgr->showCursor();
+    mTrayMgr->showCursor();
     mCameraMan->setStyle(CS_MANUAL);
 }
 //-------------------------------------------------------------------------------------
@@ -158,17 +158,19 @@ void OgreKinectGame::buttonHit(Button *b)
         mRoot->queueEndRendering();
     } else if (b->getName() == "mReplayButton") {
 
-		mTrayMgr->removeWidgetFromTray("mGameOver");
-		mTrayMgr->removeWidgetFromTray("mResult");
-		mTrayMgr->removeWidgetFromTray("mQuitButton");
-		mTrayMgr->removeWidgetFromTray("mReplayButton");
+        mTrayMgr->removeWidgetFromTray("mGameOver");
+        mTrayMgr->removeWidgetFromTray("mResult");
+        mTrayMgr->removeWidgetFromTray("mQuitButton");
+        mTrayMgr->removeWidgetFromTray("mReplayButton");
 
-		mTrayMgr->getWidget("mGameOver")->hide();
-		mTrayMgr->getWidget("mResult")->hide();
-		mTrayMgr->getWidget("mQuitButton")->hide();
-		mTrayMgr->getWidget("mReplayButton")->hide();
+        mTrayMgr->getWidget("mGameOver")->hide();
+        mTrayMgr->getWidget("mResult")->hide();
+        mTrayMgr->getWidget("mQuitButton")->hide();
+        mTrayMgr->getWidget("mReplayButton")->hide();
 
-		timer->reset();
+        timer->reset();
+        mCameraMan->setStyle(CS_FREELOOK);
+        numBalls = 0;
 
     }
 }
@@ -284,7 +286,7 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
     character->updatePerFrame(fe.timeSinceLastFrame);
 
     mTimeSinceLastBall += fe.timeSinceLastFrame;
-    while (mTimeSinceLastBall >= 8.1) {
+    while (mTimeSinceLastBall >= 2.1) {
         createBall(mTimeSinceLastBall);
         mTimeSinceLastBall -= 5;
     }

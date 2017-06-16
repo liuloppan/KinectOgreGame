@@ -47,8 +47,8 @@ protected:
     virtual bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
     virtual bool keyReleased(const OIS::KeyEvent &evt);
     virtual void setupKinect(void);
-	virtual bool setup();
-	virtual void buttonHit(Button *b);
+    virtual bool setup();
+    virtual void buttonHit(Button *b);
 
     void setupWidgets();
     void gameOver();
