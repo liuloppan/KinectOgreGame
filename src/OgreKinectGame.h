@@ -29,6 +29,7 @@ ________                           ____  __.__                      __
 #include "BulletCollision/Gimpact/btGImpactShape.h"
 #include "SkeletonToRagdoll.h"
 #include "OgreDisplay.h"
+#include "DebugDraw.h"
 
 #include "sdkTrays.h"
 using namespace OgreBites;
@@ -77,6 +78,7 @@ protected:
     long gameTime; // how long the game lasts for in milliseconds
     OgreBites::Label *timerLabel;
     OgreBites::Label *scoreLabel;
+    CDebugDraw *mDebugDraw;
 };
 
 #endif // #ifndef __OgreKinectGame_h_

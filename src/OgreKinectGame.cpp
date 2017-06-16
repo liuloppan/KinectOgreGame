@@ -22,6 +22,8 @@ ________                           ____  __.__                      __
 #include "Stdafx.h"
 #include "OgreKinectGame.h"
 #include "sdkTrays.h"
+
+bool debugDraw = true;
 //-------------------------------------------------------------------------------------
 OgreKinectGame::OgreKinectGame()
     : kinectController(0),
@@ -33,7 +35,7 @@ OgreKinectGame::OgreKinectGame()
       numBalls(0),
       mTimeSinceLastBall(0)
 {
-    gameTime = 10000; // milliseconds
+    gameTime = 1000000000; // milliseconds
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
                      "Developer :\n"
@@ -194,7 +196,6 @@ void OgreKinectGame::createScene()
     // setup character
     character = new SinbadCharacterController();
     character->setupCharacter(this->mSceneMgr, this->kinectController);
-    //character->getEntityNode()->rotate(Ogre::Vector3(0,1,0), Ogre::Degree(180));
 
     // setup shadow properties
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
@@ -218,12 +219,19 @@ void OgreKinectGame::createScene()
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
     dynamicsWorld->setGravity(btVector3(0, -50, 0));
 
+    if (debugDraw) {
+        mDebugDraw = new CDebugDraw(mSceneMgr, dynamicsWorld);
+        mDebugDraw->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+        dynamicsWorld->setDebugDrawer(mDebugDraw);
+    }
+
+
 
     //create the character physical skeleton
     ogreDisplay = new OgreDisplay(dynamicsWorld);
     ragdoll = new SkeletonToRagdoll(mSceneMgr);
     ragdoll->createRagdoll(dynamicsWorld, character->getEntityNode());
-    ragdoll->setDebugBones(true);
+    ragdoll->setDebugBones(false);
 
     // Floor
     Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -249,21 +257,10 @@ void OgreKinectGame::createScene()
     groundRigidBody->setFriction(10.0f);
     groundRigidBody->setRestitution(1.0f);
     dynamicsWorld->addRigidBody(groundRigidBody);
-    ragdoll->addIgnoreEventObject(groundRigidBody);
+    //ragdoll->addIgnoreEventObject(groundRigidBody);
 
     //start timer
     timer = new Ogre::Timer();
-
-    // Color Data
-    //texRenderTarget = Ogre::TextureManager::getSingleton().createManual("texRenderTarget", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-    //                  Ogre::TEX_TYPE_2D, 320, 240, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
-
-    //Ogre::Rectangle2D *mMiniScreen = new Ogre::Rectangle2D(true);
-    //mMiniScreen->setCorners(0.5f, -0.5f, 1.0f, -1.0f);
-    //mMiniScreen->setBoundingBox(Ogre::AxisAlignedBox(-100000.0f * Ogre::Vector3::UNIT_SCALE, 100000.0f * Ogre::Vector3::UNIT_SCALE));
-
-    //Ogre::SceneNode *miniScreenNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("MiniScreenNode");
-    //miniScreenNode->attachObject(mMiniScreen);
 }
 
 //-------------------------------------------------------------------------------------
@@ -290,7 +287,9 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
         createBall(mTimeSinceLastBall);
         mTimeSinceLastBall -= 5;
     }
-
+    if (debugDraw) {
+        mDebugDraw->Update();
+    }
 
     // Update Color Data
     this->kinectController->showColorData(this->texRenderTarget);
@@ -304,8 +303,6 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
             ogreDisplay->update();
 
             ragdoll->update();
-            //std::string name = ragdoll->update();
-            //if(name != "") name = name;
         }
     }
 
@@ -319,8 +316,8 @@ void OgreKinectGame::createBall(Ogre::Real time)
     }
     char name[256];
     sprintf(name, "%d", numBalls++);
-    float LO = 0.1;
-    float HI = 10;
+    float LO = 1;
+    float HI = 50;
     float x = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
     float z = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
 
