@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClInclude Include="src\AxisLines.h" />
     <ClInclude Include="src\BaseApplication.h" />
+    <ClInclude Include="src\DebugDraw.h" />
+    <ClInclude Include="src\DynamicLineDrawer.h" />
     <ClInclude Include="src\DynamicLines.h" />
     <ClInclude Include="src\DynamicRenderable.h" />
     <ClInclude Include="src\JointOrientationCalculator.h" />
@@ -34,6 +36,8 @@
   <ItemGroup>
     <ClCompile Include="src\AxisLines.cpp" />
     <ClCompile Include="src\BaseApplication.cpp" />
+    <ClCompile Include="src\DebugDraw.cpp" />
+    <ClCompile Include="src\DynamicLineDrawer.cpp" />
     <ClCompile Include="src\DynamicLines.cpp" />
     <ClCompile Include="src\DynamicRenderable.cpp" />
     <ClCompile Include="src\JointOrientationCalculator.cpp" />

@@ -22,6 +22,8 @@ ________                           ____  __.__                      __
 #include "Stdafx.h"
 #include "OgreKinectGame.h"
 #include "sdkTrays.h"
+
+bool debugDraw = true;
 //-------------------------------------------------------------------------------------
 OgreKinectGame::OgreKinectGame()
     : kinectController(0),
@@ -33,7 +35,7 @@ OgreKinectGame::OgreKinectGame()
       numBalls(0),
       mTimeSinceLastBall(0)
 {
-    gameTime = 5000; // milliseconds
+    gameTime = 1000000000; // milliseconds
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
                      "Developer :\n"
@@ -122,11 +124,12 @@ void OgreKinectGame::setupWidgets()
     mTrayMgr->createLabel(TL_NONE, "mGameOver", "GAME OVER!", WIDTH_UI);
     mTrayMgr->createLabel(TL_NONE, "mResult", "you score is; ", WIDTH_UI);
     mTrayMgr->createButton(TL_NONE, "mQuitButton", "Quit");
+    mTrayMgr->createButton(TL_NONE, "mReplayButton", "Replay");
 
     mTrayMgr->getWidget("mGameOver")->hide();
     mTrayMgr->getWidget("mResult")->hide();
     mTrayMgr->getWidget("mQuitButton")->hide();
-
+    mTrayMgr->getWidget("mReplayButton")->hide();
 
 
 
@@ -139,14 +142,39 @@ void OgreKinectGame::gameOver()
     mTrayMgr->moveWidgetToTray("mGameOver", TL_CENTER);
     mTrayMgr->moveWidgetToTray("mResult", TL_CENTER);
     mTrayMgr->moveWidgetToTray("mQuitButton", TL_CENTER);
+    mTrayMgr->moveWidgetToTray("mReplayButton", TL_CENTER);
 
     mTrayMgr->getWidget("mGameOver")->show();
     mTrayMgr->getWidget("mResult")->show();
     mTrayMgr->getWidget("mQuitButton")->show();
+    mTrayMgr->getWidget("mReplayButton")->show();
+
 
     mTrayMgr->showCursor();
     mCameraMan->setStyle(CS_MANUAL);
+}
+//-------------------------------------------------------------------------------------
+void OgreKinectGame::buttonHit(Button *b)
+{
+    if (b->getName() == "mQuitButton") {
+        mRoot->queueEndRendering();
+    } else if (b->getName() == "mReplayButton") {
 
+        mTrayMgr->removeWidgetFromTray("mGameOver");
+        mTrayMgr->removeWidgetFromTray("mResult");
+        mTrayMgr->removeWidgetFromTray("mQuitButton");
+        mTrayMgr->removeWidgetFromTray("mReplayButton");
+
+        mTrayMgr->getWidget("mGameOver")->hide();
+        mTrayMgr->getWidget("mResult")->hide();
+        mTrayMgr->getWidget("mQuitButton")->hide();
+        mTrayMgr->getWidget("mReplayButton")->hide();
+
+        timer->reset();
+        mCameraMan->setStyle(CS_FREELOOK);
+        numBalls = 0;
+
+    }
 }
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::setup(void)
@@ -164,11 +192,6 @@ bool OgreKinectGame::setup(void)
 void OgreKinectGame::createScene()
 {
     this->setupKinect();
-
-    // setup character
-    character = new SinbadCharacterController();
-    character->setupCharacter(this->mSceneMgr, this->kinectController);
-    //character->getEntityNode()->rotate(Ogre::Vector3(0,1,0), Ogre::Degree(180));
 
     // setup shadow properties
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
@@ -192,12 +215,24 @@ void OgreKinectGame::createScene()
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
     dynamicsWorld->setGravity(btVector3(0, -50, 0));
 
+    if (debugDraw) {
+        mDebugDraw = new CDebugDraw(mSceneMgr, dynamicsWorld);
+        mDebugDraw->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+        dynamicsWorld->setDebugDrawer(mDebugDraw);
+    }
+
+
 
     //create the character physical skeleton
     ogreDisplay = new OgreDisplay(dynamicsWorld);
     ragdoll = new SkeletonToRagdoll(mSceneMgr);
+
+	    // setup character
+    character = new SinbadCharacterController(ogreDisplay);
+    character->setupCharacter(this->mSceneMgr, this->kinectController);
+
     ragdoll->createRagdoll(dynamicsWorld, character->getEntityNode());
-    ragdoll->setDebugBones(true);
+    ragdoll->setDebugBones(false);
 
     // Floor
     Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -223,21 +258,10 @@ void OgreKinectGame::createScene()
     groundRigidBody->setFriction(10.0f);
     groundRigidBody->setRestitution(1.0f);
     dynamicsWorld->addRigidBody(groundRigidBody);
-    ragdoll->addIgnoreEventObject(groundRigidBody);
+    //ragdoll->addIgnoreEventObject(groundRigidBody);
 
     //start timer
     timer = new Ogre::Timer();
-
-    // Color Data
-    //texRenderTarget = Ogre::TextureManager::getSingleton().createManual("texRenderTarget", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-    //                  Ogre::TEX_TYPE_2D, 320, 240, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
-
-    //Ogre::Rectangle2D *mMiniScreen = new Ogre::Rectangle2D(true);
-    //mMiniScreen->setCorners(0.5f, -0.5f, 1.0f, -1.0f);
-    //mMiniScreen->setBoundingBox(Ogre::AxisAlignedBox(-100000.0f * Ogre::Vector3::UNIT_SCALE, 100000.0f * Ogre::Vector3::UNIT_SCALE));
-
-    //Ogre::SceneNode *miniScreenNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("MiniScreenNode");
-    //miniScreenNode->attachObject(mMiniScreen);
 }
 
 //-------------------------------------------------------------------------------------
@@ -260,11 +284,13 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
     character->updatePerFrame(fe.timeSinceLastFrame);
 
     mTimeSinceLastBall += fe.timeSinceLastFrame;
-    while (mTimeSinceLastBall >= 8.1) {
+    while (mTimeSinceLastBall >= 2.1) {
         createBall(mTimeSinceLastBall);
-        mTimeSinceLastBall -= 5;
+        mTimeSinceLastBall -= 10;
     }
-
+    if (debugDraw) {
+        mDebugDraw->Update();
+    }
 
     // Update Color Data
     this->kinectController->showColorData(this->texRenderTarget);
@@ -277,9 +303,7 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
             dynamicsWorld->performDiscreteCollisionDetection();
             ogreDisplay->update();
 
-            ragdoll->update();
-            //std::string name = ragdoll->update();
-            //if(name != "") name = name;
+            //ragdoll->update();
         }
     }
 
@@ -293,8 +317,8 @@ void OgreKinectGame::createBall(Ogre::Real time)
     }
     char name[256];
     sprintf(name, "%d", numBalls++);
-    float LO = 0.1;
-    float HI = 10;
+    float LO = 1;
+    float HI = 50;
     float x = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
     float z = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
 

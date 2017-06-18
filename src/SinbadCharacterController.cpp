@@ -23,8 +23,9 @@ ________                           ____  __.__                      __
 #include "SinbadCharacterController.h"
 
 //-------------------------------------------------------------------------------------
-SinbadCharacterController::SinbadCharacterController()
+SinbadCharacterController::SinbadCharacterController(OgreDisplay *ogreDisplay)
 {
+	this->mOgreDisplay = ogreDisplay;
     this->showBoneOrientationAxes = false;
 
     this->skelCenter = 10000.0f;
@@ -50,6 +51,22 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
     this->bodyNode->attachObject(bodyEntity);
     this->bodyNode->scale(Ogre::Vector3(5));
     this->bodyNode->setPosition(bodyOffset);
+
+	// bullet
+	float radius = 5;
+    btSphereShape *collisionShape = new btSphereShape(radius);
+    btTransform startTransform;
+    //float friction = 10;
+    btScalar mass = 100.0f;
+    startTransform.setIdentity();
+    startTransform.setOrigin(btVector3(bodyNode->getPosition().x, bodyNode->getPosition().y, bodyNode->getPosition().z));
+    btDefaultMotionState *triMotionState = new btDefaultMotionState(startTransform);
+    btVector3 localInertia;
+    collisionShape->calculateLocalInertia(mass, localInertia);
+    btRigidBody::btRigidBodyConstructionInfo rbInfo = btRigidBody::btRigidBodyConstructionInfo(mass, triMotionState, collisionShape);
+    btRigidBody *triBody = new btRigidBody(rbInfo);
+	//triBody->setGravity(btVector3(0,0,0));
+	mOgreDisplay->createDynamicObject(bodyEntity, triBody);
 
     // create swords and attach to sheath
     mSword1 = mSceneManager->createEntity("SinbadSword1", "Sword.mesh");
@@ -192,7 +209,6 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
     if (controller->getSkeletonStatus() != NuiSkeletonTrackingState::SKELETON_TRACKED) {
         return;
     }
-    static bool bRightAfterSwardsPositionChanged = false;
 
     Ogre::Real baseAnimSpeed = 1;
     Ogre::Real topAnimSpeed = 1;
@@ -200,21 +216,18 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
     Ogre::Vector3 leftHand = controller->getJointPosition(HAND_LEFT);
     Ogre::Vector3 rightHand = controller->getJointPosition(HAND_RIGHT);
     Ogre::Vector3 Head = controller->getJointPosition(HEAD);
-    Ogre::Vector3 tempvec;
-    tempvec = leftHand - rightHand;
-    if (tempvec.squaredLength() < 50000) {
-        tempvec = leftHand - Head;
-        if (!bRightAfterSwardsPositionChanged && tempvec.squaredLength() < 100000) {
-            if (leftHand.z - 0.08f > Head.z) {
-                setTopAnimation(ANIM_DRAW_SWORDS, true);
-                mTimer = 0;
-                bRightAfterSwardsPositionChanged = true;
-            }
-        }
-    } else {
-        bRightAfterSwardsPositionChanged = false;
+    std::ostringstream lstr, hstr;
+    lstr << leftHand.z;
+    hstr << Head.z;
+    std::string mylefthand = lstr.str();
+    std::string myhead = hstr.str();
+    Ogre::LogManager::getSingletonPtr()->logMessage("HEAD");
+    Ogre::LogManager::getSingletonPtr()->logMessage(myhead);
+    Ogre::LogManager::getSingletonPtr()->logMessage("LEFT HAND");
+    Ogre::LogManager::getSingletonPtr()->logMessage(mylefthand);
+    if (leftHand.z >= 1.46071f) {
+        setTopAnimation(ANIM_DRAW_SWORDS, true);
     }
-
 
     if (mTopAnimID == ANIM_DRAW_SWORDS) {
         // flip the draw swords animation if we need to put it back

@@ -26,6 +26,8 @@ ________                           ____  __.__                      __
 #include "JointOrientationCalculator.h"
 #include "OgreMatrix3.h"
 #include "AxisLines.h"
+#include "btBulletDynamicsCommon.h"
+#include "OgreDisplay.h"
 
 #define NUM_ANIMS 13
 #define ANIM_FADE_SPEED 7.5f   // animation crossfade speed in % of full weight per second
@@ -34,7 +36,7 @@ class SinbadCharacterController
 {
 
 public:
-    SinbadCharacterController();
+    SinbadCharacterController(OgreDisplay *ogreDisplay);
     virtual ~SinbadCharacterController();
 
     virtual void setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller);
@@ -95,6 +97,7 @@ protected:
     Ogre::AnimationState *mAnims[NUM_ANIMS];    // master animation list
     bool mSwordsDrawn;
     Ogre::Real mTimer;                // general timer to see how long animations have been playing
+	OgreDisplay *mOgreDisplay;
 };
 
 #endif
