@@ -243,7 +243,7 @@ void OgreKinectGame::createScene()
 
     // Floor
     Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-            Ogre::Plane(Ogre::Vector3::UNIT_Y, 0), 200000, 200000, 20, 20, true, 1, 9000, 9000, Ogre::Vector3::UNIT_Z);
+            Ogre::Plane(Ogre::Vector3::UNIT_Y, 0), 2000, 2000, 10, 10, true, 1, 10, 10, Ogre::Vector3::UNIT_Z);
 
 
     Ogre::Entity *floor = mSceneMgr->createEntity("Floor", "floor");
