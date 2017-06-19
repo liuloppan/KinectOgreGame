@@ -23,23 +23,24 @@ ________                           ____  __.__                      __
 #include "SinbadCharacterController.h"
 
 //-------------------------------------------------------------------------------------
-SinbadCharacterController::SinbadCharacterController(OgreDisplay *ogreDisplay)
+SinbadCharacterController::SinbadCharacterController()
 {
-    this->mOgreDisplay = ogreDisplay;
     this->showBoneOrientationAxes = false;
 
     this->skelCenter = 10000.0f;
     this->bodyOffset = Ogre::Vector3(0, 45, 0);
+    this->mNumEntitiesInstanced = 0;
 }
 //-------------------------------------------------------------------------------------
 SinbadCharacterController::~SinbadCharacterController()
 {
 }
-//-------------------------------------------------------------------------------------
-void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller)
+// -------------------------------------------------------------------------
+void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller, OgreBulletDynamics::DynamicsWorld *dynamicsWorld)
 {
     this->mSceneManager = mSceneManager;
     this->controller = controller;
+    this->mDynamicsWorld = dynamicsWorld;
 
     jointCalc = new JointOrientationCalculator();
     jointCalc->setupController(controller);
@@ -49,30 +50,24 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
     this->bodyEntity = mSceneManager->createEntity(entityName, "Sinbad.mesh");
     this->bodyNode = mSceneManager->getRootSceneNode()->createChildSceneNode();
     this->bodyNode->attachObject(bodyEntity);
-    this->bodyNode->scale(Ogre::Vector3(5));
+    //this->bodyNode->scale(Ogre::Vector3(5));
     this->bodyNode->setPosition(bodyOffset);
-
-    // bullet
-    //float radius = 15;
-    //   btSphereShape *collisionShape = new btSphereShape(radius);
-    //   btTransform startTransform;
-    //   //float friction = 10;
-    //   btScalar mass = 10.0f;
-    //   startTransform.setIdentity();
-    //   startTransform.setOrigin(btVector3(bodyNode->getPosition().x, bodyNode->getPosition().y, bodyNode->getPosition().z));
-    //   btDefaultMotionState *triMotionState = new btDefaultMotionState(startTransform);
-    //   btVector3 localInertia;
-    //   collisionShape->calculateLocalInertia(mass, localInertia);
-    //   btRigidBody::btRigidBodyConstructionInfo rbInfo = btRigidBody::btRigidBodyConstructionInfo(mass, triMotionState, collisionShape);
-    //   SindabRigidBody = new btRigidBody(rbInfo);
-    ////triBody->setGravity(btVector3(0,0,0));
-    //mOgreDisplay->createDynamicObject(bodyEntity, SindabRigidBody);
 
     // create swords and attach to sheath
     mSword1 = mSceneManager->createEntity("SinbadSword1", "Sword.mesh");
     mSword2 = mSceneManager->createEntity("SinbadSword2", "Sword.mesh");
     bodyEntity->attachObjectToBone("Sheath.L", mSword1);
     bodyEntity->attachObjectToBone("Sheath.R", mSword2);
+
+    OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = new OgreBulletCollisions::StaticMeshToShapeConverter(bodyEntity);
+    OgreBulletCollisions::TriangleMeshCollisionShape *bodyTriMeshShape = trimeshConverter->createTrimesh();
+    delete trimeshConverter;
+    OgreBulletDynamics::RigidBody *bodyRigid = new OgreBulletDynamics::RigidBody(
+        "RigidSinbad",
+        mDynamicsWorld);
+    bodyRigid->setStaticShape(bodyNode, bodyTriMeshShape, 0.1f, 0.8f, bodyOffset);
+    mEntities.push_back(bodyEntity);
+    mBodies.push_back(bodyRigid);
 
     skeleton = this->bodyEntity->getSkeleton();
     skeleton->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
