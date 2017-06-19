@@ -40,7 +40,7 @@ public:
 
     virtual ~SinbadCharacterController();
 
-    virtual void setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller,OgreBulletDynamics::DynamicsWorld *mWorld);
+    virtual void setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller, OgreBulletDynamics::DynamicsWorld *mWorld);
     virtual void updatePerFrame(Ogre::Real elapsedTime);
     Ogre::SceneNode *getEntityNode();
 
@@ -83,8 +83,8 @@ protected:
     Ogre::Real skelCenter;
     Ogre::Vector3 bodyOffset;
 
-	OgreBulletDynamics::DynamicsWorld *mWorld;
-	OgreBulletDynamics::RigidBody *rbSinbad;
+    OgreBulletDynamics::DynamicsWorld *mWorld;
+    OgreBulletDynamics::RigidBody *rbSinbad;
     Ogre::SceneManager *mSceneManager;
     Ogre::Entity *bodyEntity;
     Ogre::Entity *mSword1;

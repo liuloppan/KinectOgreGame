@@ -35,14 +35,14 @@ SinbadCharacterController::SinbadCharacterController()
 //-------------------------------------------------------------------------------------
 SinbadCharacterController::~SinbadCharacterController()
 {
-	delete rbSinbad;
+    delete rbSinbad;
 }
 // -------------------------------------------------------------------------
-void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller,OgreBulletDynamics::DynamicsWorld *mWorld)
+void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller, OgreBulletDynamics::DynamicsWorld *mWorld)
 {
     this->mSceneManager = mSceneManager;
     this->controller = controller;
-	this->mWorld = mWorld;	
+    this->mWorld = mWorld;
 
     jointCalc = new JointOrientationCalculator();
     jointCalc->setupController(controller);
@@ -56,16 +56,16 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
     this->bodyNode->setPosition(bodyOffset);
 
 
-	OgreBulletCollisions::BoxCollisionShape *colShapeSinbad = new OgreBulletCollisions::BoxCollisionShape( Ogre::Vector3 (10.f, 10.f, 10.f));
+    OgreBulletCollisions::BoxCollisionShape *colShapeSinbad = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(10.f, 10.f, 10.f));
     // and the Bullet rigid body
     rbSinbad = new OgreBulletDynamics::RigidBody("rbSinbad", mWorld);
-    rbSinbad->setShape(   bodyNode,
-                    colShapeSinbad,
-                    0.6f,         // dynamic body restitution
-                    0.6f,         // dynamic body friction
-                    0.0f,          // dynamic bodymass
-                    bodyNode->getPosition(),      // starting position of the box
-                    bodyNode->getOrientation());// orientation of the box
+    rbSinbad->setShape(bodyNode,
+                       colShapeSinbad,
+                       0.6f,         // dynamic body restitution
+                       0.6f,         // dynamic body friction
+                       0.0f,          // dynamic bodymass
+                       bodyNode->getPosition(),      // starting position of the box
+                       bodyNode->getOrientation());// orientation of the box
 
     // create swords and attach to sheath
     mSword1 = mSceneManager->createEntity("SinbadSword1", "Sword.mesh");
@@ -260,7 +260,7 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
         transformBone("Ulna.L",              NuiJointIndex::ELBOW_RIGHT);
 
     }
-	
+
 
 }
 //-------------------------------------------------------------------------------------
@@ -276,12 +276,12 @@ void SinbadCharacterController::transformBone(Ogre::String boneName, NuiManager:
 
         if (boneName == "Root") {
             //kinect skeleton position is in meter 0.8m<z<4m
-			Ogre::Vector3 newBodyPos = controller->getJointPosition(jointIdx) * 60.0f;
-			newBodyPos.z = -1 * newBodyPos.z;
-			newBodyPos += bodyOffset;
+            Ogre::Vector3 newBodyPos = controller->getJointPosition(jointIdx) * 60.0f;
+            newBodyPos.z = -1 * newBodyPos.z;
+            newBodyPos += bodyOffset;
 
-			bodyNode->setPosition(newBodyPos);
-			rbSinbad->setPosition(bodyNode->getPosition());
+            bodyNode->setPosition(newBodyPos);
+            rbSinbad->setPosition(bodyNode->getPosition());
         }
         bone->resetOrientation();
         newQ = bone->convertWorldToLocalOrientation(newQ);
