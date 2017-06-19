@@ -243,7 +243,7 @@ void OgreKinectGame::createScene()
 
 
     // setup character
-    character = new SinbadCharacterController(ogreDisplay);
+    character = new SinbadCharacterController(ogreDisplay, dynamicsWorld);
     character->setupCharacter(this->mSceneMgr, this->kinectController);
 
 
@@ -255,16 +255,18 @@ void OgreKinectGame::createScene()
     Ogre::Entity *floor = mSceneMgr->createEntity("Floor", "floor");
     floor->setMaterialName("Examples/BeachStones");
     floor->setCastShadows(false);
-    mSceneMgr->getRootSceneNode()->attachObject(floor);
+    (mSceneMgr->getRootSceneNode()->createChildSceneNode("floorNode"))->attachObject(floor);
     mSceneMgr->setSkyDome(true, "Examples/CloudySky", 10, 8);
+	mSceneMgr->getSceneNode("floorNode")->translate(0.f,-60.f,0.f);
 
     OgreBulletCollisions::CollisionShape *Shape;
-    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0, 1, 0), 0); // (normal vector, distance)
+    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0, 1, 0), -60); // (normal vector, distance)
     OgreBulletDynamics::RigidBody *defaultPlaneBody = new OgreBulletDynamics::RigidBody(
         "BasePlane",
         dynamicsWorld);
     defaultPlaneBody->setStaticShape(Shape, 0.1, 0.8); // (shape, restitution, friction)
-    // push the created objects to the deques
+
+	// push the created objects to the deques
     mShapes.push_back(Shape);
     mBodies.push_back(defaultPlaneBody);
 

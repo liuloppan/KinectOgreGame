@@ -28,6 +28,7 @@ ________                           ____  __.__                      __
 #include "AxisLines.h"
 //#include "btBulletDynamicsCommon.h"
 #include "OgreDisplay.h"
+#include "OgreBulletDynamics.h"
 
 #define NUM_ANIMS 13
 #define ANIM_FADE_SPEED 7.5f   // animation crossfade speed in % of full weight per second
@@ -36,7 +37,7 @@ class SinbadCharacterController
 {
 
 public:
-    SinbadCharacterController(OgreDisplay *ogreDisplay);
+    SinbadCharacterController(OgreDisplay *ogreDisplay, OgreBulletDynamics::DynamicsWorld *dynamicsWorld);
     virtual ~SinbadCharacterController();
 
     virtual void setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller);
@@ -84,6 +85,8 @@ protected:
     Ogre::Real skelCenter;
     Ogre::Vector3 bodyOffset;
 
+	OgreBulletDynamics::DynamicsWorld *mWorld;
+	OgreBulletDynamics::RigidBody *rbSinbad;
     Ogre::SceneManager *mSceneManager;
     Ogre::Entity *bodyEntity;
     Ogre::Entity *mSword1;

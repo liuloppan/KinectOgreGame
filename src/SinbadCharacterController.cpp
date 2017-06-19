@@ -23,9 +23,10 @@ ________                           ____  __.__                      __
 #include "SinbadCharacterController.h"
 
 //-------------------------------------------------------------------------------------
-SinbadCharacterController::SinbadCharacterController(OgreDisplay *ogreDisplay)
+SinbadCharacterController::SinbadCharacterController(OgreDisplay *ogreDisplay, OgreBulletDynamics::DynamicsWorld *dynamicsWorld)
 {
-    this->mOgreDisplay = ogreDisplay;
+    this->mWorld = dynamicsWorld;
+	this->mOgreDisplay = ogreDisplay;
     this->showBoneOrientationAxes = false;
 
     this->skelCenter = 10000.0f;
@@ -34,6 +35,7 @@ SinbadCharacterController::SinbadCharacterController(OgreDisplay *ogreDisplay)
 //-------------------------------------------------------------------------------------
 SinbadCharacterController::~SinbadCharacterController()
 {
+	delete rbSinbad;
 }
 //-------------------------------------------------------------------------------------
 void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller)
@@ -51,6 +53,19 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
     this->bodyNode->attachObject(bodyEntity);
     this->bodyNode->scale(Ogre::Vector3(5));
     this->bodyNode->setPosition(bodyOffset);
+
+
+	OgreBulletCollisions::BoxCollisionShape *colShapeSinbad = new OgreBulletCollisions::BoxCollisionShape( Ogre::Vector3 (10.f, 10.f, 10.f));
+    // and the Bullet rigid body
+    rbSinbad = new OgreBulletDynamics::RigidBody("rbSinbad", mWorld);
+    rbSinbad->setShape(   bodyNode,
+                    colShapeSinbad,
+                    0.6f,         // dynamic body restitution
+                    0.6f,         // dynamic body friction
+                    0.0f,          // dynamic bodymass
+                    bodyNode->getPosition(),      // starting position of the box
+                    bodyNode->getOrientation());// orientation of the box
+
 
     // bullet
     //float radius = 15;
@@ -267,6 +282,8 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
         transformBone("Ulna.L",              NuiJointIndex::ELBOW_RIGHT);
 
     }
+	
+	rbSinbad->setPosition(bodyNode->getPosition());
 }
 //-------------------------------------------------------------------------------------
 void SinbadCharacterController::transformBone(Ogre::String boneName, NuiManager::NuiJointIndex jointIdx)
@@ -282,14 +299,11 @@ void SinbadCharacterController::transformBone(Ogre::String boneName, NuiManager:
         if (boneName == "Root") {
             //kinect skeleton position is in meter 0.8m<z<4m
 
-            bone->setPosition(controller->getJointPosition(jointIdx) * 20.0f);
-            //tr.setIdentity();
-            //tr.setOrigin(btVector3(controller->getJointPosition(jointIdx).x,
-            //controller->getJointPosition(jointIdx).y,
-            //controller->getJointPosition(jointIdx).z));
-            //tr.setOrigin(btVector3(bodyNode->getPosition().x, bodyNode->getPosition().y, bodyNode->getPosition().z));
-            //SindabRigidBody->setActivationState(DISABLE_DEACTIVATION);
-            //SindabRigidBody->setWorldTransform(tr);
+			bodyNode->setPosition(controller->getJointPosition(jointIdx) * 20.0f);
+            //bone->setPosition(controller->getJointPosition(jointIdx) * 20.0f);	
+
+
+			
         }
         bone->resetOrientation();
         newQ = bone->convertWorldToLocalOrientation(newQ);

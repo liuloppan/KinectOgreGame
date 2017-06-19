@@ -74,10 +74,13 @@ namespace OgreBulletCollisions
             //mRootNode->getParentSceneNode ()->removeAndDestroyChild (mRootNode->getName ());
         }
 
-        getBulletCollisionWorld()->removeCollisionObject( mObject );
-		getCollisionWorld()->removeObject(this);
+		if(dynamicsWorld){
 
-        delete mObject;        
+			getBulletCollisionWorld()->removeCollisionObject( mObject );
+			getCollisionWorld()->removeObject(this);
+
+			delete mObject;     
+		}
         //delete mShape;
         delete mState;
         delete mDebugShape;

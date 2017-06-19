@@ -177,7 +177,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <Link>
       <AdditionalOptions>%(AdditionalOptions)  /machine:X86</AdditionalOptions>
       <AdditionalDependencies>NuiManager.lib;OgreMain_d.lib;OIS_d.lib;Kinect10.lib;BulletCollision_vs2010_debug.lib;BulletDynamics_vs2010_debug.lib;BulletSoftBody_vs2010_debug.lib;ConvexDecomposition_vs2010_debug.lib;LinearMath_vs2010_debug.lib;OgreBulletCollisions_d.lib;OgreBulletDynamics_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>Lib\OgreBullet\libs\Debug\;Lib\NuiManager\bin\Debug\;$(OGRE_HOME)\lib\debug\;$(KINECTSDK10_DIR)lib\x86\;$(BOOST_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Lib\OgreBullet\libs\Debug\;Lib\NuiManager\bin\Debug\;$(OGRE_HOME)\lib\debug\;$(KINECTSDK10_DIR)lib\x86\;$(BOOST_ROOT)\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>$(OutDir)OgreApp_d.lib</ImportLibrary>
