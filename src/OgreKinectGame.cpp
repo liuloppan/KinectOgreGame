@@ -243,7 +243,7 @@ void OgreKinectGame::createScene()
 
     // Floor
     Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-            Ogre::Plane(Ogre::Vector3::UNIT_Y, 0), 2000, 2000, 10, 10, true, 1, 10, 10, Ogre::Vector3::UNIT_Z);
+            Ogre::Plane(Ogre::Vector3::UNIT_Y, 0), 200000, 200000, 20, 20, true, 1, 9000, 9000, Ogre::Vector3::UNIT_Z);
 
 
     Ogre::Entity *floor = mSceneMgr->createEntity("Floor", "floor");
@@ -267,7 +267,36 @@ void OgreKinectGame::createScene()
     //start timer
     timer = new Ogre::Timer();
 }
+//-------------------------------------------------------------------------------------
+void OgreKinectGame::checkCollisions()
+{
+    btCollisionWorld *collisionWorld = dynamicsWorld->getBulletCollisionWorld();
+    btDynamicsWorld *dynamicWorld = dynamicsWorld->getBulletDynamicsWorld();
 
+    int numManifolds = collisionWorld->getDispatcher()->getNumManifolds();
+    bool collide = false;
+    for (int i = 0; i < numManifolds; i++) {
+        btPersistentManifold *contactManifold =  collisionWorld->getDispatcher()->getManifoldByIndexInternal(i);
+        btCollisionObject *obA = (btCollisionObject *) contactManifold->getBody0();
+        btCollisionObject *obB = (btCollisionObject *) contactManifold->getBody1();
+
+        int numContacts = contactManifold->getNumContacts();
+        for (int j = 0; j < numContacts; j++) {
+            btManifoldPoint &pt = contactManifold->getContactPoint(j);
+            if (pt.getDistance() < 0.f) {
+                const btVector3 &ptA = pt.getPositionWorldOnA();
+                const btVector3 &ptB = pt.getPositionWorldOnB();
+                const btVector3 &normalOnB = pt.m_normalWorldOnB;
+                collide = true;
+                std::cout << "Collision Body A: " << obA->getCollisionShape()->getName() << std::endl;
+                std::cout << "Collision Body B: " << obB->getCollisionShape()->getName() << std::endl;
+            }
+        }
+    }
+
+    // this is label for debugging
+    //mInfoLabel->setCaption("Collision = " + Ogre::StringConverter::toString(collide));
+}
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 {
@@ -294,7 +323,7 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
         createBall(mTimeSinceLastBall);
         mTimeSinceLastBall -= 10;
     }
-
+    checkCollisions();
     return true;
 }
 //-------------------------------------------------------------------------------------

@@ -59,6 +59,7 @@ protected:
     void setupWidgets();
     void gameOver();
     void createBall(Ogre::Real time);
+    void checkCollisions();
 
 protected:
     Ogre::Entity	*mFloor;
