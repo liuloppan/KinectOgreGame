@@ -87,7 +87,11 @@ protected:
     int mNumofBall;
     Ogre::Entity *mBallEntity;
     Ogre::ParticleSystem *mParticleSys;
+    OgreBulletCollisions::CollisionShape *Shape;
     Ogre::SceneNode *mElementNode;
+    OgreBulletDynamics::RigidBody *defaultPlaneBody;
+    OgreBulletCollisions::SphereCollisionShape *BallShape;
+    OgreBulletDynamics::RigidBody *rbBall;
 };
 
 #endif // #ifndef __OgreKinectGame_h_

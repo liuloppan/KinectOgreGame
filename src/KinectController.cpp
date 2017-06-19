@@ -16,6 +16,10 @@ KinectController::KinectController(void)
 //-------------------------------------------------------------------------------------
 KinectController::~KinectController(void)
 {
+    if (kinectManager) {
+        kinectManager = NULL;
+        delete kinectManager;
+    }
 }
 
 //-------------------------------------------------------------------------------------

@@ -19,6 +19,10 @@ ________                           ____  __.__                      __
       https://github.com/liuloppan/KinectOgreGame/
 -----------------------------------------------------------------------------
 */
+// to checking memory leak
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
 #include "Stdafx.h"
 #include "OgreKinectGame.h"
 #include "sdkTrays.h"
@@ -37,6 +41,8 @@ OgreKinectGame::OgreKinectGame()
       gameTime(50000),
       mElementNode(0)
 {
+    // to checking memory leak
+    //_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
                      "Developer :\n"
@@ -50,6 +56,8 @@ OgreKinectGame::~OgreKinectGame()
     if (mTrayMgr) {
         mTrayMgr->destroyAllWidgets();
     }
+    // to checking memory leak
+    //_CrtDumpMemoryLeaks();
 }
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::destroyScene()
@@ -59,23 +67,44 @@ void OgreKinectGame::destroyScene()
     }
     if (kinectController) {
         kinectController->unInitController();
+        kinectController = NULL;
         delete kinectController;
     }
 
     if (character) {
+        character = NULL;
         delete character;
     }
 
     if (dynamicsWorld) {
+        dynamicsWorld = NULL;
         delete dynamicsWorld;
     }
 
+    if (mDebugDraw) {
+        mDebugDraw = NULL;
+        delete mDebugDraw;
+    }
 
-    //delete timerLabel;
-    //delete scoreLabel;
-    //delete mDebugDraw;
-    //delete mBallEntity;
+    if (Shape) {
+        Shape = NULL;
+        delete Shape;
+    }
 
+    if (defaultPlaneBody) {
+        defaultPlaneBody = NULL;
+        delete defaultPlaneBody;
+    }
+
+    if (BallShape) {
+        BallShape = NULL;
+        delete BallShape;
+    }
+
+    if (rbBall) {
+        rbBall = NULL;
+        delete rbBall;
+    }
 
     Ogre::MeshManager::getSingleton().remove("floor");
     if (!mSceneMgr) {
@@ -300,9 +329,8 @@ void OgreKinectGame::createScene()
     mSceneMgr->setSkyDome(true, "Examples/CloudySky", 10, 8);
     mSceneMgr->getSceneNode("floorNode")->translate(0.f, -20.f, 0.f);
 
-    OgreBulletCollisions::CollisionShape *Shape;
     Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0, 1, 0), -20); // (normal vector, distance)
-    OgreBulletDynamics::RigidBody *defaultPlaneBody = new OgreBulletDynamics::RigidBody(
+    defaultPlaneBody = new OgreBulletDynamics::RigidBody(
         "BasePlane",
         dynamicsWorld);
     defaultPlaneBody->setStaticShape(Shape, 0.1, 0.8); // (shape, restitution, friction)
@@ -411,21 +439,21 @@ void OgreKinectGame::createBall(Ogre::Real time)
     Ogre::SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
     node->attachObject(mBallEntity);
     node->scale(0.05f, 0.05f, 0.05f);
-    OgreBulletCollisions::SphereCollisionShape *sceneBoxShape = new OgreBulletCollisions::SphereCollisionShape(radius);
+    BallShape = new OgreBulletCollisions::SphereCollisionShape(radius);
     // and the Bullet rigid body
-    OgreBulletDynamics::RigidBody *defaultBody = new OgreBulletDynamics::RigidBody(
+    rbBall = new OgreBulletDynamics::RigidBody(
         "defaultBoxRigid" + Ogre::StringConverter::toString(mNumofBall),
         dynamicsWorld);
-    defaultBody->setShape(node,
-                          sceneBoxShape,
-                          10.0f,         // dynamic body restitution
-                          1.0f,         // dynamic body friction
-                          50.0f,          // dynamic bodymass
-                          position,      // starting position of the box
-                          Ogre::Quaternion(0, 0, 0, 1)); // orientation of the box
+    rbBall->setShape(node,
+                     BallShape,
+                     10.0f,         // dynamic body restitution
+                     1.0f,         // dynamic body friction
+                     50.0f,          // dynamic bodymass
+                     position,      // starting position of the box
+                     Ogre::Quaternion(0, 0, 0, 1)); // orientation of the box
     // push the created objects to the deques
-    mShapes.push_back(sceneBoxShape);
-    mBodies.push_back(defaultBody);
+    mShapes.push_back(BallShape);
+    mBodies.push_back(rbBall);
     mNumofBall++;
 }
 //-------------------------------------------------------------------------------------

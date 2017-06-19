@@ -103,6 +103,7 @@ protected:
     OgreBulletDynamics::DynamicsWorld *mDynamicsWorld;
     std::deque<Ogre::Entity *>                          mEntities;
     std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
+    OgreBulletCollisions::CapsuleCollisionShape *colShapeSinbad;
 };
 
 #endif

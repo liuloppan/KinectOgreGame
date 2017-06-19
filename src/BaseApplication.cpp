@@ -40,9 +40,11 @@ BaseApplication::BaseApplication(void)
 BaseApplication::~BaseApplication(void)
 {
     if (mTrayMgr) {
+        mTrayMgr = NULL;
         delete mTrayMgr;
     }
     if (mCameraMan) {
+        mCameraMan = NULL;
         delete mCameraMan;
     }
 
