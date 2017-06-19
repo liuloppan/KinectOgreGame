@@ -56,7 +56,7 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
     this->bodyNode->setPosition(bodyOffset);
 
 
-    OgreBulletCollisions::CapsuleCollisionShape *colShapeSinbad = new OgreBulletCollisions::CapsuleCollisionShape(20.0f, 50.0f, Ogre::Vector3(0, 1, 0));
+    OgreBulletCollisions::CapsuleCollisionShape *colShapeSinbad = new OgreBulletCollisions::CapsuleCollisionShape(10.0f, 25.0f, Ogre::Vector3(0, 1, 0));
     // and the Bullet rigid body
     rbSinbad = new OgreBulletDynamics::RigidBody("rbSinbad", mWorld);
     rbSinbad->setShape(bodyNode,
