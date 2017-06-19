@@ -25,7 +25,8 @@ ________                           ____  __.__                      __
 #include "KinectController.h"
 #include "JointOrientationCalculator.h"
 #include "OgreMatrix3.h"
-#include "AxisLines.h"
+//#include "btBulletDynamicsCommon.h"
+#include "OgreBulletDynamics.h"
 
 #define NUM_ANIMS 13
 #define ANIM_FADE_SPEED 7.5f   // animation crossfade speed in % of full weight per second
@@ -34,10 +35,12 @@ class SinbadCharacterController
 {
 
 public:
+
     SinbadCharacterController();
+
     virtual ~SinbadCharacterController();
 
-    virtual void setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller);
+    virtual void setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller,OgreBulletDynamics::DynamicsWorld *mWorld);
     virtual void updatePerFrame(Ogre::Real elapsedTime);
     Ogre::SceneNode *getEntityNode();
 
@@ -74,14 +77,14 @@ protected:
     KinectController  *controller;
     JointOrientationCalculator *jointCalc;
 
-    std::vector<AxisLines *> axisLines;
-
     bool showBoneOrientationAxes;
     bool showJointYAxes;
 
     Ogre::Real skelCenter;
     Ogre::Vector3 bodyOffset;
 
+	OgreBulletDynamics::DynamicsWorld *mWorld;
+	OgreBulletDynamics::RigidBody *rbSinbad;
     Ogre::SceneManager *mSceneManager;
     Ogre::Entity *bodyEntity;
     Ogre::Entity *mSword1;
@@ -95,6 +98,11 @@ protected:
     Ogre::AnimationState *mAnims[NUM_ANIMS];    // master animation list
     bool mSwordsDrawn;
     Ogre::Real mTimer;                // general timer to see how long animations have been playing
+    //btRigidBody *SindabRigidBody;
+    int mNumEntitiesInstanced;
+    OgreBulletDynamics::DynamicsWorld *mDynamicsWorld;
+    std::deque<Ogre::Entity *>                          mEntities;
+    std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
 };
 
 #endif

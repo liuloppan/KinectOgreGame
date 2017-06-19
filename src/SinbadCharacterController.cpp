@@ -23,22 +23,26 @@ ________                           ____  __.__                      __
 #include "SinbadCharacterController.h"
 
 //-------------------------------------------------------------------------------------
+
 SinbadCharacterController::SinbadCharacterController()
 {
     this->showBoneOrientationAxes = false;
 
     this->skelCenter = 10000.0f;
-    this->bodyOffset = Ogre::Vector3(0, 25, 0);
+    this->bodyOffset = Ogre::Vector3(0, 0, 0);
+    this->mNumEntitiesInstanced = 0;
 }
 //-------------------------------------------------------------------------------------
 SinbadCharacterController::~SinbadCharacterController()
 {
+	delete rbSinbad;
 }
-//-------------------------------------------------------------------------------------
-void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller)
+// -------------------------------------------------------------------------
+void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller,OgreBulletDynamics::DynamicsWorld *mWorld)
 {
     this->mSceneManager = mSceneManager;
     this->controller = controller;
+	this->mWorld = mWorld;	
 
     jointCalc = new JointOrientationCalculator();
     jointCalc->setupController(controller);
@@ -51,6 +55,18 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
     this->bodyNode->scale(Ogre::Vector3(5));
     this->bodyNode->setPosition(bodyOffset);
 
+
+	OgreBulletCollisions::BoxCollisionShape *colShapeSinbad = new OgreBulletCollisions::BoxCollisionShape( Ogre::Vector3 (10.f, 10.f, 10.f));
+    // and the Bullet rigid body
+    rbSinbad = new OgreBulletDynamics::RigidBody("rbSinbad", mWorld);
+    rbSinbad->setShape(   bodyNode,
+                    colShapeSinbad,
+                    0.6f,         // dynamic body restitution
+                    0.6f,         // dynamic body friction
+                    0.0f,          // dynamic bodymass
+                    bodyNode->getPosition(),      // starting position of the box
+                    bodyNode->getOrientation());// orientation of the box
+
     // create swords and attach to sheath
     mSword1 = mSceneManager->createEntity("SinbadSword1", "Sword.mesh");
     mSword2 = mSceneManager->createEntity("SinbadSword2", "Sword.mesh");
@@ -60,12 +76,6 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
     skeleton = this->bodyEntity->getSkeleton();
     skeleton->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
 
-    for (int a = 0; a < NUI_SKELETON_POSITION_COUNT && showBoneOrientationAxes; a++) { // debug
-        AxisLines *axl = new AxisLines();
-        axisLines.push_back(axl);
-        axl->length = 3;
-
-    }
 
     if (!jointCalc->getMirror()) {
         setupBone("Thigh.R",           NuiJointIndex::HIP_RIGHT);
@@ -192,7 +202,6 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
     if (controller->getSkeletonStatus() != NuiSkeletonTrackingState::SKELETON_TRACKED) {
         return;
     }
-    static bool bRightAfterSwardsPositionChanged = false;
 
     Ogre::Real baseAnimSpeed = 1;
     Ogre::Real topAnimSpeed = 1;
@@ -200,21 +209,18 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
     Ogre::Vector3 leftHand = controller->getJointPosition(HAND_LEFT);
     Ogre::Vector3 rightHand = controller->getJointPosition(HAND_RIGHT);
     Ogre::Vector3 Head = controller->getJointPosition(HEAD);
-    Ogre::Vector3 tempvec;
-    tempvec = leftHand - rightHand;
-    if (tempvec.squaredLength() < 50000) {
-        tempvec = leftHand - Head;
-        if (!bRightAfterSwardsPositionChanged && tempvec.squaredLength() < 100000) {
-            if (leftHand.z - 0.08f > Head.z) {
-                setTopAnimation(ANIM_DRAW_SWORDS, true);
-                mTimer = 0;
-                bRightAfterSwardsPositionChanged = true;
-            }
-        }
-    } else {
-        bRightAfterSwardsPositionChanged = false;
+    std::ostringstream lstr, hstr;
+    lstr << leftHand.z;
+    hstr << Head.z;
+    std::string mylefthand = lstr.str();
+    std::string myhead = hstr.str();
+    Ogre::LogManager::getSingletonPtr()->logMessage("HEAD");
+    Ogre::LogManager::getSingletonPtr()->logMessage(myhead);
+    Ogre::LogManager::getSingletonPtr()->logMessage("LEFT HAND");
+    Ogre::LogManager::getSingletonPtr()->logMessage(mylefthand);
+    if (leftHand.z >= 1.46071f) {
+        setTopAnimation(ANIM_DRAW_SWORDS, true);
     }
-
 
     if (mTopAnimID == ANIM_DRAW_SWORDS) {
         // flip the draw swords animation if we need to put it back
@@ -254,15 +260,15 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
         transformBone("Ulna.L",              NuiJointIndex::ELBOW_RIGHT);
 
     }
+	
+
 }
 //-------------------------------------------------------------------------------------
 void SinbadCharacterController::transformBone(Ogre::String boneName, NuiManager::NuiJointIndex jointIdx)
 {
     int state = 0;
     state = (int)controller->getJointStatus(jointIdx);
-
-
-
+    btTransform tr;
     if (state == 2) {
         Ogre::Bone *bone = skeleton->getBone(boneName);
         Ogre::Quaternion qI = bone->getInitialOrientation();
@@ -270,18 +276,19 @@ void SinbadCharacterController::transformBone(Ogre::String boneName, NuiManager:
 
         if (boneName == "Root") {
             //kinect skeleton position is in meter 0.8m<z<4m
+			Ogre::Vector3 newBodyPos = controller->getJointPosition(jointIdx) * 60.0f;
+			newBodyPos.z = -1 * newBodyPos.z;
+			newBodyPos += bodyOffset;
 
-            bone->setPosition(controller->getJointPosition(jointIdx) * 20.0f);
+			bodyNode->setPosition(newBodyPos);
+			rbSinbad->setPosition(bodyNode->getPosition());
         }
-
         bone->resetOrientation();
         newQ = bone->convertWorldToLocalOrientation(newQ);
         bone->setOrientation(newQ * qI);
 
         Ogre::Quaternion resQ = bone->getOrientation();
-        if (showBoneOrientationAxes) {
-            axisLines[jointIdx]->updateLines(resQ.xAxis(), resQ.yAxis(), resQ.zAxis());    // debug
-        }
+
     }
 }
 //-------------------------------------------------------------------------------------
@@ -301,9 +308,6 @@ void SinbadCharacterController::setupBone(const Ogre::String &name, NuiJointInde
 
     bone->setInitialState();
 
-    if (showBoneOrientationAxes) {
-        axisLines[idx]->initAxis(name, this->bodyEntity, this->mSceneManager);    // debug
-    }
 }
 //-------------------------------------------------------------------------------------
 void SinbadCharacterController::setupBone(const Ogre::String &name, const Ogre::Radian &angle, const Ogre::Vector3 axis)

@@ -95,7 +95,7 @@ class btRigidBody  : public btCollisionObject
 	int				m_debugBodyId;
 	
 
-protected:
+public:
 
 	ATTRIBUTE_ALIGNED64(btVector3		m_deltaLinearVelocity);
 	btVector3		m_deltaAngularVelocity;
@@ -103,7 +103,10 @@ protected:
 	btVector3		m_invMass;
 	btVector3		m_pushVelocity;
 	btVector3		m_turnVelocity;
-
+	const btVector3& getDeltaAngularVelocity() const
+	{
+		return m_deltaAngularVelocity;
+	}
 
 public:
 

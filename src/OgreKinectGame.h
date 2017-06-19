@@ -25,11 +25,16 @@ ________                           ____  __.__                      __
 #include "BaseApplication.h"
 #include "SinbadCharacterController.h"
 #include "KinectController.h"
-#include "btBulletDynamicsCommon.h"
-#include "BulletCollision/Gimpact/btGImpactShape.h"
-#include "SkeletonToRagdoll.h"
-#include "OgreDisplay.h"
-#include "DebugDraw.h"
+#include "OgreBulletDynamicsRigidBody.h"
+
+#include "Shapes/OgreBulletCollisionsBoxShape.h"
+#include "Shapes/OgreBulletCollisionsCompoundShape.h"
+
+#include "OgreBulletDynamicsWorld.h"
+#include "OgreBulletDynamicsRigidBody.h"
+#include "Debug/OgreBulletCollisionsDebugDrawer.h"
+
+#include "Constraints/OgreBulletDynamicsRaycastVehicle.h"
 
 #include "sdkTrays.h"
 using namespace OgreBites;
@@ -62,23 +67,17 @@ protected:
     Ogre::NameValuePairList	mInfo;
     KinectController	*kinectController;
     Ogre::TexturePtr	texRenderTarget;
-    OgreDisplay							*ogreDisplay;
-    btBroadphaseInterface					*broadphase;
-    btCollisionDispatcher					*dispatcher;
-    btSequentialImpulseConstraintSolver	*solver;
-    btDefaultCollisionConfiguration		*collisionConfiguration;
-    btDynamicsWorld						*dynamicsWorld;
-    SkeletonToRagdoll						*ragdoll;
-    double									accumulator;
-    const double							dt;
+    OgreBulletDynamics::DynamicsWorld						*dynamicsWorld;
     Ogre::Timer *timer;
     Ogre::String timerString;
-    int									 numBalls;
     Ogre::Real							 mTimeSinceLastBall;
     long gameTime; // how long the game lasts for in milliseconds
     OgreBites::Label *timerLabel;
     OgreBites::Label *scoreLabel;
-    CDebugDraw *mDebugDraw;
+    OgreBulletCollisions::DebugDrawer *mDebugDraw;
+    std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
+    std::deque<OgreBulletCollisions::CollisionShape *>  mShapes;
+    int mNumofBall;
 };
 
 #endif // #ifndef __OgreKinectGame_h_
