@@ -23,25 +23,26 @@ ________                           ____  __.__                      __
 #include "SinbadCharacterController.h"
 
 //-------------------------------------------------------------------------------------
-SinbadCharacterController::SinbadCharacterController(OgreDisplay *ogreDisplay, OgreBulletDynamics::DynamicsWorld *dynamicsWorld)
+
+SinbadCharacterController::SinbadCharacterController()
 {
-    this->mWorld = dynamicsWorld;
-	this->mOgreDisplay = ogreDisplay;
     this->showBoneOrientationAxes = false;
 
     this->skelCenter = 10000.0f;
     this->bodyOffset = Ogre::Vector3(0, 45, 0);
+    this->mNumEntitiesInstanced = 0;
 }
 //-------------------------------------------------------------------------------------
 SinbadCharacterController::~SinbadCharacterController()
 {
 	delete rbSinbad;
 }
-//-------------------------------------------------------------------------------------
-void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller)
+// -------------------------------------------------------------------------
+void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager, KinectController *controller,OgreBulletDynamics::DynamicsWorld *mWorld)
 {
     this->mSceneManager = mSceneManager;
     this->controller = controller;
+	this->mWorld = mWorld;	
 
     jointCalc = new JointOrientationCalculator();
     jointCalc->setupController(controller);

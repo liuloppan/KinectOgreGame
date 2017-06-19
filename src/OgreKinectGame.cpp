@@ -49,22 +49,22 @@ OgreKinectGame::~OgreKinectGame()
     if (mTrayMgr) {
         mTrayMgr->destroyAllWidgets();
     }
-    std::deque<OgreBulletDynamics::RigidBody *>::iterator itBody = mBodies.begin();
-    while (mBodies.end() != itBody) {
-        delete *itBody;
-        ++itBody;
-    }
-    // OgreBullet physic delete - Shapes
-    std::deque<OgreBulletCollisions::CollisionShape *>::iterator itShape = mShapes.begin();
-    while (mShapes.end() != itShape) {
-        delete *itShape;
-        ++itShape;
-    }
-    mBodies.clear();
-    mShapes.clear();
-    delete dynamicsWorld->getDebugDrawer();
-    dynamicsWorld->setDebugDrawer(0);
-    delete dynamicsWorld;
+    //std::deque<OgreBulletDynamics::RigidBody *>::iterator itBody = mBodies.begin();
+    //while (mBodies.end() != itBody) {
+    //    delete *itBody;
+    //    ++itBody;
+    //}
+    //// OgreBullet physic delete - Shapes
+    //std::deque<OgreBulletCollisions::CollisionShape *>::iterator itShape = mShapes.begin();
+    //while (mShapes.end() != itShape) {
+    //    delete *itShape;
+    //    ++itShape;
+    //}
+    //mBodies.clear();
+    //mShapes.clear();
+    //delete dynamicsWorld->getDebugDrawer();
+    //dynamicsWorld->setDebugDrawer(0);
+    //delete dynamicsWorld;
 }
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::destroyScene()
@@ -243,8 +243,11 @@ void OgreKinectGame::createScene()
 
 
     // setup character
-    character = new SinbadCharacterController(ogreDisplay, dynamicsWorld);
-    character->setupCharacter(this->mSceneMgr, this->kinectController);
+
+    character = new SinbadCharacterController();
+	character->setupCharacter(this->mSceneMgr, this->kinectController, this->dynamicsWorld);
+
+
 
 
     // Floor
