@@ -316,7 +316,7 @@ void OgreKinectGame::createBall(Ogre::Real time)
     Ogre::Vector3 position = Ogre::Vector3(x * time, 100, z * time);
     // create an ordinary, Ogre mesh with texture
     Ogre::Entity *entity = mSceneMgr->createEntity(
-                               "Ball" + Ogre::StringConverter::toString(mNumEntitiesInstanced),
+                               "Ball" + Ogre::StringConverter::toString(mNumofBall),
                                "sphere.mesh");
     entity->setCastShadows(true);
     // we need the bounding box of the box to be able to set the size of the Bullet-box
