@@ -32,10 +32,11 @@ OgreKinectGame::OgreKinectGame()
       dynamicsWorld(0),
       mNumofBall(0),
       mTimeSinceLastBall(0),
-      mBallEntity(0)
+      mBallEntity(0),
+      score(0),
+      gameTime(50000),
+      mElementNode(0)
 {
-    gameTime = 10000; // milliseconds
-    score = 0;
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
                      "Developer :\n"
@@ -46,10 +47,16 @@ OgreKinectGame::OgreKinectGame()
 //-------------------------------------------------------------------------------------
 OgreKinectGame::~OgreKinectGame()
 {
+    if (mTrayMgr) {
+        mTrayMgr->destroyAllWidgets();
+    }
 }
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::destroyScene()
 {
+    if (mTrayMgr) {
+        delete mTrayMgr;
+    }
     if (kinectController) {
         kinectController->unInitController();
         delete kinectController;
@@ -64,10 +71,10 @@ void OgreKinectGame::destroyScene()
     }
 
 
-    delete timerLabel;
-    delete scoreLabel;
-    delete mDebugDraw;
-    delete mBallEntity;
+    //delete timerLabel;
+    //delete scoreLabel;
+    //delete mDebugDraw;
+    //delete mBallEntity;
 
 
     Ogre::MeshManager::getSingleton().remove("floor");
@@ -306,6 +313,9 @@ void OgreKinectGame::createScene()
 
     //start timer
     timer = new Ogre::Timer();
+
+    // particle
+    setupParticle();
 }
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::checkCollisions()
@@ -332,6 +342,7 @@ void OgreKinectGame::checkCollisions()
                 //std::cout << "Collision Body B: " << obB->getCollisionShape()->getName() << std::endl;
                 if (obA->getCollisionShape()->getName() == "CapsuleShape" || obB->getCollisionShape()->getName() == "CapsuleShape") {
                     addScorePoint(1);
+                    mSceneMgr->getParticleSystem("Fire")->setVisible(true);
                 }
             }
         }
@@ -339,6 +350,15 @@ void OgreKinectGame::checkCollisions()
 
     // this is label for debugging
     //mInfoLabel->setCaption("Collision = " + Ogre::StringConverter::toString(collide));
+}
+//-------------------------------------------------------------------------------------
+void OgreKinectGame::setupParticle()
+{
+    Ogre::ParticleSystem::setDefaultNonVisibleUpdateTimeout(5);
+    mElementNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("elementNode", Ogre::Vector3::UNIT_Y);
+    mParticleSys = mSceneMgr->createParticleSystem("Fire", "Elements/Fire");
+    mSceneMgr->getSceneNode("elementNode")->attachObject(mParticleSys);
+    mParticleSys->setVisible(false);
 }
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
@@ -372,6 +392,7 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::createBall(Ogre::Real time)
 {
+    mSceneMgr->getParticleSystem("Fire")->setVisible(false);
     float LO = -1;
     float HI = 5;
     float x = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));

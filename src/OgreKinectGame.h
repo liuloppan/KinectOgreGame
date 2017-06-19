@@ -63,6 +63,7 @@ protected:
     void checkCollisions();
     void gamePause();
     void returnGame();
+    void setupParticle();
 
 protected:
     Ogre::Entity *mFloor;
@@ -85,6 +86,8 @@ protected:
     std::deque<OgreBulletCollisions::CollisionShape *>  mShapes;
     int mNumofBall;
     Ogre::Entity *mBallEntity;
+    Ogre::ParticleSystem *mParticleSys;
+    Ogre::SceneNode *mElementNode;
 };
 
 #endif // #ifndef __OgreKinectGame_h_
