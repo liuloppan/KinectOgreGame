@@ -356,8 +356,8 @@ void OgreKinectGame::createBall(Ogre::Real time)
     if (mNumofBall == 5) {
         return;
     }
-    float LO = 1;
-    float HI = 50;
+    float LO = -1;
+    float HI = 5;
     float x = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
     float z = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
 
@@ -381,7 +381,7 @@ void OgreKinectGame::createBall(Ogre::Real time)
         dynamicsWorld);
     defaultBody->setShape(node,
                           sceneBoxShape,
-                          5.0f,         // dynamic body restitution
+                          10.0f,         // dynamic body restitution
                           1.0f,         // dynamic body friction
                           50.0f,          // dynamic bodymass
                           position,      // starting position of the box

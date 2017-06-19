@@ -56,7 +56,7 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
     this->bodyNode->setPosition(bodyOffset);
 
 
-    OgreBulletCollisions::CapsuleCollisionShape *colShapeSinbad = new OgreBulletCollisions::CapsuleCollisionShape(60.0f, 25.0f, Ogre::Vector3(0, 1, 0));
+    OgreBulletCollisions::CapsuleCollisionShape *colShapeSinbad = new OgreBulletCollisions::CapsuleCollisionShape(15.0f, 25.0f, Ogre::Vector3(0, 1, 0));
     // and the Bullet rigid body
     rbSinbad = new OgreBulletDynamics::RigidBody("rbSinbad", mWorld);
     rbSinbad->setShape(bodyNode,
@@ -219,7 +219,8 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
     Ogre::LogManager::getSingletonPtr()->logMessage("LEFT HAND");
     Ogre::LogManager::getSingletonPtr()->logMessage(mylefthand);
     if (leftHand.z >= 1.46071f) {
-        setTopAnimation(ANIM_DRAW_SWORDS, true);
+		// disable for now
+        //setTopAnimation(ANIM_DRAW_SWORDS, true);
     }
 
     if (mTopAnimID == ANIM_DRAW_SWORDS) {
