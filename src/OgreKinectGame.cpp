@@ -32,7 +32,8 @@ OgreKinectGame::OgreKinectGame()
       mNumofBall(0),
       mTimeSinceLastBall(0)
 {
-    gameTime = 1000000000; // milliseconds
+    gameTime = 10000; // milliseconds
+	score = 0;
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
                      "Developer :\n"
@@ -78,6 +79,11 @@ void OgreKinectGame::destroyScene()
     if (dynamicsWorld) {
         delete dynamicsWorld;
     }
+
+
+	delete timerLabel;
+    delete scoreLabel;
+    delete mDebugDraw;
 
 
     Ogre::MeshManager::getSingleton().remove("floor");
@@ -130,9 +136,11 @@ void OgreKinectGame::setupWidgets()
     mTrayMgr->createLabel(TL_TOPLEFT, "mScore", "Score: ", WIDTH_UI / 3);
     scoreLabel = (Label *) mTrayMgr->getWidget(TL_TOPLEFT, "mScore");
 
+	scoreString = "Your final score is " + Ogre::StringConverter::toString(score) + "!";
+
     //game over menu
     mTrayMgr->createLabel(TL_NONE, "mGameOver", "GAME OVER!", WIDTH_UI);
-    mTrayMgr->createLabel(TL_NONE, "mResult", "you score is; ", WIDTH_UI);
+    mTrayMgr->createLabel(TL_NONE, "mResult", scoreString, WIDTH_UI);
     mTrayMgr->createButton(TL_NONE, "mQuitButton", "Quit");
     mTrayMgr->createButton(TL_NONE, "mReplayButton", "Replay");
 
@@ -163,6 +171,18 @@ void OgreKinectGame::gameOver()
     mTrayMgr->showCursor();
     mCameraMan->setStyle(CS_MANUAL);
 }
+//-------------------------------------------------------------------------------------
+void OgreKinectGame::addScorePoint(int point)
+{
+	score =+ point;
+
+	scoreString = "Score: " + Ogre::StringConverter::toString(score);
+
+	scoreLabel->setCaption(scoreString);
+
+
+}
+
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::buttonHit(Button *b)
 {
@@ -288,8 +308,12 @@ void OgreKinectGame::checkCollisions()
                 const btVector3 &ptB = pt.getPositionWorldOnB();
                 const btVector3 &normalOnB = pt.m_normalWorldOnB;
                 collide = true;
-                std::cout << "Collision Body A: " << obA->getCollisionShape()->getName() << std::endl;
-                std::cout << "Collision Body B: " << obB->getCollisionShape()->getName() << std::endl;
+                //std::cout << "Collision Body A: " << obA->getCollisionShape()->getName() << std::endl;
+                //std::cout << "Collision Body B: " << obB->getCollisionShape()->getName() << std::endl;
+				if( obA->getCollisionShape()->getName() == "CapsuleShape" || obB->getCollisionShape()->getName() == "CapsuleShape")
+				{
+					addScorePoint(1);
+				}
             }
         }
     }

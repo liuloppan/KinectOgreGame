@@ -58,6 +58,7 @@ protected:
 
     void setupWidgets();
     void gameOver();
+	void addScorePoint(int point);
     void createBall(Ogre::Real time);
     void checkCollisions();
 
@@ -73,6 +74,8 @@ protected:
     Ogre::String timerString;
     Ogre::Real							 mTimeSinceLastBall;
     long gameTime; // how long the game lasts for in milliseconds
+	int score;
+	Ogre::String scoreString;
     OgreBites::Label *timerLabel;
     OgreBites::Label *scoreLabel;
     OgreBulletCollisions::DebugDrawer *mDebugDraw;
