@@ -26,8 +26,7 @@ ________                           ____  __.__                      __
 #include "SinbadCharacterController.h"
 #include "KinectController.h"
 #include "OgreBulletDynamicsRigidBody.h"
-#include "SkeletonToRagdoll.h"
-#include "OgreDisplay.h"
+
 #include "Shapes/OgreBulletCollisionsBoxShape.h"
 #include "Shapes/OgreBulletCollisionsCompoundShape.h"
 
@@ -68,10 +67,7 @@ protected:
     Ogre::NameValuePairList	mInfo;
     KinectController	*kinectController;
     Ogre::TexturePtr	texRenderTarget;
-    OgreDisplay							*ogreDisplay;
     OgreBulletDynamics::DynamicsWorld						*dynamicsWorld;
-    double									accumulator;
-    const double							dt;
     Ogre::Timer *timer;
     Ogre::String timerString;
     Ogre::Real							 mTimeSinceLastBall;

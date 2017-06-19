@@ -25,7 +25,6 @@ ________                           ____  __.__                      __
 #include "KinectController.h"
 #include "JointOrientationCalculator.h"
 #include "OgreMatrix3.h"
-#include "AxisLines.h"
 //#include "btBulletDynamicsCommon.h"
 #include "OgreBulletDynamics.h"
 
@@ -77,8 +76,6 @@ protected:
 
     KinectController  *controller;
     JointOrientationCalculator *jointCalc;
-
-    std::vector<AxisLines *> axisLines;
 
     bool showBoneOrientationAxes;
     bool showJointYAxes;

@@ -4,7 +4,7 @@
 
 //-------------------------------------------------------------------------------------
 JointOrientationCalculator::JointOrientationCalculator(void) :
-    isMirror(false)
+    isMirror(true)
 {
 
 }

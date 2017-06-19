@@ -28,10 +28,7 @@ bool debugDraw = true;
 OgreKinectGame::OgreKinectGame()
     : kinectController(0),
       character(0),
-      accumulator(0),
-      dt(0.01),
       dynamicsWorld(0),
-      ogreDisplay(0),
       mNumofBall(0),
       mTimeSinceLastBall(0)
 {
@@ -82,9 +79,6 @@ void OgreKinectGame::destroyScene()
         delete dynamicsWorld;
     }
 
-    if (ogreDisplay) {
-        delete ogreDisplay;
-    }
 
     Ogre::MeshManager::getSingleton().remove("floor");
 
@@ -238,17 +232,14 @@ void OgreKinectGame::createScene()
     mDebugDraw->setDrawWireframe(true);   // we want to see the Bullet containers
     dynamicsWorld->setDebugDrawer(mDebugDraw);
     dynamicsWorld->setShowDebugShapes(true);      // enable it if you want to see the Bullet containers
-    Ogre::SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
-    node->attachObject(static_cast <Ogre::SimpleRenderable *>(mDebugDraw));
+    Ogre::SceneNode *debugNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
+    debugNode->attachObject(static_cast <Ogre::SimpleRenderable *>(mDebugDraw));
 
 
     // setup character
 
     character = new SinbadCharacterController();
 	character->setupCharacter(this->mSceneMgr, this->kinectController, this->dynamicsWorld);
-
-
-
 
     // Floor
     Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -260,10 +251,10 @@ void OgreKinectGame::createScene()
     floor->setCastShadows(false);
     (mSceneMgr->getRootSceneNode()->createChildSceneNode("floorNode"))->attachObject(floor);
     mSceneMgr->setSkyDome(true, "Examples/CloudySky", 10, 8);
-	mSceneMgr->getSceneNode("floorNode")->translate(0.f,-60.f,0.f);
+	mSceneMgr->getSceneNode("floorNode")->translate(0.f,-20.f,0.f);
 
     OgreBulletCollisions::CollisionShape *Shape;
-    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0, 1, 0), -60); // (normal vector, distance)
+    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0, 1, 0), -20); // (normal vector, distance)
     OgreBulletDynamics::RigidBody *defaultPlaneBody = new OgreBulletDynamics::RigidBody(
         "BasePlane",
         dynamicsWorld);

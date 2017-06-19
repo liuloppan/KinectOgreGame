@@ -29,7 +29,7 @@ SinbadCharacterController::SinbadCharacterController()
     this->showBoneOrientationAxes = false;
 
     this->skelCenter = 10000.0f;
-    this->bodyOffset = Ogre::Vector3(0, 45, 0);
+    this->bodyOffset = Ogre::Vector3(0, 0, 0);
     this->mNumEntitiesInstanced = 0;
 }
 //-------------------------------------------------------------------------------------
@@ -67,23 +67,6 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
                     bodyNode->getPosition(),      // starting position of the box
                     bodyNode->getOrientation());// orientation of the box
 
-
-    // bullet
-    //float radius = 15;
-    //   btSphereShape *collisionShape = new btSphereShape(radius);
-    //   btTransform startTransform;
-    //   //float friction = 10;
-    //   btScalar mass = 10.0f;
-    //   startTransform.setIdentity();
-    //   startTransform.setOrigin(btVector3(bodyNode->getPosition().x, bodyNode->getPosition().y, bodyNode->getPosition().z));
-    //   btDefaultMotionState *triMotionState = new btDefaultMotionState(startTransform);
-    //   btVector3 localInertia;
-    //   collisionShape->calculateLocalInertia(mass, localInertia);
-    //   btRigidBody::btRigidBodyConstructionInfo rbInfo = btRigidBody::btRigidBodyConstructionInfo(mass, triMotionState, collisionShape);
-    //   SindabRigidBody = new btRigidBody(rbInfo);
-    ////triBody->setGravity(btVector3(0,0,0));
-    //mOgreDisplay->createDynamicObject(bodyEntity, SindabRigidBody);
-
     // create swords and attach to sheath
     mSword1 = mSceneManager->createEntity("SinbadSword1", "Sword.mesh");
     mSword2 = mSceneManager->createEntity("SinbadSword2", "Sword.mesh");
@@ -93,12 +76,6 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
     skeleton = this->bodyEntity->getSkeleton();
     skeleton->setBlendMode(Ogre::ANIMBLEND_CUMULATIVE);
 
-    for (int a = 0; a < NUI_SKELETON_POSITION_COUNT && showBoneOrientationAxes; a++) { // debug
-        AxisLines *axl = new AxisLines();
-        axisLines.push_back(axl);
-        axl->length = 3;
-
-    }
 
     if (!jointCalc->getMirror()) {
         setupBone("Thigh.R",           NuiJointIndex::HIP_RIGHT);
@@ -284,7 +261,7 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
 
     }
 	
-	rbSinbad->setPosition(bodyNode->getPosition());
+
 }
 //-------------------------------------------------------------------------------------
 void SinbadCharacterController::transformBone(Ogre::String boneName, NuiManager::NuiJointIndex jointIdx)
@@ -299,21 +276,19 @@ void SinbadCharacterController::transformBone(Ogre::String boneName, NuiManager:
 
         if (boneName == "Root") {
             //kinect skeleton position is in meter 0.8m<z<4m
+			Ogre::Vector3 newBodyPos = controller->getJointPosition(jointIdx) * 60.0f;
+			newBodyPos.z = -1 * newBodyPos.z;
+			newBodyPos += bodyOffset;
 
-			bodyNode->setPosition(controller->getJointPosition(jointIdx) * 20.0f);
-            //bone->setPosition(controller->getJointPosition(jointIdx) * 20.0f);	
-
-
-			
+			bodyNode->setPosition(newBodyPos);
+			rbSinbad->setPosition(bodyNode->getPosition());
         }
         bone->resetOrientation();
         newQ = bone->convertWorldToLocalOrientation(newQ);
         bone->setOrientation(newQ * qI);
 
         Ogre::Quaternion resQ = bone->getOrientation();
-        if (showBoneOrientationAxes) {
-            axisLines[jointIdx]->updateLines(resQ.xAxis(), resQ.yAxis(), resQ.zAxis());    // debug
-        }
+
     }
 }
 //-------------------------------------------------------------------------------------
@@ -333,9 +308,6 @@ void SinbadCharacterController::setupBone(const Ogre::String &name, NuiJointInde
 
     bone->setInitialState();
 
-    if (showBoneOrientationAxes) {
-        axisLines[idx]->initAxis(name, this->bodyEntity, this->mSceneManager);    // debug
-    }
 }
 //-------------------------------------------------------------------------------------
 void SinbadCharacterController::setupBone(const Ogre::String &name, const Ogre::Radian &angle, const Ogre::Vector3 axis)
