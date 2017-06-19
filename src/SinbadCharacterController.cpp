@@ -219,7 +219,7 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
     Ogre::LogManager::getSingletonPtr()->logMessage("LEFT HAND");
     Ogre::LogManager::getSingletonPtr()->logMessage(mylefthand);
     if (leftHand.z >= 1.46071f) {
-		// disable for now
+        // disable for now
         //setTopAnimation(ANIM_DRAW_SWORDS, true);
     }
 

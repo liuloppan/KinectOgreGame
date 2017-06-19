@@ -24,16 +24,18 @@ ________                           ____  __.__                      __
 #include "sdkTrays.h"
 
 bool debugDraw = true;
+bool isUIvisible = false;
 //-------------------------------------------------------------------------------------
 OgreKinectGame::OgreKinectGame()
     : kinectController(0),
       character(0),
       dynamicsWorld(0),
       mNumofBall(0),
-      mTimeSinceLastBall(0)
+      mTimeSinceLastBall(0),
+      mBallEntity(0)
 {
     gameTime = 10000; // milliseconds
-	score = 0;
+    score = 0;
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
                      "Developer :\n"
@@ -44,25 +46,6 @@ OgreKinectGame::OgreKinectGame()
 //-------------------------------------------------------------------------------------
 OgreKinectGame::~OgreKinectGame()
 {
-    if (mTrayMgr) {
-        mTrayMgr->destroyAllWidgets();
-    }
-    //std::deque<OgreBulletDynamics::RigidBody *>::iterator itBody = mBodies.begin();
-    //while (mBodies.end() != itBody) {
-    //    delete *itBody;
-    //    ++itBody;
-    //}
-    //// OgreBullet physic delete - Shapes
-    //std::deque<OgreBulletCollisions::CollisionShape *>::iterator itShape = mShapes.begin();
-    //while (mShapes.end() != itShape) {
-    //    delete *itShape;
-    //    ++itShape;
-    //}
-    //mBodies.clear();
-    //mShapes.clear();
-    //delete dynamicsWorld->getDebugDrawer();
-    //dynamicsWorld->setDebugDrawer(0);
-    //delete dynamicsWorld;
 }
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::destroyScene()
@@ -81,20 +64,37 @@ void OgreKinectGame::destroyScene()
     }
 
 
-	delete timerLabel;
+    delete timerLabel;
     delete scoreLabel;
     delete mDebugDraw;
+    delete mBallEntity;
 
 
     Ogre::MeshManager::getSingleton().remove("floor");
+    if (!mSceneMgr) {
+        mSceneMgr->clearScene(); // removes all nodes, billboards, lights etc.
+        mSceneMgr->destroyAllCameras();
+    }
 
-    mSceneMgr->clearScene(); // removes all nodes, billboards, lights etc.
-    mSceneMgr->destroyAllCameras();
 }
 //-------------------------------------------------------------------------------------
-bool OgreKinectGame::keyReleased(const OIS::KeyEvent &evt)
+bool OgreKinectGame::keyPressed(const OIS::KeyEvent &evt)
 {
-    return BaseApplication::keyReleased(evt);
+    switch (evt.key) {
+        case OIS::KC_ESCAPE:
+            if (!isUIvisible) {
+                gamePause();
+                isUIvisible = true;
+            } else {
+                returnGame();
+                isUIvisible = false;
+            }
+            break;
+        default:
+            break;
+    }
+
+    return true;
 }
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::mouseMoved(const OIS::MouseEvent &evt)
@@ -106,14 +106,6 @@ bool OgreKinectGame::mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID
 {
     if (!BaseApplication::mousePressed(evt, id)) {
         return false;
-    }
-
-    Ogre::Real offsetX = evt.state.X.abs / float(evt.state.width);
-    Ogre::Real offsetY = evt.state.Y.abs / float(evt.state.height);
-
-    if (id == OIS::MB_Left) {
-        //createBall();
-    } else if (id == OIS::MB_Right) {
     }
 
     return true;
@@ -136,7 +128,7 @@ void OgreKinectGame::setupWidgets()
     mTrayMgr->createLabel(TL_TOPLEFT, "mScore", "Score: ", WIDTH_UI / 3);
     scoreLabel = (Label *) mTrayMgr->getWidget(TL_TOPLEFT, "mScore");
 
-	scoreString = "Your final score is " + Ogre::StringConverter::toString(score) + "!";
+    scoreString = "Your final score is " + Ogre::StringConverter::toString(score) + "!";
 
     //game over menu
     mTrayMgr->createLabel(TL_NONE, "mGameOver", "GAME OVER!", WIDTH_UI);
@@ -149,7 +141,9 @@ void OgreKinectGame::setupWidgets()
     mTrayMgr->getWidget("mQuitButton")->hide();
     mTrayMgr->getWidget("mReplayButton")->hide();
 
-
+    // game pause
+    mTrayMgr->createLabel(TL_NONE, "mGameMenu", "MAIN MENU", WIDTH_UI);
+    mTrayMgr->getWidget("mGameMenu")->hide();
 
     // mTrayMgr->showLogo(OgreBites::TL_TOP);
 
@@ -172,15 +166,41 @@ void OgreKinectGame::gameOver()
     mCameraMan->setStyle(CS_MANUAL);
 }
 //-------------------------------------------------------------------------------------
+void OgreKinectGame::gamePause()
+{
+    mTrayMgr->moveWidgetToTray("mGameMenu", TL_CENTER);
+    mTrayMgr->moveWidgetToTray("mQuitButton", TL_CENTER);
+    mTrayMgr->moveWidgetToTray("mReplayButton", TL_CENTER);
+
+    mTrayMgr->getWidget("mGameMenu")->show();
+    mTrayMgr->getWidget("mQuitButton")->show();
+    mTrayMgr->getWidget("mReplayButton")->show();
+
+    mTrayMgr->showCursor();
+    mCameraMan->setStyle(CS_MANUAL);
+}
+//-------------------------------------------------------------------------------------
+void OgreKinectGame::returnGame()
+{
+    mTrayMgr->removeWidgetFromTray("mGameMenu");
+    mTrayMgr->removeWidgetFromTray("mQuitButton");
+    mTrayMgr->removeWidgetFromTray("mReplayButton");
+
+    mTrayMgr->getWidget("mGameMenu")->hide();
+    mTrayMgr->getWidget("mQuitButton")->hide();
+    mTrayMgr->getWidget("mReplayButton")->hide();
+
+    mTrayMgr->showCursor();
+    mCameraMan->setStyle(CS_MANUAL);
+}
+//-------------------------------------------------------------------------------------
 void OgreKinectGame::addScorePoint(int point)
 {
-	score =+ point;
+    score = + point;
 
-	scoreString = "Score: " + Ogre::StringConverter::toString(score);
+    scoreString = "Score: " + Ogre::StringConverter::toString(score);
 
-	scoreLabel->setCaption(scoreString);
-
-
+    scoreLabel->setCaption(scoreString);
 }
 
 //-------------------------------------------------------------------------------------
@@ -202,8 +222,8 @@ void OgreKinectGame::buttonHit(Button *b)
 
         timer->reset();
         mCameraMan->setStyle(CS_FREELOOK);
-        mNumofBall = 0;
-
+        score = 0;
+        mTrayMgr->hideCursor();
     }
 }
 //-------------------------------------------------------------------------------------
@@ -310,10 +330,9 @@ void OgreKinectGame::checkCollisions()
                 collide = true;
                 //std::cout << "Collision Body A: " << obA->getCollisionShape()->getName() << std::endl;
                 //std::cout << "Collision Body B: " << obB->getCollisionShape()->getName() << std::endl;
-				if( obA->getCollisionShape()->getName() == "CapsuleShape" || obB->getCollisionShape()->getName() == "CapsuleShape")
-				{
-					addScorePoint(1);
-				}
+                if (obA->getCollisionShape()->getName() == "CapsuleShape" || obB->getCollisionShape()->getName() == "CapsuleShape") {
+                    addScorePoint(1);
+                }
             }
         }
     }
@@ -353,9 +372,6 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::createBall(Ogre::Real time)
 {
-    if (mNumofBall == 5) {
-        return;
-    }
     float LO = -1;
     float HI = 5;
     float x = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
@@ -364,15 +380,15 @@ void OgreKinectGame::createBall(Ogre::Real time)
     float radius = 5;
     Ogre::Vector3 position = Ogre::Vector3(x * time, 100, z * time);
     // create an ordinary, Ogre mesh with texture
-    Ogre::Entity *entity = mSceneMgr->createEntity(
-                               "Ball" + Ogre::StringConverter::toString(mNumofBall),
-                               "sphere.mesh");
-    entity->setCastShadows(true);
+    mBallEntity = mSceneMgr->createEntity(
+                      "Ball" + Ogre::StringConverter::toString(mNumofBall),
+                      "sphere.mesh");
+    mBallEntity->setCastShadows(true);
     // we need the bounding box of the box to be able to set the size of the Bullet-box
-    Ogre::AxisAlignedBox boundingB = entity->getBoundingBox();
-    entity->setMaterialName("Bullet/Ball");
+    Ogre::AxisAlignedBox boundingB = mBallEntity->getBoundingBox();
+    mBallEntity->setMaterialName("Bullet/Ball");
     Ogre::SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    node->attachObject(entity);
+    node->attachObject(mBallEntity);
     node->scale(0.05f, 0.05f, 0.05f);
     OgreBulletCollisions::SphereCollisionShape *sceneBoxShape = new OgreBulletCollisions::SphereCollisionShape(radius);
     // and the Bullet rigid body

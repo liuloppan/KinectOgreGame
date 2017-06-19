@@ -51,19 +51,21 @@ protected:
     virtual bool frameRenderingQueued(const Ogre::FrameEvent &fe);
     virtual bool mouseMoved(const OIS::MouseEvent &evt);
     virtual bool mousePressed(const OIS::MouseEvent &evt, OIS::MouseButtonID id);
-    virtual bool keyReleased(const OIS::KeyEvent &evt);
+    virtual bool keyPressed(const OIS::KeyEvent &evt);
     virtual void setupKinect(void);
     virtual bool setup();
     virtual void buttonHit(Button *b);
 
     void setupWidgets();
     void gameOver();
-	void addScorePoint(int point);
+    void addScorePoint(int point);
     void createBall(Ogre::Real time);
     void checkCollisions();
+    void gamePause();
+    void returnGame();
 
 protected:
-    Ogre::Entity	*mFloor;
+    Ogre::Entity *mFloor;
     Ogre::Light	*mLight;
     SinbadCharacterController	*character;
     Ogre::NameValuePairList	mInfo;
@@ -74,14 +76,15 @@ protected:
     Ogre::String timerString;
     Ogre::Real							 mTimeSinceLastBall;
     long gameTime; // how long the game lasts for in milliseconds
-	int score;
-	Ogre::String scoreString;
+    int score;
+    Ogre::String scoreString;
     OgreBites::Label *timerLabel;
     OgreBites::Label *scoreLabel;
     OgreBulletCollisions::DebugDrawer *mDebugDraw;
     std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
     std::deque<OgreBulletCollisions::CollisionShape *>  mShapes;
     int mNumofBall;
+    Ogre::Entity *mBallEntity;
 };
 
 #endif // #ifndef __OgreKinectGame_h_
