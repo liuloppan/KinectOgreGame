@@ -232,7 +232,7 @@ void OgreKinectGame::returnGame()
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::addScorePoint(int point)
 {
-    score = + point;
+    score += point;
 
     scoreString = "Score: " + Ogre::StringConverter::toString(score);
 
@@ -250,7 +250,8 @@ void OgreKinectGame::buttonHit(Button *b)
         mTrayMgr->removeWidgetFromTray("mResult");
         mTrayMgr->removeWidgetFromTray("mQuitButton");
         mTrayMgr->removeWidgetFromTray("mReplayButton");
-
+		mTrayMgr->removeWidgetFromTray("mGameMenu");
+		mTrayMgr->getWidget("mGameMenu")->hide();
         mTrayMgr->getWidget("mGameOver")->hide();
         mTrayMgr->getWidget("mResult")->hide();
         mTrayMgr->getWidget("mQuitButton")->hide();
