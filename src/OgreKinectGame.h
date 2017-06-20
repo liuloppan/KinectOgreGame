@@ -64,7 +64,7 @@ protected:
     void checkCollisions();
     void gamePause();
     void returnGame();
-    Ogre::ParticleSystem* createParticle(Ogre::Vector3 &pos);
+    Ogre::ParticleSystem *createParticle(Ogre::Vector3 &pos);
 
 protected:
     Ogre::Entity *mFloor;
@@ -78,20 +78,21 @@ protected:
     Ogre::String timerString;
     Ogre::Real							 mTimeSinceLastBall;
     long gameTime; // how long the game lasts for in milliseconds
+    const int particleLifeTime;
     int score;
-	int particleCounter;
+    int particleCounter;
     Ogre::String scoreString;
     OgreBites::Label *timerLabel;
     OgreBites::Label *scoreLabel;
     OgreBulletCollisions::DebugDrawer *mDebugDraw;
     std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
     std::deque<OgreBulletCollisions::CollisionShape *>  mShapes;
-	std::vector<Ogre::ParticleSystem*> mParticleSystems;
+    std::vector<std::pair<Ogre::ParticleSystem *, int>> mParticleSystems;
     int mNumofBall;
     Ogre::Entity *mBallEntity;
     //Ogre::ParticleSystem *mParticleSys;
     OgreBulletCollisions::CollisionShape *Shape;
-   // Ogre::SceneNode *mElementNode;
+    // Ogre::SceneNode *mElementNode;
     OgreBulletDynamics::RigidBody *defaultPlaneBody;
     OgreBulletCollisions::SphereCollisionShape *BallShape;
     OgreBulletDynamics::RigidBody *rbBall;

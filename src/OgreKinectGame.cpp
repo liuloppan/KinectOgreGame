@@ -39,7 +39,8 @@ OgreKinectGame::OgreKinectGame()
       mBallEntity(0),
       score(0),
       gameTime(50000),
-	  particleCounter(0)
+      particleCounter(0),
+      particleLifeTime(250)
       //mElementNode(0)
 {
     // to checking memory leak
@@ -261,24 +262,23 @@ void OgreKinectGame::buttonHit(Button *b)
 
         timer->reset();
         mCameraMan->setStyle(CS_FREELOOK);
-		scoreLabel->setCaption("Score: 0");
+        scoreLabel->setCaption("Score: 0");
         score = 0;
         mTrayMgr->hideCursor();
 
-		if(particleCounter > 0)
-		{
-			for(int i = 0; i<particleCounter; i++)
-			{
-				if(mParticleSystems.at(i))
-					delete mParticleSystems.at(i);	
-				i++;
-			}
-		
-		}
-		mParticleSystems.clear();	
-		particleCounter = 0;
-		
+        //handle the particlesystems
+        for (int i = particleCounter; i > 0; i--) {
+            if (!mParticleSystems.empty()) {
+                //delete mParticleSystems.at(i);
+                mParticleSystems.pop_back();
+                mSceneMgr->destroySceneNode("particleSysNode" + Ogre::StringConverter::toString(i));
+                mSceneMgr->destroyParticleSystem("Fire" + Ogre::StringConverter::toString(i));
+            }
+        }
+        particleCounter = 0;
 
+        // ball
+        mBallEntity->_deinitialise();
     }
 }
 //-------------------------------------------------------------------------------------
@@ -362,7 +362,7 @@ void OgreKinectGame::createScene()
     timer = new Ogre::Timer();
 
     // particle
-//    setupParticle();
+    //    setupParticle();
 }
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::checkCollisions()
@@ -389,31 +389,38 @@ void OgreKinectGame::checkCollisions()
                 //std::cout << "Collision Body B: " << obB->getCollisionShape()->getName() << std::endl;
                 if (obA->getCollisionShape()->getName() == "CapsuleShape") {
                     addScorePoint(1);
-					Ogre::ParticleSystem* particleSys = createParticle(OgreBulletCollisions::BtOgreConverter::to(ptB));
-					mParticleSystems.push_back(particleSys);
+                    std::pair<Ogre::ParticleSystem *, int> particlePair;
+                    int lifeTime = particleLifeTime;
+                    Ogre::ParticleSystem *particleSys = createParticle(OgreBulletCollisions::BtOgreConverter::to(ptB));
+                    particlePair.first = particleSys;
+                    particlePair.second = lifeTime;
+                    mParticleSystems.push_back(particlePair);
 
-				}else if (obB->getCollisionShape()->getName() == "CapsuleShape")
-				{
-				    addScorePoint(1);
-					Ogre::ParticleSystem *particleSys = createParticle(OgreBulletCollisions::BtOgreConverter::to(ptA));
-					mParticleSystems.push_back(particleSys);
 
-				}
+                } else if (obB->getCollisionShape()->getName() == "CapsuleShape") {
+                    addScorePoint(1);
+                    std::pair<Ogre::ParticleSystem *, int> particlePair;
+                    int lifeTime = particleLifeTime;
+                    Ogre::ParticleSystem *particleSys = createParticle(OgreBulletCollisions::BtOgreConverter::to(ptA));
+                    particlePair.first = particleSys;
+                    particlePair.second = lifeTime;
+                    mParticleSystems.push_back(particlePair);
+                }
             }
         }
     }
 }
 //-------------------------------------------------------------------------------------
-Ogre::ParticleSystem* OgreKinectGame::createParticle(Ogre::Vector3 &pos)
+Ogre::ParticleSystem *OgreKinectGame::createParticle(Ogre::Vector3 &pos)
 {
-	particleCounter++;
+    particleCounter++;
     Ogre::ParticleSystem::setDefaultNonVisibleUpdateTimeout(5);
-    Ogre::SceneNode *mElementNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(pos);
-    Ogre::ParticleSystem *mParticleSys = mSceneMgr->createParticleSystem("Fire"+ Ogre::StringConverter::toString(particleCounter),"Elements/Fire");
+    Ogre::SceneNode *mElementNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("particleSysNode" + Ogre::StringConverter::toString(particleCounter), pos);
+    Ogre::ParticleSystem *mParticleSys = mSceneMgr->createParticleSystem("Fire" + Ogre::StringConverter::toString(particleCounter), "Elements/Fire");
     mElementNode->attachObject(mParticleSys);
     mParticleSys->setVisible(true);
 
-	return mParticleSys;
+    return mParticleSys;
 }
 //-------------------------------------------------------------------------------------
 bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
@@ -427,9 +434,25 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
         timerString = "Timer: " + Ogre::StringConverter::toString((gameTime - timer->getMilliseconds()) / 1000);
         timerLabel->setCaption(timerString);
     } else {
+
         gameOver();
         return true;
     }
+
+    for (int i = 0 ; i < mParticleSystems.size(); i++) {
+        int particleLifeTime = mParticleSystems.at(i).second;
+        if (particleLifeTime > 0) {
+            mParticleSystems.at(i).first->setEmitting(true);
+        } else {
+            mParticleSystems.at(i).first->setEmitting(false);
+        }
+
+        particleLifeTime--;
+        mParticleSystems.at(i).second = particleLifeTime;
+
+    }
+
+
     kinectController->updatePerFrame(fe.timeSinceLastFrame);
     character->updatePerFrame(fe.timeSinceLastFrame);
 
@@ -446,7 +469,7 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 //-------------------------------------------------------------------------------------
 void OgreKinectGame::createBall(Ogre::Real time)
 {
-    
+
     float LO = -5;
     float HI = 10;
     float x = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
