@@ -384,9 +384,12 @@ void OgreKinectGame::checkCollisions()
                 const btVector3 &ptB = pt.getPositionWorldOnB();
                 const btVector3 &normalOnB = pt.m_normalWorldOnB;
                 collide = true;
-                //std::cout << "Collision Body A: " << obA->getCollisionShape()->getName() << std::endl;
-                //std::cout << "Collision Body B: " << obB->getCollisionShape()->getName() << std::endl;
-                if (obA->getCollisionShape()->getName() == "CapsuleShape") {
+                const char *nameA = obA-> getCollisionShape()->getName();
+                const char *nameB = obB->getCollisionShape()->getName();
+                std::cout << "Collision Body A: " <<  nameA << std::endl;
+                std::cout << "Collision Body B: " << nameB << std::endl;
+
+                if (obA->getUserPointer() == "player") {
                     addScorePoint(1);
 
                     std::pair<Ogre::ParticleSystem *, int> particlePair;
@@ -397,7 +400,7 @@ void OgreKinectGame::checkCollisions()
                     mParticleSystems.push_back(particlePair);
 
 
-                } else if (obB->getCollisionShape()->getName() == "CapsuleShape") {
+                } else if (obB->getUserPointer() == "player"){
                     addScorePoint(1);
                     std::pair<Ogre::ParticleSystem *, int> particlePair;
                     int lifeTime = particleLifeTime;
