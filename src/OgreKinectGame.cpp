@@ -38,7 +38,7 @@ OgreKinectGame::OgreKinectGame()
       mTimeSinceLastBall(0),
       mBallEntity(0),
       score(0),
-      gameTime(50000),
+      gameTime(5000),
       mElementNode(0)
 {
     // to checking memory leak
@@ -165,15 +165,14 @@ void OgreKinectGame::setupWidgets()
     scoreLabel = (Label *) mTrayMgr->getWidget(TL_TOPLEFT, "mScore");
 
     scoreString = "Your final score is " + Ogre::StringConverter::toString(score) + "!";
-
+    mTrayMgr->createLabel(TL_NONE, "mResult", scoreString, WIDTH_UI);
+    mTrayMgr->getWidget("mResult")->hide();
     //game over menu
     mTrayMgr->createLabel(TL_NONE, "mGameOver", "GAME OVER!", WIDTH_UI);
-    mTrayMgr->createLabel(TL_NONE, "mResult", scoreString, WIDTH_UI);
     mTrayMgr->createButton(TL_NONE, "mQuitButton", "Quit");
     mTrayMgr->createButton(TL_NONE, "mReplayButton", "Replay");
 
     mTrayMgr->getWidget("mGameOver")->hide();
-    mTrayMgr->getWidget("mResult")->hide();
     mTrayMgr->getWidget("mQuitButton")->hide();
     mTrayMgr->getWidget("mReplayButton")->hide();
 
@@ -189,6 +188,8 @@ void OgreKinectGame::gameOver()
 {
     mTrayMgr->moveWidgetToTray("mGameOver", TL_CENTER);
     mTrayMgr->moveWidgetToTray("mResult", TL_CENTER);
+    scoreString = "Your final score is " + Ogre::StringConverter::toString(score) + "!";
+    ((OgreBites::Label *)mTrayMgr->getWidget("mResult"))->setCaption(scoreString);
     mTrayMgr->moveWidgetToTray("mQuitButton", TL_CENTER);
     mTrayMgr->moveWidgetToTray("mReplayButton", TL_CENTER);
 
@@ -250,8 +251,8 @@ void OgreKinectGame::buttonHit(Button *b)
         mTrayMgr->removeWidgetFromTray("mResult");
         mTrayMgr->removeWidgetFromTray("mQuitButton");
         mTrayMgr->removeWidgetFromTray("mReplayButton");
-		mTrayMgr->removeWidgetFromTray("mGameMenu");
-		mTrayMgr->getWidget("mGameMenu")->hide();
+        mTrayMgr->removeWidgetFromTray("mGameMenu");
+        mTrayMgr->getWidget("mGameMenu")->hide();
         mTrayMgr->getWidget("mGameOver")->hide();
         mTrayMgr->getWidget("mResult")->hide();
         mTrayMgr->getWidget("mQuitButton")->hide();
