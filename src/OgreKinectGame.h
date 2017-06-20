@@ -78,7 +78,8 @@ protected:
     Ogre::String timerString;
     Ogre::Real							 mTimeSinceLastBall;
     long gameTime; // how long the game lasts for in milliseconds
-    int score;
+    const int particleLifeTime;
+	int score;
 	int particleCounter;
     Ogre::String scoreString;
     OgreBites::Label *timerLabel;
@@ -86,7 +87,7 @@ protected:
     OgreBulletCollisions::DebugDrawer *mDebugDraw;
     std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
     std::deque<OgreBulletCollisions::CollisionShape *>  mShapes;
-	std::vector<Ogre::ParticleSystem*> mParticleSystems;
+	std::vector<std::pair<Ogre::ParticleSystem*, int>> mParticleSystems;
     int mNumofBall;
     Ogre::Entity *mBallEntity;
     //Ogre::ParticleSystem *mParticleSys;
