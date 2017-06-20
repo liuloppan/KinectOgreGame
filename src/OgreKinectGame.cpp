@@ -323,9 +323,9 @@ void OgreKinectGame::createScene()
     // add Debug info display tool
     mDebugDraw = new OgreBulletCollisions::DebugDrawer();
 
-    mDebugDraw->setDrawWireframe(true);   // we want to see the Bullet containers
+    mDebugDraw->setDrawWireframe(false);   // we want to see the Bullet containers
     dynamicsWorld->setDebugDrawer(mDebugDraw);
-    dynamicsWorld->setShowDebugShapes(true);      // enable it if you want to see the Bullet containers
+    dynamicsWorld->setShowDebugShapes(false);      // enable it if you want to see the Bullet containers
     Ogre::SceneNode *debugNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
     debugNode->attachObject(static_cast <Ogre::SimpleRenderable *>(mDebugDraw));
 
