@@ -73,12 +73,10 @@ protected:
     void setBaseAnimation(AnimID id, bool reset = false);
     void fadeAnimations(Ogre::Real deltaTime);
     void setupAnimations();
+	void setupRigidBodies();
 
     KinectController  *controller;
     JointOrientationCalculator *jointCalc;
-
-    bool showBoneOrientationAxes;
-    bool showJointYAxes;
 
     Ogre::Real skelCenter;
     Ogre::Vector3 bodyOffset;
@@ -86,12 +84,12 @@ protected:
     OgreBulletDynamics::DynamicsWorld *mWorld;
     OgreBulletDynamics::RigidBody *rbSinbad;
     OgreBulletDynamics::RigidBody *rbHandL;
+	OgreBulletDynamics::RigidBody *rbHandR;
     Ogre::SceneManager *mSceneManager;
     Ogre::Entity *bodyEntity;
     Ogre::Entity *mSword1;
     Ogre::Entity *mSword2;
     Ogre::SceneNode *bodyNode;
-    Ogre::SceneNode *handNodeL;
     Ogre::Real handRadius;
     Ogre::Skeleton *skeleton;
     AnimID mBaseAnimID;                   // current base (full- or lower-body) animation
@@ -107,6 +105,8 @@ protected:
     std::deque<Ogre::Entity *>                          mEntities;
     std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
     OgreBulletCollisions::CapsuleCollisionShape *colShapeSinbad;
+	OgreBulletCollisions::SphereCollisionShape *colShapeHandL;
+	OgreBulletCollisions::SphereCollisionShape *colShapeHandR;
 };
 
 #endif
