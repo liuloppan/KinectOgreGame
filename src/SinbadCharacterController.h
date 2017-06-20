@@ -73,7 +73,7 @@ protected:
     void setBaseAnimation(AnimID id, bool reset = false);
     void fadeAnimations(Ogre::Real deltaTime);
     void setupAnimations();
-	void setupRigidBodies();
+    void setupRigidBodies();
 
     KinectController  *controller;
     JointOrientationCalculator *jointCalc;
@@ -84,7 +84,7 @@ protected:
     OgreBulletDynamics::DynamicsWorld *mWorld;
     OgreBulletDynamics::RigidBody *rbSinbad;
     OgreBulletDynamics::RigidBody *rbHandL;
-	OgreBulletDynamics::RigidBody *rbHandR;
+    OgreBulletDynamics::RigidBody *rbHandR;
     Ogre::SceneManager *mSceneManager;
     Ogre::Entity *bodyEntity;
     Ogre::Entity *mSword1;
@@ -105,10 +105,13 @@ protected:
     std::deque<Ogre::Entity *>                          mEntities;
     std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
     OgreBulletCollisions::CapsuleCollisionShape *colShapeSinbad;
-	OgreBulletCollisions::CapsuleCollisionShape *colShapeHandL;
-	OgreBulletCollisions::CapsuleCollisionShape *colShapeHandR;
+    OgreBulletCollisions::CapsuleCollisionShape *colShapeHandL;
+    OgreBulletCollisions::CapsuleCollisionShape *colShapeHandR;
 public:
-	OgreBulletDynamics::RigidBody * getRBSinbad(){return rbSinbad;};
+    OgreBulletDynamics::RigidBody *getRBSinbad()
+    {
+        return rbSinbad;
+    };
 };
 
 #endif
