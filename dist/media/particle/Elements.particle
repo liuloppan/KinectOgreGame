@@ -1,8 +1,8 @@
 particle_system Elements/Fire
  {
     material        Elements/Fire
-    particle_width	3
-    particle_height 3
+    particle_width	4
+    particle_height 4
     cull_each       false
 	cull_each       false
     quota           100
@@ -11,23 +11,23 @@ particle_system Elements/Fire
     // Area emitter
     emitter Box
     {
-        angle           30
+        angle           00
         emission_rate   50
         time_to_live    1
         direction       0 1 0
         velocity    	0
         colour_range_start  1 0 0
         colour_range_end    1 0 0
-        width           60
-        height          30
-        depth           60
+        width           10
+        height          1
+        depth           10
     }
 
 
     // Make em float upwards
     affector LinearForce
     {
-        force_vector      0 200 0
+        force_vector      0 10 0
         force_application add
     }
 

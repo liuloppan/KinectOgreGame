@@ -35,6 +35,7 @@ ________                           ____  __.__                      __
 #include "Debug/OgreBulletCollisionsDebugDrawer.h"
 
 #include "Constraints/OgreBulletDynamicsRaycastVehicle.h"
+#include "Utils/OgreBulletConverter.h"
 
 #include "sdkTrays.h"
 using namespace OgreBites;
@@ -63,7 +64,7 @@ protected:
     void checkCollisions();
     void gamePause();
     void returnGame();
-    void setupParticle();
+    Ogre::ParticleSystem* createParticle(Ogre::Vector3 &pos);
 
 protected:
     Ogre::Entity *mFloor;
@@ -78,17 +79,19 @@ protected:
     Ogre::Real							 mTimeSinceLastBall;
     long gameTime; // how long the game lasts for in milliseconds
     int score;
+	int particleCounter;
     Ogre::String scoreString;
     OgreBites::Label *timerLabel;
     OgreBites::Label *scoreLabel;
     OgreBulletCollisions::DebugDrawer *mDebugDraw;
     std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
     std::deque<OgreBulletCollisions::CollisionShape *>  mShapes;
+	std::vector<Ogre::ParticleSystem*> mParticleSystems;
     int mNumofBall;
     Ogre::Entity *mBallEntity;
-    Ogre::ParticleSystem *mParticleSys;
+    //Ogre::ParticleSystem *mParticleSys;
     OgreBulletCollisions::CollisionShape *Shape;
-    Ogre::SceneNode *mElementNode;
+   // Ogre::SceneNode *mElementNode;
     OgreBulletDynamics::RigidBody *defaultPlaneBody;
     OgreBulletCollisions::SphereCollisionShape *BallShape;
     OgreBulletDynamics::RigidBody *rbBall;
