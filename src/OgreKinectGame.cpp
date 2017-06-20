@@ -38,7 +38,7 @@ OgreKinectGame::OgreKinectGame()
       mTimeSinceLastBall(0),
       mBallEntity(0),
       score(0),
-      gameTime(5000),
+      gameTime(50000),
 	  particleCounter(0)
       //mElementNode(0)
 {
@@ -261,6 +261,7 @@ void OgreKinectGame::buttonHit(Button *b)
 
         timer->reset();
         mCameraMan->setStyle(CS_FREELOOK);
+		scoreLabel->setCaption("Score: 0");
         score = 0;
         mTrayMgr->hideCursor();
 
@@ -401,9 +402,6 @@ void OgreKinectGame::checkCollisions()
             }
         }
     }
-
-    // this is label for debugging
-    //mInfoLabel->setCaption("Collision = " + Ogre::StringConverter::toString(collide));
 }
 //-------------------------------------------------------------------------------------
 Ogre::ParticleSystem* OgreKinectGame::createParticle(Ogre::Vector3 &pos)
@@ -429,7 +427,6 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
         timerString = "Timer: " + Ogre::StringConverter::toString((gameTime - timer->getMilliseconds()) / 1000);
         timerLabel->setCaption(timerString);
     } else {
-
         gameOver();
         return true;
     }
@@ -441,7 +438,7 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
     mTimeSinceLastBall += fe.timeSinceLastFrame;
     while (mTimeSinceLastBall >= 2.1) {
         createBall(mTimeSinceLastBall);
-        mTimeSinceLastBall -= 10;
+        mTimeSinceLastBall -= 5;
     }
     checkCollisions();
     return true;
@@ -450,8 +447,8 @@ bool OgreKinectGame::frameRenderingQueued(const Ogre::FrameEvent &fe)
 void OgreKinectGame::createBall(Ogre::Real time)
 {
     
-    float LO = -1;
-    float HI = 5;
+    float LO = -5;
+    float HI = 10;
     float x = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
     float z = LO + static_cast <float>(rand()) / (static_cast <float>(RAND_MAX / (HI - LO)));
 

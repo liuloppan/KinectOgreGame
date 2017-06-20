@@ -116,7 +116,7 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
 void SinbadCharacterController::setupRigidBodies()
 {
 	//sinbad body 
-    colShapeSinbad = new OgreBulletCollisions::CapsuleCollisionShape(10.0f, 25.0f, Ogre::Vector3(0, 1, 0));
+    colShapeSinbad = new OgreBulletCollisions::CapsuleCollisionShape(7.0f, 15.0f, Ogre::Vector3(0, 1, 0));
     // and the Bullet rigid body
     rbSinbad = new OgreBulletDynamics::RigidBody("rbSinbad", mWorld);
     rbSinbad->setShape(bodyNode,
@@ -126,13 +126,13 @@ void SinbadCharacterController::setupRigidBodies()
                        0.0f,          // dynamic bodymass
                        bodyNode->getPosition(),      // starting position of the box
                        bodyNode->getOrientation());// orientation of the box
-
+	rbSinbad->getBulletObject()->setUserPointer((void *) bodyNode);
     //create rigidbodies for the hands
 	Ogre::SceneNode *handNodeL = mSceneManager->getRootSceneNode()->createChildSceneNode("handNodeL");
 	Ogre::SceneNode *handNodeR = handNodeR = mSceneManager->getRootSceneNode()->createChildSceneNode("handNodeR");
-    handRadius = 4.f;
+    //handRadius = 4.f;
  
-    colShapeHandL = new OgreBulletCollisions::SphereCollisionShape(handRadius); //CapsuleCollisionShape(10.0f, 25.0f, Ogre::Vector3(0, 1, 0));
+    colShapeHandL = new OgreBulletCollisions::CapsuleCollisionShape(3.0f, 5.0f, Ogre::Vector3(0, 1, 0)); //CapsuleCollisionShape(10.0f, 25.0f, Ogre::Vector3(0, 1, 0));
     rbHandL = new OgreBulletDynamics::RigidBody("rbHandL", mWorld);
     rbHandL->setShape(handNodeL,
                       colShapeHandL,
@@ -142,7 +142,7 @@ void SinbadCharacterController::setupRigidBodies()
                       handNodeL->getPosition(),      // starting position of the box
                       handNodeL->getOrientation());// orientation of the box
 
-	colShapeHandR = new OgreBulletCollisions::SphereCollisionShape(handRadius); //CapsuleCollisionShape(10.0f, 25.0f, Ogre::Vector3(0, 1, 0));
+	colShapeHandR = new OgreBulletCollisions::CapsuleCollisionShape(4.0f, 2.0f, Ogre::Vector3(0, 1, 0)); //CapsuleCollisionShape(10.0f, 25.0f, Ogre::Vector3(0, 1, 0));
     rbHandR = new OgreBulletDynamics::RigidBody("rbHandR", mWorld);
     rbHandR->setShape(handNodeR,
                       colShapeHandR,

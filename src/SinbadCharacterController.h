@@ -90,7 +90,7 @@ protected:
     Ogre::Entity *mSword1;
     Ogre::Entity *mSword2;
     Ogre::SceneNode *bodyNode;
-    Ogre::Real handRadius;
+    //Ogre::Real handRadius;
     Ogre::Skeleton *skeleton;
     AnimID mBaseAnimID;                   // current base (full- or lower-body) animation
     AnimID mTopAnimID;                    // current top (upper-body) animation
@@ -105,8 +105,10 @@ protected:
     std::deque<Ogre::Entity *>                          mEntities;
     std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
     OgreBulletCollisions::CapsuleCollisionShape *colShapeSinbad;
-	OgreBulletCollisions::SphereCollisionShape *colShapeHandL;
-	OgreBulletCollisions::SphereCollisionShape *colShapeHandR;
+	OgreBulletCollisions::CapsuleCollisionShape *colShapeHandL;
+	OgreBulletCollisions::CapsuleCollisionShape *colShapeHandR;
+public:
+	OgreBulletDynamics::RigidBody * getRBSinbad(){return rbSinbad;};
 };
 
 #endif
