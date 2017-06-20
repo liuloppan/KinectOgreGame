@@ -337,7 +337,7 @@ void OgreKinectGame::createScene()
 
     // Floor
     Ogre::MeshManager::getSingleton().createPlane("floor", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-            Ogre::Plane(Ogre::Vector3::UNIT_Y, 0), 200000, 200000, 20, 20, true, 1, 9000, 9000, Ogre::Vector3::UNIT_Z);
+            Ogre::Plane(Ogre::Vector3::UNIT_Y, 0), 200000, 200000, 2, 2, true, 1, 500, 500, Ogre::Vector3::UNIT_Z);
 
 
     Ogre::Entity *floor = mSceneMgr->createEntity("Floor", "floor");
@@ -345,9 +345,9 @@ void OgreKinectGame::createScene()
     floor->setCastShadows(false);
     (mSceneMgr->getRootSceneNode()->createChildSceneNode("floorNode"))->attachObject(floor);
     mSceneMgr->setSkyDome(true, "Examples/CloudySky", 10, 8);
-    mSceneMgr->getSceneNode("floorNode")->translate(0.f, -20.f, 0.f);
+    mSceneMgr->getSceneNode("floorNode")->translate(0.f, -50.f, 0.f);
 
-    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0, 1, 0), -20); // (normal vector, distance)
+    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0, 1, 0), -50); // (normal vector, distance)
     defaultPlaneBody = new OgreBulletDynamics::RigidBody(
         "BasePlane",
         dynamicsWorld);
@@ -386,7 +386,7 @@ void OgreKinectGame::checkCollisions()
                 collide = true;
                 //std::cout << "Collision Body A: " << obA->getCollisionShape()->getName() << std::endl;
                 //std::cout << "Collision Body B: " << obB->getCollisionShape()->getName() << std::endl;
-                if (obA->getCollisionShape()->getName() == "CapsuleShape") {
+                if (obA->getCollisionShape()->getName() == "CapsuleShape" && obB->getCollisionShape()->getName() == "SPHERE") {
                     addScorePoint(1);
 
                     std::pair<Ogre::ParticleSystem *, int> particlePair;
@@ -397,7 +397,7 @@ void OgreKinectGame::checkCollisions()
                     mParticleSystems.push_back(particlePair);
 
 
-                } else if (obB->getCollisionShape()->getName() == "CapsuleShape") {
+                } else if (obB->getCollisionShape()->getName() == "CapsuleShape" && obA->getCollisionShape()->getName() == "SPHERE" ) {
                     addScorePoint(1);
                     std::pair<Ogre::ParticleSystem *, int> particlePair;
                     int lifeTime = particleLifeTime;

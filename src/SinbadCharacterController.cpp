@@ -116,7 +116,7 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
 void SinbadCharacterController::setupRigidBodies()
 {
     //sinbad body
-    colShapeSinbad = new OgreBulletCollisions::CapsuleCollisionShape(7.0f, 15.0f, Ogre::Vector3(0, 1, 0));
+    colShapeSinbad = new OgreBulletCollisions::CapsuleCollisionShape(6.0f, 13.0f, Ogre::Vector3(0, 1, 0));
     // and the Bullet rigid body
     rbSinbad = new OgreBulletDynamics::RigidBody("rbSinbad", mWorld);
     rbSinbad->setShape(bodyNode,
@@ -357,7 +357,7 @@ void SinbadCharacterController::transformBone(Ogre::String boneName, NuiManager:
             newBodyPos += bodyOffset;
 
             bodyNode->setPosition(newBodyPos);
-            rbSinbad->setPosition(bodyNode->getPosition());
+            //rbSinbad->setPosition(bodyNode->getPosition());
         }
 
 
