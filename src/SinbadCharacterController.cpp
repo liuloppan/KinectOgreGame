@@ -55,7 +55,7 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
     this->bodyNode->scale(Ogre::Vector3(5));
     this->bodyNode->setPosition(bodyOffset);
 
-
+	//Bullet physics setup
     OgreBulletCollisions::CapsuleCollisionShape *colShapeSinbad = new OgreBulletCollisions::CapsuleCollisionShape(60.0f, 25.0f, Ogre::Vector3(0, 1, 0));
     // and the Bullet rigid body
     rbSinbad = new OgreBulletDynamics::RigidBody("rbSinbad", mWorld);
@@ -66,6 +66,22 @@ void SinbadCharacterController::setupCharacter(Ogre::SceneManager *mSceneManager
                        0.0f,          // dynamic bodymass
                        bodyNode->getPosition(),      // starting position of the box
                        bodyNode->getOrientation());// orientation of the box
+
+	//create rigidbodies for the hands
+	handNodeL = mSceneManager->getRootSceneNode()->createChildSceneNode("handNodeL");
+	handRadius = 5.f;
+//	Ogre::Vector3 handLPosition = skeleton->getBone("Hand.L")->convertLocalToWorldPosition(skeleton->getBone("Hand.L")->getPosition());//(handNodeL);
+	OgreBulletCollisions::SphereCollisionShape *colShapeHandL = new OgreBulletCollisions::SphereCollisionShape(handRadius); //CapsuleCollisionShape(10.0f, 25.0f, Ogre::Vector3(0, 1, 0));
+	rbHandL = new OgreBulletDynamics::RigidBody("rbHandL", mWorld);
+	rbHandL->setShape(handNodeL,
+                       colShapeHandL,
+                       0.6f,         // dynamic body restitution
+                       0.6f,         // dynamic body friction
+                       0.0f,          // dynamic bodymass
+                       handNodeL->getPosition(),      // starting position of the box
+                       handNodeL->getOrientation());// orientation of the box
+
+
 
     // create swords and attach to sheath
     mSword1 = mSceneManager->createEntity("SinbadSword1", "Sword.mesh");
@@ -246,6 +262,7 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
         transformBone("Humerus.L",           NuiJointIndex::SHOULDER_LEFT);
         transformBone("Ulna.R",              NuiJointIndex::ELBOW_RIGHT);
         transformBone("Ulna.L",              NuiJointIndex::ELBOW_LEFT);
+		transformBone("Hand.L",				 NuiJointIndex::WRIST_LEFT);
 
     } else {
         transformBone("Thigh.L",          NuiJointIndex::HIP_RIGHT);
@@ -258,7 +275,7 @@ void SinbadCharacterController::updatePerFrame(Ogre::Real elapsedTime)
         transformBone("Humerus.L",           NuiJointIndex::SHOULDER_RIGHT);
         transformBone("Ulna.R",              NuiJointIndex::ELBOW_LEFT);
         transformBone("Ulna.L",              NuiJointIndex::ELBOW_RIGHT);
-
+		transformBone("Hand.L",				 NuiJointIndex::WRIST_RIGHT);
     }
 
 
@@ -268,13 +285,41 @@ void SinbadCharacterController::transformBone(Ogre::String boneName, NuiManager:
 {
     int state = 0;
     state = (int)controller->getJointStatus(jointIdx);
-    btTransform tr;
+    //btTransform tr;
     if (state == 2) {
-        Ogre::Bone *bone = skeleton->getBone(boneName);
-        Ogre::Quaternion qI = bone->getInitialOrientation();
+
+		Ogre::Bone *bone = skeleton->getBone(boneName);
+		Ogre::Quaternion qI = bone->getInitialOrientation();
         Ogre::Quaternion newQ = jointCalc->getSkeletonJointOrientation(jointIdx);
 
-        if (boneName == "Root") {
+        bone->resetOrientation();
+        newQ = bone->convertWorldToLocalOrientation(newQ);
+        bone->setOrientation(newQ * qI);
+
+        Ogre::Quaternion resQ = bone->getOrientation();
+		if(boneName == "Hand.L")
+		{
+			//Ogre::Vector3 newHandPos = bone->convertLocalToWorldPosition(Ogre::Vector3::ZERO);
+			//Ogre::Vector3 newHandPos = bone->_getDerivedPosition();
+		
+		    Ogre::Vector3 newHandPos = controller->getJointPosition(jointIdx) * 60.0f;
+            newHandPos.z = -1 * newHandPos.z;
+            //newHandPos += (bodyOffset);
+			// newHandPos.y -= 20; //ony works if oriented as the hand
+
+            handNodeL->setPosition(newHandPos);
+			//handNodeL->setOrientation(resQ);
+			//handNodeL->translate(0.f,-20.f,0.f);
+			//rbHandL->setOrientation(resQ);
+           // rbHandL->setPosition(handNodeL->getPosition());
+			
+
+			return;
+		}
+
+
+		if (boneName == "Root")
+		{
             //kinect skeleton position is in meter 0.8m<z<4m
             Ogre::Vector3 newBodyPos = controller->getJointPosition(jointIdx) * 60.0f;
             newBodyPos.z = -1 * newBodyPos.z;
@@ -283,11 +328,8 @@ void SinbadCharacterController::transformBone(Ogre::String boneName, NuiManager:
             bodyNode->setPosition(newBodyPos);
             rbSinbad->setPosition(bodyNode->getPosition());
         }
-        bone->resetOrientation();
-        newQ = bone->convertWorldToLocalOrientation(newQ);
-        bone->setOrientation(newQ * qI);
 
-        Ogre::Quaternion resQ = bone->getOrientation();
+
 
     }
 }

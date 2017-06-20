@@ -32,7 +32,7 @@ OgreKinectGame::OgreKinectGame()
       mNumofBall(0),
       mTimeSinceLastBall(0)
 {
-    gameTime = 10000; // milliseconds
+    gameTime = 1000000; // milliseconds
 	score = 0;
     mInfo["About"] = "Ogre Kinect Game @2017.\n"
                      "Created for 3D Game Programming at Computer Scicence Yuan Ze University\n"
@@ -271,10 +271,10 @@ void OgreKinectGame::createScene()
     floor->setCastShadows(false);
     (mSceneMgr->getRootSceneNode()->createChildSceneNode("floorNode"))->attachObject(floor);
     mSceneMgr->setSkyDome(true, "Examples/CloudySky", 10, 8);
-    mSceneMgr->getSceneNode("floorNode")->translate(0.f, -20.f, 0.f);
+    mSceneMgr->getSceneNode("floorNode")->translate(0.f, -40.f, 0.f);
 
     OgreBulletCollisions::CollisionShape *Shape;
-    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0, 1, 0), -20); // (normal vector, distance)
+    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0, 1, 0), -40); // (normal vector, distance)
     OgreBulletDynamics::RigidBody *defaultPlaneBody = new OgreBulletDynamics::RigidBody(
         "BasePlane",
         dynamicsWorld);

@@ -85,11 +85,14 @@ protected:
 
     OgreBulletDynamics::DynamicsWorld *mWorld;
     OgreBulletDynamics::RigidBody *rbSinbad;
+	OgreBulletDynamics::RigidBody *rbHandL;
     Ogre::SceneManager *mSceneManager;
     Ogre::Entity *bodyEntity;
     Ogre::Entity *mSword1;
     Ogre::Entity *mSword2;
     Ogre::SceneNode *bodyNode;
+	Ogre::SceneNode *handNodeL;
+	Ogre::Real handRadius;
     Ogre::Skeleton *skeleton;
     AnimID mBaseAnimID;                   // current base (full- or lower-body) animation
     AnimID mTopAnimID;                    // current top (upper-body) animation
